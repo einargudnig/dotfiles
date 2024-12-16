@@ -10,6 +10,8 @@ return {
 	font = wezterm.font("Geist Mono"),
 	-- macos_window_background_blur = 40,
 	macos_window_background_blur = 30,
+	max_fps = 240,
+	animation_fps = 10,
 
 	window_background_opacity = 1.0,
 	-- window_background_opacity = 0.78,

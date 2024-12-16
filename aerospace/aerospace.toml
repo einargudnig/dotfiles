@@ -217,14 +217,14 @@ run = "layout floating"
 # Music
 [[on-window-detected]]
 if.app-id = "com.spotify.client"
-run = "move-node-to-workspace M"
+run = "move-node-to-workspace S"
 # Todo
 [[on-window-detected]]
 if.app-id = "com.culturedcode.ThingsMac"
 run = "move-node-to-workspace T"
 [[on-window-detected]]
 if.app-id = "com.electron.asana"
-run = "move-node-to-workspace T"
+run = "move-node-to-workspace M"
 # Notes
 [[on-window-detected]]
 if.app-id = "md.obsidian"
@@ -235,7 +235,13 @@ if.app-id = "com.readdle.SparkDesktop"
 run = "move-node-to-workspace E"
 [[on-window-detected]]
 if.app-id = "com.frontapp.Front"
-run = "move-node-to-workspace E"
+run = "move-node-to-workspace M"
+[[on-window-detected]]
+if.app-id = "com.jetbrains.intellij"
+run = "move-node-to-workspace G"
+[[on-window-detected]]
+if.app-id = "com.insomnia.app"
+run = "move-node-to-workspace G"
 # Floating
 [[on-window-detected]]
 if.app-id = "com.apple.finder"
