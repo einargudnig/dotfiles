@@ -8,9 +8,12 @@
 -- A GPU-accelerated cross-platform terminal emulator
 -- https://wezfurlong.org/wezterm/
 
+-- Add the directory containing your config files to the package path
+package.path = package.path .. ";/Users/einargudjonsson/.wezterm/?.lua"
+
 local wezterm = require("wezterm")
--- local k = require("./keys.lua")
-local act = wezterm.action
+-- local k = require("keys")
+-- local act = wezterm.action
 
 return {
 	-- color_scheme = 'termnial.sexy',
@@ -29,27 +32,27 @@ return {
 	-- window_background_opacity = 0.78,
 	-- window_background_opacity = 0.20,
 	window_decorations = "RESIZE",
-	keys = {
-
-		{
-			key = "f",
-			mods = "CTRL",
-			action = wezterm.action.ToggleFullScreen,
-		},
-		{
-			key = "'",
-			mods = "CTRL",
-			action = wezterm.action.ClearScrollback("ScrollbackAndViewport"),
-		},
-
-		-- k.cmd_key(
-		-- 	"s",
-		-- 	act.Multiple({
-		-- 		act.SendKey({ key = "\x1b" }), -- escape
-		-- 		k.multiple_actions(":w"),
-		-- 	})
-		-- ),
-	},
+	-- keys = {
+	-- 	k.cmd_key(".", k.multiple_actions(":ZenMode")),
+	-- 	{
+	-- 		key = "f",
+	-- 		mods = "CTRL",
+	-- 		action = wezterm.action.ToggleFullScreen,
+	-- 	},
+	-- 	{
+	-- 		key = "'",
+	-- 		mods = "CTRL",
+	-- 		action = wezterm.action.ClearScrollback("ScrollbackAndViewport"),
+	-- 	},
+	--
+	-- k.cmd_key(
+	-- 	"s",
+	-- 	act.Multiple({
+	-- 		act.SendKey({ key = "\x1b" }), -- escape
+	-- 		k.multiple_actions(":w"),
+	-- 	})
+	-- ),
+	-- },
 
 	mouse_bindings = {
 		-- Ctrl-click will open the link under the mouse cursor
