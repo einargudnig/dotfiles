@@ -54,16 +54,16 @@ if type rg &> /dev/null; then
 fi
 
 # for sesh
-function t() {
-  {
-    exec </dev/tty
-    exec <&1
-    local session
-    session=$(sesh list -t -c | fzf --height 40% --reverse --border-label ' sesh ' --border --prompt '⚡  ')
-    [[ -z "$session" ]] && return
-    sesh connect $session
-  }
-}
+# function t() {
+#   {
+#     exec </dev/tty
+#     exec <&1
+#     local session
+#     session=$(sesh list -t -c | fzf --height 40% --reverse --border-label ' sesh ' --border --prompt '⚡  ')
+#     [[ -z "$session" ]] && return
+#     sesh connect $session
+#   }
+# }
 
 # yazi is a terminal explorer
 # use y instead of yazi to start, and pressq to quit.
