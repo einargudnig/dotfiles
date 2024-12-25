@@ -20,39 +20,24 @@ return {
 	color_scheme = "Catppuccin Mocha",
 	default_cursor_style = "BlinkingBar",
 	enable_tab_bar = false,
-	font_size = 16.0,
+	font_size = 18.0,
 	-- font = wezterm.font("JetBrains Mono"),
 	font = wezterm.font("Geist Mono"),
-	-- macos_window_background_blur = 40,
+	line_height = 1.2,
 	macos_window_background_blur = 30,
-	max_fps = 240,
-	animation_fps = 10,
-
 	window_background_opacity = 1.0,
-	-- window_background_opacity = 0.78,
-	-- window_background_opacity = 0.20,
 	window_decorations = "RESIZE",
-	-- keys = {
-	-- 	k.cmd_key(".", k.multiple_actions(":ZenMode")),
-	-- 	{
-	-- 		key = "f",
-	-- 		mods = "CTRL",
-	-- 		action = wezterm.action.ToggleFullScreen,
-	-- 	},
-	-- 	{
-	-- 		key = "'",
-	-- 		mods = "CTRL",
-	-- 		action = wezterm.action.ClearScrollback("ScrollbackAndViewport"),
-	-- 	},
-	--
-	-- k.cmd_key(
-	-- 	"s",
-	-- 	act.Multiple({
-	-- 		act.SendKey({ key = "\x1b" }), -- escape
-	-- 		k.multiple_actions(":w"),
-	-- 	})
-	-- ),
-	-- },
+	window_padding = {
+		left = 0,
+		right = 0,
+		top = 0,
+		bottom = 0,
+	},
+
+	-- misc
+	max_fps = 120,
+	prefer_egl = true,
+	animation_fps = 10,
 
 	mouse_bindings = {
 		-- Ctrl-click will open the link under the mouse cursor
