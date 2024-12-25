@@ -14,7 +14,7 @@ return {
         aerial = true,
         alpha = true,
         cmp = true,
-        dashboard = true,
+        -- dashboard = true,
         flash = true,
         fzf = true,
         grug_far = true,
