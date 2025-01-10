@@ -1,3 +1,5 @@
 theme = catppuccin-mocha
 font-family = Geist Mono Variable Regular Medium
 font-size = 20
+window-decoration = false
+macos-titlebar-style = hidden

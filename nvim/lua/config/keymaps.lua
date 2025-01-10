@@ -34,3 +34,7 @@ keymap.set("i", "jj", "<ESC>", { silent = true })
 
 -- oil
 vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
+
+-- dooing
+-- vim.keymap.set("n", "<leader>dd", "<CMD>Dooing<CR>", { desc = "Open dooing" })
+-- vim.keymap.set("n", "<leader>ds", "<CMD>Dooing<CR>", { desc = "Open dooing" })
