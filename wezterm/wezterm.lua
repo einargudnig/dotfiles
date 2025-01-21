@@ -27,7 +27,7 @@ return {
 	macos_window_background_blur = 30,
 	window_background_opacity = 1.0,
 	window_decorations = "RESIZE",
-	window_padding = { left = "0.5cell", right = "0.5cell", top = "0.5cell", bottom = 0 },
+	window_padding = { left = "0.5cell", right = "0.5cell", top = "0.5cell", bottom = "0.5cell" },
 
 	-- misc
 	max_fps = 120,
