@@ -19,6 +19,7 @@ return {
           padding = 2,
           max_width = 90,
           max_height = 0,
+          preview_split = "right",
         },
         win_options = {
           wrap = true,
