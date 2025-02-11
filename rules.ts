@@ -191,6 +191,9 @@ const rules: KarabinerRules[] = [
           },
         ],
       },
+      2: open("raycast://extensions/mattisssa/spotify-player/volume25"),
+      5: open("raycast://extensions/mattisssa/spotify-player/volume50"),
+      9: open("raycast://extensions/mattisssa/spotify-player/volume100"),
       i: {
         to: [
           {
@@ -306,6 +309,7 @@ const rules: KarabinerRules[] = [
         "raycast://extensions/raycast/clipboard-history/clipboard-history"
       ),
       k: open("raycast://extensions/rolandleth/kill-process/index"),
+      f: open("raycast://extensions/raycast/raycast-focus/start-focus-session"),
       1: open(
         "raycast://extensions/VladCuciureanu/toothpick/connect-favorite-device-1"
       ),
