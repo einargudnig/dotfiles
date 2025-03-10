@@ -25,6 +25,8 @@ alias gp='git push'
 alias gs='git status'
 alias gcmsg='git commit -m'
 
+# zsh theme?
+source ~/dotfiles/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
 
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
