@@ -98,3 +98,5 @@ eval "$(atuin init zsh)"
 export PATH="/Users/einargudjonsson/.codeium/windsurf/bin:$PATH"
 
 PATH=~/.console-ninja/.bin:$PATH
+# bun completions
+[ -s "/Users/einargudjonsson/.bun/_bun" ] && source "/Users/einargudjonsson/.bun/_bun"
