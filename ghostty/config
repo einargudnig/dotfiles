@@ -1,3 +1,23 @@
+
+
+#################
+## UI / window ##
+#################
+bold-is-bright = true
+macos-titlebar-style = hidden
+macos-window-shadow = false
+mouse-hide-while-typing = true
+window-decoration = false
+window-padding-balance = true
+window-padding-x = 2
+window-padding-y = 4
+window-save-state = always
+window-theme = auto
+# maximise by default
+window-width = 9999
+window-height = 9999
+
+
 theme = catppuccin-mocha
 font-family = Geist Mono
 font-style = Regular
@@ -6,3 +26,25 @@ window-decoration = false
 macos-titlebar-style = hidden
 window-padding-x = 6
 window-padding-y = 6
+
+
+###############
+## clipboard ##
+###############
+clipboard-read = "allow"
+clipboard-trim-trailing-spaces = true
+clipboard-write = "allow"
+
+
+#################
+## keybindings ##
+#################
+# Some useful encoded characters:
+# \x0a = Enter/Return
+# \x1b = Esc
+# \x02 = <C-b> (tmux prefix)
+macos-option-as-alt = true
+
+
+# <perfix>+g (open lazygit window)
+keybind = super+g=text:\x02\x67
