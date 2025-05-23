@@ -1,4 +1,13 @@
-
+#
+#  ██████╗ ██╗  ██╗ ██████╗ ███████╗████████╗████████╗██╗   ██╗
+# ██╔════╝ ██║  ██║██╔═══██╗██╔════╝╚══██╔══╝╚══██╔══╝╚██╗ ██╔╝
+# ██║  ███╗███████║██║   ██║███████╗   ██║      ██║    ╚████╔╝
+# ██║   ██║██╔══██║██║   ██║╚════██║   ██║      ██║     ╚██╔╝
+# ╚██████╔╝██║  ██║╚██████╔╝███████║   ██║      ██║      ██║
+#  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝      ╚═╝      ╚═╝
+#
+# Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration.
+# https://ghostty.org/docs/config/reference
 
 #################
 ## UI / window ##
@@ -44,6 +53,12 @@ clipboard-write = "allow"
 # \x1b = Esc
 # \x02 = <C-b> (tmux prefix)
 macos-option-as-alt = true
+
+# <perfix>+k (open sesh picker)
+keybind = super+k=text:\x02\x4b
+
+# <perfix>+l (switch to last session)
+keybind = super+l=text:\x02\x4c
 
 
 # <perfix>+g (open lazygit window)
