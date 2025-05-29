@@ -28,6 +28,7 @@ window-height = 9999
 
 
 theme = catppuccin-mocha
+# theme = catppuccin-latte
 font-family = Geist Mono
 font-style = Regular
 font-size = 20
