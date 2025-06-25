@@ -29,8 +29,8 @@ keymap.set("n", "<C-w><right>", "<C-w>>")
 keymap.set("n", "<C-w><up>", "<C-w>+")
 keymap.set("n", "<C-w><down>", "<C-w>-")
 
--- escape insert mode with jj
-keymap.set("i", "jj", "<ESC>", { silent = true })
+-- escape insert mode with jk
+keymap.set("i", "jk", "<ESC>", { silent = true })
 
 -- oil
 vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
