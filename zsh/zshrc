@@ -36,7 +36,7 @@ source <(fzf --zsh)
 
 # eza is improved ls
 alias ls="eza --icons=always"
-alias lt="eza --tree level-2 --icons --git"
+alias lt="eza --tree --level=2 --icons=always --git"
 
 # zoxide (better cd)
 eval "$(zoxide init zsh)"

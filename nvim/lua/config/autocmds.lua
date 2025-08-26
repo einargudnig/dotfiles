@@ -13,13 +13,13 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*.tsx", "*.ts" }, -- Fixed pattern format
   callback = function()
     -- First, remove unused imports
-    vim.lsp.buf.code_action({
-      apply = true,
-      context = {
-        only = { "source.removeUnused" },
-        diagnostics = {},
-      },
-    })
+    -- vim.lsp.buf.code_action({
+    --   apply = true,
+    --   context = {
+    --     only = { "source.fixAll" },
+    --     diagnostics = {},
+    --   },
+    -- })
 
     -- Then, organize imports
     vim.lsp.buf.code_action({
