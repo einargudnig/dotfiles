@@ -57,6 +57,12 @@ play = [
   { run = '''mediainfo "$1"; echo "Press enter to exit"; read _''', block = true, desc = "Show media info", for = "unix" },
 ]
 
+# iina = [
+# {run = [
+# { cmd = "open", args = ["-a", "IINA", "@"]}
+# ] }
+# ]
+
 [open]
 rules = [
   # Folder
@@ -76,10 +82,12 @@ rules = [
     "reveal",
   ] },
   # Media
-  { mime = "{audio,video}/*", use = [
+  { mime = "{audio}/*", use = [
     "play",
     "reveal",
   ] },
+  # Video
+  { mime = "video/*", use = "iina" },
   # Archive
   { mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", use = [
     "extract",

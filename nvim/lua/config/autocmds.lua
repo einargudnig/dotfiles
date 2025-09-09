@@ -8,26 +8,25 @@
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
 -- Remove unused imports and organize imports on save
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-  group = vim.api.nvim_create_augroup("ts_imports", { clear = true }),
-  pattern = { "*.tsx", "*.ts" }, -- Fixed pattern format
-  callback = function()
-    -- First, remove unused imports
-    -- vim.lsp.buf.code_action({
-    --   apply = true,
-    --   context = {
-    --     only = { "source.fixAll" },
-    --     diagnostics = {},
-    --   },
-    -- })
-
-    -- Then, organize imports
-    vim.lsp.buf.code_action({
-      apply = true,
-      context = {
-        only = { "source.organizeImports" },
-        diagnostics = {},
-      },
-    })
-  end,
-})
+-- vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+--   group = vim.api.nvim_create_augroup("ts_imports", { clear = true }),
+--   pattern = { "*.tsx", "*.ts" }, -- Fixed pattern format
+--   callback = function()
+--     -- First, remove unused imports
+--     -- vim.lsp.buf.code_action({
+--     --   apply = true,
+--     --   context = {
+--     --     only = { "source.removeUnused" },
+--     --     diagnostics = {},
+--     --   },
+--     -- })
+--
+--     vim.lsp.buf.code_action({
+--       apply = true,
+--       context = {
+--         only = { "source.organizeImports" },
+--         diagnostics = {},
+--       },
+--     })
+--   end,
+-- })

@@ -5,16 +5,23 @@ return {
       colorscheme = "catppuccin",
     },
   },
+
+  -- Catppuccin theme
   {
     "catppuccin/nvim",
-    lazy = false,
+    lazy = false, -- load immediately
+    priority = 1000, -- ensure it runs before other UI plugins
     name = "catppuccin",
     opts = {
+      flavour = "mocha", -- or "macchiato", "frappe", "latte"
+      background = { -- optional: match light/dark backgrounds
+        light = "latte",
+        dark = "mocha",
+      },
       integrations = {
         aerial = true,
         alpha = true,
         cmp = true,
-        -- dashboard = true,
         flash = true,
         fzf = true,
         grug_far = true,
@@ -43,22 +50,48 @@ return {
         notify = true,
         semantic_tokens = true,
         snacks = true,
-        -- telescope = true,
         treesitter = true,
         treesitter_context = true,
         which_key = true,
       },
-    },
-    specs = {
-      {
-        "akinsho/bufferline.nvim",
-        optional = true,
-        opts = function(_, opts)
-          if (vim.g.colors_name or ""):find("catppuccin") then
-            opts.highlights = require("catppuccin.groups.integrations.bufferline").get()
-          end
-        end,
+      transparent_background = false, -- set true if you want transparency
+      term_colors = true, -- propagate to :terminal
+      styles = { -- optional style presets
+        comments = { "italic" },
+        conditionals = { "italic" },
+        loops = {},
+        functions = {},
+        keywords = {},
+        strings = {},
+        variables = {},
+        numbers = {},
+        booleans = {},
+        properties = {},
+        types = {},
+        operators = {},
       },
+      color_overrides = {}, -- per-flavor overrides if needed
+      custom_highlights = {}, -- global highlight overrides
     },
+  },
+
+  -- Bufferline with Catppuccin highlights
+  {
+    "akinsho/bufferline.nvim",
+    optional = true,
+    opts = function(_, opts)
+      if (vim.g.colors_name or ""):find("catppuccin") then
+        local integration = require("catppuccin.groups.integrations.bufferline")
+        opts = opts or {}
+        opts.highlights = integration.get_theme({
+          -- optional:
+          -- styles = { "italic", "bold" },
+          -- custom = {
+          --   all = { fill = { bg = "#000000" } },
+          -- }
+        })
+      end
+      return opts
+    end,
   },
 }
