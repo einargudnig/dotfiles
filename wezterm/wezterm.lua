@@ -20,7 +20,7 @@ return {
 	color_scheme = "Catppuccin Mocha",
 	default_cursor_style = "BlinkingBar",
 	enable_tab_bar = false,
-	font_size = 18.0,
+	font_size = 22.0,
 	-- font = wezterm.font("JetBrains Mono"),
 	font = wezterm.font("Geist Mono"),
 	line_height = 1.2,
@@ -41,5 +41,11 @@ return {
 			mods = "CTRL",
 			action = wezterm.action.OpenLinkAtMouseCursor,
 		},
+	},
+
+	keys = {
+		-- Send "CTRL-A" to the terminal when pressing CTRL-A, CTRL-A
+		{ key = "a", mods = "CTRL|CTRL", action = wezterm.action({ SendString = "\x01" }) },
+		{ key = "Enter", mods = "SHIFT", action = wezterm.action({ SendString = "\x1b\r" }) },
 	},
 }

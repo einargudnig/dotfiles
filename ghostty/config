@@ -27,15 +27,17 @@ window-width = 9999
 window-height = 9999
 
 
-theme = catppuccin-mocha
+theme = Catppuccin Mocha
 # theme = catppuccin-latte
 font-family = Geist Mono
 font-style = Regular
-font-size = 20
+font-size = 24
 window-decoration = false
 macos-titlebar-style = hidden
 window-padding-x = 6
 window-padding-y = 6
+# background-opacity = 0.95
+# background-blur-radius = 20
 
 
 ###############
