@@ -143,3 +143,6 @@ if [ -d "$FNM_PATH" ]; then
 fi
 export PATH=$PATH:$HOME/go/bin
 eval "$(~/.local/try.rb init)"
+
+# Shopify Hydrogen alias to local projects
+alias h2='$(npm prefix -s)/node_modules/.bin/shopify hydrogen'

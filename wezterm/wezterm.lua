@@ -20,7 +20,7 @@ return {
 	color_scheme = "Catppuccin Mocha",
 	default_cursor_style = "BlinkingBar",
 	enable_tab_bar = false,
-	font_size = 22.0,
+	font_size = 24.0,
 	-- font = wezterm.font("JetBrains Mono"),
 	font = wezterm.font("Geist Mono"),
 	line_height = 1.2,
