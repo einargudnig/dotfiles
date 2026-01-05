@@ -1,5 +1,5 @@
 theme = "Catppuccin-mocha"
-client_id = "ea9f46d4d44a431fb3ec5305a7b9dcfa"
+client_id = "64bef2ba062d495cb847d3f6dba9d9c1"
 client_port = 8080
 login_redirect_uri = "http://127.0.0.1:8989/login"
 playback_format = """
