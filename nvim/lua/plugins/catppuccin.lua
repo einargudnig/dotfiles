@@ -75,23 +75,4 @@ return {
     },
   },
 
-  -- Bufferline with Catppuccin highlights
-  {
-    "akinsho/bufferline.nvim",
-    optional = true,
-    opts = function(_, opts)
-      if (vim.g.colors_name or ""):find("catppuccin") then
-        local integration = require("catppuccin.groups.integrations.bufferline")
-        opts = opts or {}
-        opts.highlights = integration.get_theme({
-          -- optional:
-          -- styles = { "italic", "bold" },
-          -- custom = {
-          --   all = { fill = { bg = "#000000" } },
-          -- }
-        })
-      end
-      return opts
-    end,
-  },
 }

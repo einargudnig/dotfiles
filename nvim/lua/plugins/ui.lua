@@ -3,6 +3,10 @@ return {
   {
     "folke/noice.nvim",
     opts = function(_, opts)
+      -- Disable cmdline takeover (fixes crash on Neovim 0.11.5)
+      opts.cmdline = { enabled = true }
+      opts.messages = { enabled = true }
+      opts.popupmenu = { enabled = false }
       table.insert(opts.routes, {
         filter = {
           event = "notify",
@@ -91,23 +95,8 @@ return {
     end,
   },
 
-  -- buffer line
-  {
-    "akinsho/bufferline.nvim",
-    event = "VeryLazy",
-    keys = {
-      { "<Tab>", "<Cmd>BufferLineCycleNext<CR>", desc = "Next tab" },
-      { "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", desc = "Prev tab" },
-    },
-    opts = {
-      options = {
-        mode = "tabs",
-        -- separator_style = "slant",
-        show_buffer_close_icons = false,
-        show_close_icon = false,
-      },
-    },
-  },
+  -- buffer line (disabled)
+  { "akinsho/bufferline.nvim", enabled = false },
 
   -- statusline
   {
@@ -118,14 +107,15 @@ return {
           return " "
         end,
         color = function()
-          local status = require("sidekick.status").get()
+          local ok, sk = pcall(require, "sidekick.status")
+          local status = ok and sk.get() or nil
           if status then
             return status.kind == "Error" and "DiagnosticError" or status.busy and "DiagnosticWarn" or "Special"
           end
         end,
         cond = function()
-          local status = require("sidekick.status")
-          return status.get() ~= nil
+          local ok, status = pcall(require, "sidekick.status")
+          return ok and status.get() ~= nil
         end,
       })
     end,

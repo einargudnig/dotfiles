@@ -32,10 +32,6 @@ theme = Catppuccin Mocha
 font-family = Geist Mono
 font-style = Regular
 font-size = 24
-window-decoration = false
-macos-titlebar-style = hidden
-window-padding-x = 6
-window-padding-y = 6
 # background-opacity = 0.95
 # background-blur-radius = 20
 

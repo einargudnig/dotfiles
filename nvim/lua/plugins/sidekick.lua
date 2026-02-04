@@ -1,5 +1,6 @@
 return {
   "folke/sidekick.nvim",
+  enabled = false, -- TEMP: disabled for debugging
   opts = {
     -- add any options here
     cli = {
