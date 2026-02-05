@@ -32,6 +32,7 @@ alias gcmsg='git commit -m'
 alias gd='git diff'
 alias gl='git log --oneline -20'
 alias gco='git checkout'
+alias lg='Lazygit'
 
 # Claude
 alias csd='claude --dangerously-skip-permissions'
@@ -74,18 +75,6 @@ if type rg &> /dev/null; then
   export FZF_DEFAULT_OPTS='-m --height 50% --border --layout=reverse'
 fi
 
-# for sesh
-# function t() {
-#   {
-#     exec </dev/tty
-#     exec <&1
-#     local session
-#     session=$(sesh list -t -c | fzf --height 40% --reverse --border-label ' sesh ' --border --prompt '⚡  ')
-#     [[ -z "$session" ]] && return
-#     sesh connect $session
-#   }
-# }
-
 # yazi is a terminal explorer
 # use y instead of yazi to start, and pressq to quit.
 # press Q to quit without changing directory
@@ -113,8 +102,6 @@ eval "$(starship init zsh)"
 
 eval "$(atuin init zsh)"
 
-# Added by Windsurf
-export PATH="/Users/einargudjonsson/.codeium/windsurf/bin:$PATH"
 
 PATH=~/.console-ninja/.bin:$PATH
 # bun
