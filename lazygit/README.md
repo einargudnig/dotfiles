@@ -5,6 +5,7 @@ This directory contains the Lazygit configuration files managed in dotfiles.
 ## Setup
 - `config.yml` is symlinked to `~/Library/Application Support/lazygit/config.yml`
 - State file remains at system location: `~/Library/Application Support/lazygit/state.yml`
+- **Critique** installed via `bun install -g critique` (requires `~/.bun/bin` in PATH)
 
 ## Configuration Options
 
@@ -16,8 +17,9 @@ Key areas you can customize in `config.yml`:
 - `nerdFontsVersion`: Font icon support
 
 ### Git Integration  
-- `pager`: Set custom pager (delta, bat, etc.)
+- `pager`: Set custom pager (critique, delta, bat, etc.)
 - `colorArg`: Color output settings
+- Currently using **critique** for beautiful terminal diff viewing
 
 ### Keybindings
 - Customize shortcuts for all actions
