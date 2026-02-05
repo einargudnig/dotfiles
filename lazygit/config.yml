@@ -1,0 +1,17 @@
+gui:
+  # Expanded by default
+  showFileTree: true
+  showRandomTip: false
+  showCommandLog: false
+  nerdFontsVersion: "3"
+git:
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never
+keybinding:
+  universal:
+    quit: 'q'
+    togglePanel: '<tab>'
+refresher:
+  refreshInterval: 10 # seconds
+promptToReturnFromSubprocess: false

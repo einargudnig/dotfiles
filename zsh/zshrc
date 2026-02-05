@@ -33,6 +33,9 @@ alias gd='git diff'
 alias gl='git log --oneline -20'
 alias gco='git checkout'
 
+# Claude
+alias csd='claude --dangerously-skip-permissions'
+
 # Navigation
 alias ..='cd ..'
 alias ...='cd ../..'
