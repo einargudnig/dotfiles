@@ -67,7 +67,8 @@ const rules: KarabinerRules[] = [
     // o = "Open" applications
     o: {
       1: app("1Password"),
-      a: app("Arc"),
+      // a: app("Arc"),
+      a: app("Helium"),
       c: app("Notion Calendar"),
       l: app("Linear"),
       e: app("Spark Desktop"),
@@ -80,7 +81,7 @@ const rules: KarabinerRules[] = [
       i: app("Texts"),
       p: app("Spotify"),
       w: app("Wezterm"),
-      // lets tets out ghostty
+      // lets test out ghostty
       // w: app("Ghostty"),
       z: app("Zed"),
     },
@@ -103,7 +104,7 @@ const rules: KarabinerRules[] = [
       c: open("raycast://extensions/raycast/asana/create-task"),
       b: app("Bruno"),
       g: app("Google Chrome"),
-      f: app("Front"),
+      // f: app("Front"),
       v: app("Cursor"),
     },
 

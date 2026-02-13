@@ -66,16 +66,15 @@ return {
   -- filenames
   {
     "b0o/incline.nvim",
-    dependencies = { "craftzdog/solarized-osaka.nvim" },
     event = "BufReadPre",
     priority = 1200,
     config = function()
-      local colors = require("solarized-osaka.colors").setup()
+      local mocha = require("catppuccin.palettes").get_palette("mocha")
       require("incline").setup({
         highlight = {
           groups = {
-            InclineNormal = { guibg = colors.magenta500, guifg = colors.base04 },
-            InclineNormalNC = { guifg = colors.violet500, guibg = colors.base03 },
+            InclineNormal = { guibg = mocha.mauve, guifg = mocha.base },
+            InclineNormalNC = { guifg = mocha.lavender, guibg = mocha.surface0 },
           },
         },
         window = { margin = { vertical = 0, horizontal = 1 } },

@@ -7,26 +7,30 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
--- Remove unused imports and organize imports on save
--- vim.api.nvim_create_autocmd({ "BufWritePre" }, {
---   group = vim.api.nvim_create_augroup("ts_imports", { clear = true }),
---   pattern = { "*.tsx", "*.ts" }, -- Fixed pattern format
---   callback = function()
---     -- First, remove unused imports
---     -- vim.lsp.buf.code_action({
---     --   apply = true,
---     --   context = {
---     --     only = { "source.removeUnused" },
---     --     diagnostics = {},
---     --   },
---     -- })
---
---     vim.lsp.buf.code_action({
---       apply = true,
---       context = {
---         only = { "source.organizeImports" },
---         diagnostics = {},
---       },
---     })
---   end,
--- })
+-- Organize imports and remove unused imports on save (TypeScript/TSX)
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = vim.api.nvim_create_augroup("ts_imports", { clear = true }),
+  pattern = { "*.tsx", "*.ts" },
+  callback = function(ev)
+    local clients = vim.lsp.get_clients({ bufnr = ev.buf, name = "vtsls" })
+    if #clients == 0 then
+      return
+    end
+
+    vim.lsp.buf.code_action({
+      apply = true,
+      context = {
+        only = { "source.removeUnused.ts" },
+        diagnostics = {},
+      },
+    })
+
+    vim.lsp.buf.code_action({
+      apply = true,
+      context = {
+        only = { "source.organizeImports.ts" },
+        diagnostics = {},
+      },
+    })
+  end,
+})
