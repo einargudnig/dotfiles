@@ -32,6 +32,7 @@ alias gcmsg='git commit -m'
 alias gd='git diff'
 alias gl='git log --oneline -20'
 alias gco='git checkout'
+alias gpl='~/dotfiles/scripts/git-pull.sh'
 alias lg='Lazygit'
 
 # Claude
