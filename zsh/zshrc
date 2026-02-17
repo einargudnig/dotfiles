@@ -37,6 +37,7 @@ alias lg='Lazygit'
 
 # Claude
 alias csd='claude --dangerously-skip-permissions'
+alias report='~/dotfiles/scripts/daily-report.sh'
 
 # Navigation
 alias ..='cd ..'
