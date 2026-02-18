@@ -38,6 +38,7 @@ alias lg='Lazygit'
 # Claude
 alias csd='claude --dangerously-skip-permissions'
 alias report='~/dotfiles/scripts/daily-report.sh'
+alias kill-port='~/dotfiles/scripts/kill-port.sh'
 
 # Navigation
 alias ..='cd ..'
