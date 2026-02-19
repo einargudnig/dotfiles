@@ -242,6 +242,8 @@
   "workbench.colorTheme": "Catppuccin Mocha",
   "claudeCode.preferredLocation": "sidebar",
   "claudeCode.allowDangerouslySkipPermissions": true,
+  "git.blame.editorDecoration.enabled": true,
+  "gitlens.currentLine.enabled": false,
   // This is experimental!!
   // "typescript.experimental.useTsgo": true
 }
