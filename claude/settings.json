@@ -1,7 +1,7 @@
 {
   "statusLine": {
     "type": "command",
-    "command": "input=$(cat); current_dir=$(echo \"$input\" | jq -r '.workspace.current_dir'); short_dir=$(echo \"$current_dir\" | sed \"s|^$HOME|~|\"); printf \"%s\" \"$short_dir\""
+    "command": "bash /Users/einargudjonsson/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
