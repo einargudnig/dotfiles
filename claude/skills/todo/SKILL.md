@@ -8,9 +8,9 @@ argument-hint: <optional: taskwarrior filter or command>
 
 ## Overview
 
-The user's task system is built around **Taskwarrior** as the central hub, with bidirectional sync to **Things 3** (macOS) and **Asana** (cloud). A custom CLI tool (`todo-sync`) handles import, filtering, and completion push-back.
+The user's task system is built around **Taskwarrior** as the central hub, with bidirectional sync to **Things 3** (macOS) and **Asana** (cloud). A custom CLI tool (`todo-sync`) handles import, filtering, completion push-back, and stale task detection.
 
-Tasks from Things 3 are filtered through a local **Ollama LLM** so only computer/dev-related work enters Taskwarrior.
+Tasks from Things 3 are filtered through a local **Ollama LLM** so only computer/dev-related work enters Taskwarrior. Asana tasks are imported with full subtask hierarchy and comments.
 
 ## System Architecture
 
@@ -22,7 +22,7 @@ Things 3 (macOS)  ──→  Ollama filter  ──→  Taskwarrior  ←──  A
 
 - **Taskwarrior**: Source of truth for day-to-day task work
 - **Things 3**: Capture app (mobile + macOS), synced via SQLite
-- **Asana**: Team/project tasks, synced via API with PAT
+- **Asana**: Team/project tasks, synced via API with PAT (includes subtasks and comments)
 - **todo-sync CLI**: TypeScript tool at `/Users/einargudjonsson/personal/todo-system/ts/`
 
 ## Taskwarrior Quick Reference
@@ -145,7 +145,7 @@ todo-sync-ts <command>
 | `push-things` | Push completions to Things 3 only |
 | `push-asana` | Push completions to Asana only |
 | `sync` | Full bidirectional sync: pull all + push completions |
-| `install-hook` | Install Taskwarrior on-exit hook for auto-sync |
+| `install-hook` | Install Taskwarrior on-exit hook for real-time completion sync (Things 3 + Asana) |
 | `uninstall-hook` | Remove the hook |
 
 ### Global Flags
@@ -174,6 +174,22 @@ enabled = true
 model = "lfm2.5-thinking"
 base_url = "http://localhost:11434"
 ```
+
+## Key Features
+
+### Stale Task Detection
+
+During sync, todo-sync detects tasks that were deleted or completed in the source (Things 3 or Asana) but still exist as pending in Taskwarrior. These "stale" tasks are automatically completed in Taskwarrior to keep things in sync. External IDs are captured *before* Ollama filtering to avoid false positives.
+
+### Real-Time On-Exit Hook
+
+The Taskwarrior on-exit hook (`on-exit-sync`) fires whenever a task is modified. If a task is marked completed and has a `things3_uuid` or `asana_gid`, the completion is immediately pushed back to the source. The hook uses `rc.hooks=off` internally to prevent recursive triggering.
+
+The hook was renamed from the legacy `on-exit-things-sync` to `on-exit-sync` — the `install-hook` command handles this migration automatically.
+
+### Asana Subtask & Comment Syncing
+
+Asana tasks are imported with their full subtask hierarchy. Subtasks are linked to parent tasks via Taskwarrior's `depends:` field. Comments/stories from Asana are synced as Taskwarrior annotations. API calls are parallelized for performance.
 
 ## Automated Sync
 
@@ -217,8 +233,8 @@ cd /Users/einargudjonsson/personal/todo-system/ts && node dist/cli.js sync
 ### "I finished a task in Taskwarrior, sync it back"
 
 ```bash
-# If the on-exit hook is installed, Things 3 syncs automatically on `task done`
-# For Asana, or to push all completions:
+# If the on-exit hook is installed, completions auto-sync to Things 3 AND Asana on `task done`
+# To manually push all completions:
 cd /Users/einargudjonsson/personal/todo-system/ts && node dist/cli.js push
 ```
 
