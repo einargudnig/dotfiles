@@ -29,6 +29,9 @@ return {
 	window_decorations = "RESIZE",
 	window_padding = { left = "0.5cell", right = "0.5cell", top = "0.5cell", bottom = "0.5cell" },
 
+	-- images
+	enable_kitty_graphics = true,
+
 	-- misc
 	max_fps = 120,
 	prefer_egl = true,
