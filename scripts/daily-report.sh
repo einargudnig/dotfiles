@@ -14,7 +14,7 @@
 #   WORK_GIT_AUTHOR  - git author email (default: einargudnig@gmail.com)
 
 REPOS_DIR="${WORK_REPOS_DIR:-$HOME/work}"
-read -ra REPOS <<< "${WORK_REPOS:-maul-backend foodie-web kitchen-web dashboard}"
+read -ra REPOS <<<"${WORK_REPOS:-maul-backend maul-foodie-web maul-kitchen-web maul-detrack-driverscreen maul-punctuality maul-secondary-market-dashboard maul-temperature}"
 AUTHOR="${WORK_GIT_AUTHOR:-einargudnig@gmail.com}"
 DATE="${1:-today}"
 
@@ -27,42 +27,42 @@ echo ""
 commits=""
 
 for repo in "${REPOS[@]}"; do
-    repo_path="$REPOS_DIR/$repo"
-    if [ ! -d "$repo_path/.git" ]; then
-        echo "  [$repo] skipped (not found)"
-        continue
-    fi
+  repo_path="$REPOS_DIR/$repo"
+  if [ ! -d "$repo_path/.git" ]; then
+    echo "  [$repo] skipped (not found)"
+    continue
+  fi
 
-    repo_commits=$(/usr/bin/git -C "$repo_path" log \
-        --author="$AUTHOR" \
-        --since="$DATE 00:00" \
-        --until="$DATE 23:59" \
-        --format="%h %s" \
-        --stat \
-        2>/dev/null)
+  repo_commits=$(/usr/bin/git -C "$repo_path" log \
+    --author="$AUTHOR" \
+    --since="$DATE 00:00" \
+    --until="$DATE 23:59" \
+    --format="%h %s" \
+    --stat \
+    2>/dev/null)
 
-    if [ -n "$repo_commits" ]; then
-        commit_count=$(/usr/bin/git -C "$repo_path" log \
-            --author="$AUTHOR" \
-            --since="$DATE 00:00" \
-            --until="$DATE 23:59" \
-            --oneline \
-            2>/dev/null | wc -l | tr -d ' ')
-        echo "  [$repo] $commit_count commit(s) found"
-        commits+="
+  if [ -n "$repo_commits" ]; then
+    commit_count=$(/usr/bin/git -C "$repo_path" log \
+      --author="$AUTHOR" \
+      --since="$DATE 00:00" \
+      --until="$DATE 23:59" \
+      --oneline \
+      2>/dev/null | wc -l | tr -d ' ')
+    echo "  [$repo] $commit_count commit(s) found"
+    commits+="
 ## $repo
 $repo_commits
 "
-    else
-        echo "  [$repo] no commits"
-    fi
+  else
+    echo "  [$repo] no commits"
+  fi
 done
 
 echo ""
 
 if [ -z "$commits" ]; then
-    echo "No commits found for $DATE. Nothing to report."
-    exit 0
+  echo "No commits found for $DATE. Nothing to report."
+  exit 0
 fi
 
 prompt="Here are my git commits from today across our work repositories:
