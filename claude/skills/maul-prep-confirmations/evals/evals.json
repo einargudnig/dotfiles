@@ -1,0 +1,17 @@
+{
+  "skill_name": "maul-prep-confirmations",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Which restaurants have confirmed prep today?",
+      "expected_output": "A numbered list of restaurants that sent prep confirmation emails today, with a total count",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Check the maul inbox and tell me who's prepping",
+      "expected_output": "Same numbered list — should work even with casual phrasing and no mention of 'prep confirmations'",
+      "files": []
+    }
+  ]
+}

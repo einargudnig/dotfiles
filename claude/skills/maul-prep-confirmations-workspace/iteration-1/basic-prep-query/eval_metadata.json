@@ -1,0 +1,23 @@
+{
+  "eval_id": 1,
+  "eval_name": "basic-prep-query",
+  "prompt": "Which restaurants have confirmed prep today?",
+  "assertions": [
+    {
+      "name": "outputs_numbered_list",
+      "description": "Output contains a numbered list of restaurant names"
+    },
+    {
+      "name": "includes_total_count",
+      "description": "Output includes the total number of confirmed restaurants"
+    },
+    {
+      "name": "deduplicates_restaurants",
+      "description": "Each restaurant appears only once even if it sent multiple emails"
+    },
+    {
+      "name": "uses_correct_format",
+      "description": "Output follows the format specified in the skill (header with date, count, numbered list)"
+    }
+  ]
+}

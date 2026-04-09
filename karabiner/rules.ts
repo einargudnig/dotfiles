@@ -75,13 +75,8 @@ const rules: KarabinerRules[] = [
       n: app("Notion"),
       t: app("Things3"),
       m: app("Obsidian"),
-      // I want to use yazi in my terminal
-      // f: app("Finder"),
-      // "i"Message
-      i: app("Texts"),
       p: app("Spotify"),
       w: app("Wezterm"),
-      // lets test out ghostty
       // w: app("Ghostty"),
       z: app("Zed"),
     },

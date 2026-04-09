@@ -1,0 +1,19 @@
+{
+  "eval_id": 2,
+  "eval_name": "casual-phrasing",
+  "prompt": "Check the maul inbox and tell me who's prepping",
+  "assertions": [
+    {
+      "name": "outputs_numbered_list",
+      "description": "Output contains a numbered list of restaurant names"
+    },
+    {
+      "name": "includes_total_count",
+      "description": "Output includes the total number of confirmed restaurants"
+    },
+    {
+      "name": "consistent_with_eval_1",
+      "description": "Finds the same set of restaurants as the basic query (same data, different phrasing)"
+    }
+  ]
+}
