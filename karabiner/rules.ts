@@ -96,11 +96,12 @@ const rules: KarabinerRules[] = [
       d: app("Discord"),
       a: app("Asana"),
       // Create asana task
-      c: open("raycast://extensions/raycast/asana/create-task"),
+      // c: open("raycast://extensions/raycast/asana/create-task"),
       b: app("Bruno"),
       g: app("Google Chrome"),
       // f: app("Front"),
       v: app("Cursor"),
+      c: app("Claude"),
     },
 
     // "g" Gigover
