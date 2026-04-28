@@ -383,12 +383,12 @@
                                         "value": 1
                                     }
                                 ],
-                                "description": "Open -a 'Google Chrome.app'",
+                                "description": "Open -a 'Helium.app'",
                                 "from": {
                                     "key_code": "a",
                                     "modifiers": { "optional": ["any"] }
                                 },
-                                "to": [{ "shell_command": "open -a 'Google Chrome.app'" }],
+                                "to": [{ "shell_command": "open -a 'Helium.app'" }],
                                 "type": "basic"
                             },
                             {
@@ -1007,12 +1007,12 @@
                                         "value": 1
                                     }
                                 ],
-                                "description": "Open -a 'Insomnia.app'",
+                                "description": "Open -a 'Yaak.app'",
                                 "from": {
                                     "key_code": "y",
                                     "modifiers": { "optional": ["any"] }
                                 },
-                                "to": [{ "shell_command": "open -a 'Insomnia.app'" }],
+                                "to": [{ "shell_command": "open -a 'Yaak.app'" }],
                                 "type": "basic"
                             },
                             {
