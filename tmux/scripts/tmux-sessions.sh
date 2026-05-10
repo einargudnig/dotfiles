@@ -11,6 +11,13 @@ fi
 
 now=$(date +%s)
 stale_threshold=$((7 * 86400))
+pin_file="${TMUX_PRUNE_PIN_FILE:-$HOME/dotfiles/tmux/scripts/pinned-sessions.txt}"
+
+is_pinned() {
+  local name=$1
+  [[ -f "$pin_file" ]] || return 1
+  grep -vE '^\s*(#|$)' "$pin_file" | grep -qxF "$name"
+}
 
 format_age() {
   local secs=$1
@@ -24,9 +31,9 @@ format_age() {
 
 # colors (skip if not a tty)
 if [[ -t 1 ]]; then
-  bold=$'\033[1m'; dim=$'\033[2m'; red=$'\033[31m'; green=$'\033[32m'; reset=$'\033[0m'
+  bold=$'\033[1m'; dim=$'\033[2m'; red=$'\033[31m'; green=$'\033[32m'; yellow=$'\033[33m'; reset=$'\033[0m'
 else
-  bold=''; dim=''; red=''; green=''; reset=''
+  bold=''; dim=''; red=''; green=''; yellow=''; reset=''
 fi
 
 printf "${bold}%1s %-32s %5s %4s  %-14s %s${reset}\n" " " "SESSION" "AGE" "WIN" "COMMAND" "PATH"
@@ -44,8 +51,14 @@ tmux list-sessions -F '#{session_attached}	#{session_name}	#{session_windows}	#{
       cwd="${cwd/#$HOME/~}"
 
       marker=" "; row_color=""
+      pinned=false
+      is_pinned "$name" && pinned=true
+
       if [[ "$attached" -gt 0 ]]; then
         marker="${green}*${reset}"
+      elif $pinned; then
+        marker="${yellow}📌${reset}"
+        row_color="$yellow"
       elif (( age_secs > stale_threshold )); then
         row_color="$red"
       else
