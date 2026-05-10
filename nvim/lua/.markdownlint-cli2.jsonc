@@ -1,0 +1,10 @@
+// Global markdownlint config. Symlinked from ~/.markdownlint-cli2.jsonc
+// so it applies to any markdown file under ~.
+// Rule reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+{
+  "config": {
+    "default": true,
+    "MD010": false, // no-hard-tabs — I use tabs in some files, don't warn
+    "MD013": false  // line-length — tables and long lines are fine
+  }
+}

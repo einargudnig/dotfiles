@@ -225,3 +225,6 @@ elif type compctl &>/dev/null; then
   compctl -K _npm_completion npm
 fi
 ###-end-npm-completion-###
+
+# whoop-cli credentials (file lives outside dotfiles, chmod 600)
+[ -f "$HOME/.config/whoop-cli/env" ] && source "$HOME/.config/whoop-cli/env"
