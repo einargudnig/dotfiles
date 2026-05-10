@@ -63,7 +63,7 @@ selected=$(
           --delimiter='\t' \
           --with-nth=2 \
           --header 'tab/shift-tab to mark · enter to kill · esc to cancel' \
-          --preview 'tmux capture-pane -ep -t "{1}": 2>/dev/null | tail -40' \
+          --preview 'tmux capture-pane -ep -t {1}: | tail -40' \
           --preview-window 'right,55%,wrap' \
     | awk -F'\t' '{print $1}'
 )
