@@ -4,19 +4,19 @@
 
 set -euo pipefail
 
+source "$(dirname "$0")/config.sh"
+
 if ! tmux info >/dev/null 2>&1; then
   echo "no tmux server running"
   exit 0
 fi
 
 now=$(date +%s)
-stale_threshold=$((7 * 86400))
-pin_file="${TMUX_PRUNE_PIN_FILE:-$HOME/dotfiles/tmux/scripts/pinned-sessions.txt}"
 
 is_pinned() {
   local name=$1
-  [[ -f "$pin_file" ]] || return 1
-  grep -vE '^\s*(#|$)' "$pin_file" | grep -qxF "$name"
+  [[ -f "$TMUX_PRUNE_PIN_FILE" ]] || return 1
+  grep -vE '^\s*(#|$)' "$TMUX_PRUNE_PIN_FILE" | grep -qxF "$name"
 }
 
 format_age() {
@@ -59,7 +59,7 @@ tmux list-sessions -F '#{session_attached}	#{session_name}	#{session_windows}	#{
       elif $pinned; then
         marker="${yellow}📌${reset}"
         row_color="$yellow"
-      elif (( age_secs > stale_threshold )); then
+      elif (( age_secs > TMUX_PRUNE_THRESHOLD_SECS )); then
         row_color="$red"
       else
         row_color="$dim"

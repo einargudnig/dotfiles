@@ -12,6 +12,12 @@
         <string>/Users/einargudjonsson/dotfiles/tmux/scripts/tmux-prune.sh</string>
     </array>
 
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>TMUX_PRUNE_NOTIFY</key>
+        <string>1</string>
+    </dict>
+
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>

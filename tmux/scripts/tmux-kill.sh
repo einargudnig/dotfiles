@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-PIN_FILE="${TMUX_PRUNE_PIN_FILE:-$HOME/dotfiles/tmux/scripts/pinned-sessions.txt}"
+source "$(dirname "$0")/config.sh"
 
 if ! tmux info >/dev/null 2>&1; then
   echo "no tmux server running"
@@ -14,8 +14,8 @@ fi
 
 is_pinned() {
   local name=$1
-  [[ -f "$PIN_FILE" ]] || return 1
-  grep -vE '^\s*(#|$)' "$PIN_FILE" | grep -qxF "$name"
+  [[ -f "$TMUX_PRUNE_PIN_FILE" ]] || return 1
+  grep -vE '^\s*(#|$)' "$TMUX_PRUNE_PIN_FILE" | grep -qxF "$name"
 }
 
 current_session=""

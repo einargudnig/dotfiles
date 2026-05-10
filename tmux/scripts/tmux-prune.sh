@@ -11,17 +11,15 @@
 
 set -euo pipefail
 
-THRESHOLD_SECS=${TMUX_PRUNE_THRESHOLD_SECS:-$((7 * 86400))}
-PIN_FILE="${TMUX_PRUNE_PIN_FILE:-$HOME/dotfiles/tmux/scripts/pinned-sessions.txt}"
-LOG_FILE="${TMUX_PRUNE_LOG:-$HOME/.cache/tmux-prune.log}"
+source "$(dirname "$0")/config.sh"
 
 dry_run=false
 [[ "${1:-}" == "--dry-run" ]] && dry_run=true
 
-mkdir -p "$(dirname "$LOG_FILE")"
+mkdir -p "$(dirname "$TMUX_PRUNE_LOG")"
 
 log() {
-  printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" | tee -a "$LOG_FILE"
+  printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" | tee -a "$TMUX_PRUNE_LOG"
 }
 
 if ! tmux info >/dev/null 2>&1; then
@@ -29,23 +27,17 @@ if ! tmux info >/dev/null 2>&1; then
   exit 0
 fi
 
-# ---------------------------------------------------------------------------
-# is_pinned: returns 0 if the session name should be protected from pruning.
-#
-# TODO(user): implement this. Read pin entries from $PIN_FILE.
-#   - one entry per line, comments start with '#', blank lines ignored
-#   - decide: exact match? glob? regex? case-sensitive?
-#   - return 0 (success) if pinned, 1 if not
-#
-# Example exact-match implementation (~5 lines):
-#   local name=$1
-#   [[ -f "$PIN_FILE" ]] || return 1
-#   grep -vE '^\s*(#|$)' "$PIN_FILE" | grep -qxF "$name"
-# ---------------------------------------------------------------------------
 is_pinned() {
   local name=$1
-  [[ -f "$PIN_FILE" ]] || return 1
-  grep -vE '^\s*(#|$)' "$PIN_FILE" | grep -qxF "$name"
+  [[ -f "$TMUX_PRUNE_PIN_FILE" ]] || return 1
+  grep -vE '^\s*(#|$)' "$TMUX_PRUNE_PIN_FILE" | grep -qxF "$name"
+}
+
+notify() {
+  [[ -n "$TMUX_PRUNE_NOTIFY" ]] || return 0
+  command -v osascript >/dev/null 2>&1 || return 0
+  local title=$1 body=$2
+  osascript -e "display notification \"${body//\"/\\\"}\" with title \"${title//\"/\\\"}\"" >/dev/null 2>&1 || true
 }
 
 current_session=""
@@ -56,6 +48,7 @@ fi
 now=$(date +%s)
 killed=0
 skipped=0
+killed_names=()
 
 while IFS=$'\t' read -r name attached activity; do
   reason=""
@@ -67,7 +60,7 @@ while IFS=$'\t' read -r name attached activity; do
     reason="pinned"
   else
     age=$((now - activity))
-    if (( age <= THRESHOLD_SECS )); then
+    if (( age <= TMUX_PRUNE_THRESHOLD_SECS )); then
       reason="fresh ($((age / 86400))d)"
     fi
   fi
@@ -84,9 +77,15 @@ while IFS=$'\t' read -r name attached activity; do
   else
     log "kill   '$name' — idle ${age_days}d"
     tmux kill-session -t "$name"
+    killed_names+=("$name")
   fi
   killed=$((killed + 1))
 done < <(tmux list-sessions -F '#{session_name}	#{session_attached}	#{session_activity}')
 
 verb=$($dry_run && echo "would kill" || echo "killed")
 log "summary: $verb $killed, skipped $skipped"
+
+if ! $dry_run && (( ${#killed_names[@]} > 0 )); then
+  joined=$(IFS=', '; echo "${killed_names[*]}")
+  notify "tmux prune" "Killed $killed session(s): $joined"
+fi
