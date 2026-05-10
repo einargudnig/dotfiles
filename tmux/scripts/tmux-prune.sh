@@ -88,4 +88,11 @@ log "summary: $verb $killed, skipped $skipped"
 if ! $dry_run && (( ${#killed_names[@]} > 0 )); then
   joined=$(IFS=', '; echo "${killed_names[*]}")
   notify "tmux prune" "Killed $killed session(s): $joined"
+
+  # Refresh tmux-resurrect snapshot so a reboot before the next continuum
+  # auto-save doesn't resurrect the sessions we just killed.
+  resurrect_save="$HOME/.tmux/plugins/tmux-resurrect/scripts/save.sh"
+  if [[ -x "$resurrect_save" ]]; then
+    "$resurrect_save" >/dev/null 2>&1 && log "refreshed tmux-resurrect snapshot" || log "tmux-resurrect save failed (non-fatal)"
+  fi
 fi
