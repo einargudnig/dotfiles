@@ -1,0 +1,13 @@
+# Sessions pinned against auto-prune.
+# One session name per line. Lines starting with '#' are ignored.
+# Matching is whatever you implement in is_pinned() in tmux-prune.sh.
+#
+dotfiles
+tmux config
+neovim config
+zsh config
+sesh config
+maul-backend
+maul-foodie-web
+maul-kitchen-web
+einar-os
