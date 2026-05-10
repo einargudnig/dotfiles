@@ -14,11 +14,11 @@ stale_threshold=$((7 * 86400))
 
 format_age() {
   local secs=$1
-  if   (( secs < 60 ));     then echo "${secs}s"
-  elif (( secs < 3600 ));   then echo "$((secs / 60))m"
-  elif (( secs < 86400 ));  then echo "$((secs / 3600))h"
-  elif (( secs < 604800 )); then echo "$((secs / 86400))d"
-  else                           echo "$((secs / 604800))w"
+  if   (( secs < 60 ));         then echo "${secs}s"
+  elif (( secs < 3600 ));       then echo "$((secs / 60))m"
+  elif (( secs < 86400 ));      then echo "$((secs / 3600))h"
+  elif (( secs < 30 * 86400 )); then echo "$((secs / 86400))d"
+  else                               echo "$((secs / 604800))w"
   fi
 }
 
