@@ -247,6 +247,7 @@
   "claudeCode.allowDangerouslySkipPermissions": true,
   "git.blame.editorDecoration.enabled": true,
   "gitlens.currentLine.enabled": false,
+  "window.autoDetectColorScheme": false,
   // This is experimental!!
   // "typescript.experimental.useTsgo": true
 }
