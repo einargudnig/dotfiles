@@ -1,7 +1,51 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/breadcrumb-briefing.py\"",
+            "timeout": 10,
+            "statusMessage": "Recalling project breadcrumbs..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "case \"$CLAUDE_TOOL_INPUT_FILE_PATH\" in *.ts|*.tsx) cd \"$(git rev-parse --show-toplevel 2>/dev/null || echo .)\" && npx tsc --noEmit 2>&1 | head -20 ;; esac",
+            "timeout": 30,
+            "statusMessage": "Typechecking..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\-\\-force|\\-f'; then if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\bmain\\b|\\bmaster\\b'; then echo 'BLOCKED: force-push to main/master is not allowed' && exit 1; fi; fi",
+            "if": "Bash(git push *)"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
-    "command": "bash /Users/einargudjonsson/.claude/statusline-command.sh"
+    "command": "bash ~/.claude/statusline.sh"
   },
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
@@ -13,13 +57,20 @@
     "commit-commands@claude-plugins-official": true,
     "vercel@claude-plugins-official": true,
     "learning-output-style@claude-plugins-official": true,
-    "asana@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true
+    "asana@claude-plugins-official": false,
+    "code-simplifier@claude-plugins-official": true,
+    "plannotator@plannotator": true,
+    "posthog@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "plannotator": {
+      "source": {
+        "source": "github",
+        "repo": "backnotprop/plannotator"
+      }
+    }
   },
   "alwaysThinkingEnabled": true,
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "editorMode": "vim"
 }
