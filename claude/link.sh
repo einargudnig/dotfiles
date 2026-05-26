@@ -6,6 +6,7 @@
 # <name>.bak-<timestamp> before linking. Never deletes your data.
 #
 #   ~/.claude/skills                     -> dotfiles/claude/skills        (dir)
+#   ~/.claude/agents                     -> dotfiles/claude/agents        (dir)
 #   ~/.claude/settings.json              -> dotfiles/claude/settings.json (file)
 #   ~/.claude/hooks/<each>.py|.sh        -> dotfiles/claude/hooks/<each>  (files)
 #
@@ -51,6 +52,7 @@ $DRY_RUN && echo "(dry run — no changes)"
 
 # Directory + single-file links
 link_one "$SRC_DIR/skills"        "$DEST_DIR/skills"
+link_one "$SRC_DIR/agents"        "$DEST_DIR/agents"
 link_one "$SRC_DIR/settings.json" "$DEST_DIR/settings.json"
 
 # Every tracked hook becomes its own link (new hooks are picked up automatically)
