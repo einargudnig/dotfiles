@@ -119,7 +119,7 @@ Steps:
 1. Read the transcript at the path above to understand what happened.
 2. Follow the note format in ~/.claude/skills/done/SKILL.md EXACTLY (frontmatter + Summary, Topics, Key Decisions, Code Changes, Q&A, Follow-ups, Learnings, Related). Omit empty sections.
 3. Write the breadcrumb to {breadcrumbs}/ as {{date}}_{{branch-or-topic}}.md (append -2 on collision).
-4. Populate the ## Related section: search "{breadcrumbs.parent}/80 slip-box", "/40 reference", "/60 reference" for related notes and add real [[wikilinks]]. If a durable concept has no home, add a "- [ ] slip-box candidate: ..." follow-up. Never invent a link to a note that does not exist.
+4. Populate the ## Related section with ONLY real [[wikilinks]] (one per line, "- [[note name]]") — search "{breadcrumbs.parent}/80 slip-box", "/40 reference", "/60 reference" for related notes. Never invent a link to a note that does not exist. If a durable concept has no home note, do NOT put it in Related — instead add it under ## Follow-ups as "- [ ] slip-box candidate: <concept>".
 5. SECURITY: redact any secrets (sk-*, ghp_*, Bearer tokens, postgres:// URLs, JWTs) as [REDACTED].
 6. Do NOT run `kill`, do NOT delete or overwrite other notes, do NOT create notes/ or projects/ folders. Write exactly one breadcrumb file. Then stop.
 """
