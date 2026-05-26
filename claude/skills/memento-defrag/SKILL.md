@@ -27,16 +27,23 @@ Breadcrumbs folder:
    `tags`, and read the Summary + Follow-ups sections.
 
 2. **Identify archive candidates.** A breadcrumb is a candidate if ANY hold:
-   - Older than 90 days AND has no open follow-ups (`- [ ]`) remaining
+   - Older than 90 days (regardless of follow-ups — see staleness note below)
    - Orphaned: not referenced by any other note in the vault AND contains no
      outbound `[[wikilinks]]` of its own AND older than 60 days (a dead leaf)
    - Superseded: a later breadcrumb for the same project/branch covers the same
      ground and is at least 14 days newer
 
    A breadcrumb is NEVER a candidate if:
-   - It has **open follow-ups** (`- [ ]`) — those are live threads
    - It is referenced by a weekly-review or any slip-box / reference note
    - It was created in the last 30 days
+   - It has open follow-ups (`- [ ]`) **AND is younger than 60 days**
+
+   **On follow-ups:** `/done` writes `- [ ]` checkboxes that in practice are
+   almost never ticked — they are aspirations, not live threads. So open
+   follow-ups protect a breadcrumb only while it is recent (< 60 days). Past
+   that, unchecked follow-ups are treated as stale and do not block archival.
+   (Verified 2026-05-26: 113/115 breadcrumbs had open follow-ups, only 1 had
+   ever been checked. The old "always protect" rule made defrag a no-op.)
 
 3. **Show the candidate list** before moving anything:
 
@@ -66,5 +73,5 @@ Breadcrumbs folder:
 - Never delete breadcrumbs. Move to `_archive/` only.
 - Never merge breadcrumbs. Each stays as its own session record.
 - Never archive without user confirmation.
-- Never touch a breadcrumb with open follow-ups.
+- Never touch a breadcrumb with open follow-ups **that is younger than 60 days**.
 - Leave the `les/` migrated subfolder alone.
