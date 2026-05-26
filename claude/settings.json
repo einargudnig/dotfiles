@@ -24,6 +24,11 @@
             "type": "command",
             "command": "python3 \"$HOME/.claude/hooks/breadcrumb-capture.py\"",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/memory-autocommit.sh\"",
+            "timeout": 15
           }
         ]
       }
