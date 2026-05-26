@@ -11,11 +11,15 @@ injection) when there's nothing relevant.
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
-BREADCRUMBS = Path.home() / "personal/obsidian/second-brain/claude-breadcrumbs"
+VAULT = Path.home() / "personal/obsidian/second-brain"
+BREADCRUMBS = VAULT / "claude-breadcrumbs"
 MAX_NOTES = 4
+MAX_KNOWLEDGE = 3
 SUMMARY_MAX_CHARS = 280
 
 
@@ -42,6 +46,41 @@ def parse(md: str) -> dict:
     return {"project": project, "date": date, "title": title, "summary": summary}
 
 
+def knowledge_notes(project: str) -> list[tuple[str, str]]:
+    """Ask qmd for slip-box / reference notes relevant to this project.
+
+    Returns [(title, vault-relative-path)]. Empty list on any failure — this is
+    a best-effort enrichment, never a blocker. Breadcrumbs/weekly-reviews/planner
+    are excluded so this complements (not duplicates) the breadcrumb section.
+    """
+    if not shutil.which("qmd"):
+        return []
+    try:
+        # BM25 search only — fast, and needs neither embeddings nor the query
+        # expansion model (which `qmd query` would download). Safe in a hook.
+        out = subprocess.run(
+            ["qmd", "search", project, "-c", "second-brain", "-n", "12"],
+            capture_output=True, text=True, timeout=6,
+        ).stdout
+    except Exception:
+        return []
+
+    seen, results = set(), []
+    for raw in re.findall(r"[^\s'\"]+\.md", out):
+        # Normalise qmd:// URIs and absolute paths to a vault-relative path
+        rel = raw.split("second-brain/", 1)[-1].strip("/")
+        low = rel.lower()
+        if "slip-box" not in low and "reference" not in low:
+            continue  # only durable knowledge, not logs
+        if rel in seen:
+            continue
+        seen.add(rel)
+        results.append((Path(rel).stem, rel))
+        if len(results) >= MAX_KNOWLEDGE:
+            break
+    return results
+
+
 def main() -> None:
     try:
         payload = json.load(sys.stdin)
@@ -66,28 +105,40 @@ def main() -> None:
             info["file"] = f.name
             matches.append(info)
 
-    if not matches:
-        return
-    matches.sort(key=lambda x: x["date"], reverse=True)
-    top = matches[:MAX_NOTES]
+    lines: list[str] = []
 
-    lines = [
-        f"Recent session breadcrumbs for **{project}** "
-        f"({len(matches)} on file, newest {len(top)} shown). "
-        f"Read the full note in `claude-breadcrumbs/` if relevant:",
-        "",
-    ]
-    for n in top:
-        head = f"- **{n['date']} — {n['title'] or n['file']}**"
-        lines.append(head)
-        if n["summary"]:
-            lines.append(f"  {n['summary']}")
-    context = "\n".join(lines)
+    if matches:
+        matches.sort(key=lambda x: x["date"], reverse=True)
+        top = matches[:MAX_NOTES]
+        lines.append(
+            f"Recent session breadcrumbs for **{project}** "
+            f"({len(matches)} on file, newest {len(top)} shown). "
+            f"Read the full note in `claude-breadcrumbs/` if relevant:"
+        )
+        lines.append("")
+        for n in top:
+            lines.append(f"- **{n['date']} — {n['title'] or n['file']}**")
+            if n["summary"]:
+                lines.append(f"  {n['summary']}")
+
+    knowledge = knowledge_notes(project)
+    if knowledge:
+        if lines:
+            lines.append("")
+        lines.append(
+            "Possibly relevant notes from your knowledge base "
+            "(slip-box / reference). Open or ask the concierge agent to dig in:"
+        )
+        for title, rel in knowledge:
+            lines.append(f"- **{title}** — `{rel}`")
+
+    if not lines:
+        return
 
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": "SessionStart",
-            "additionalContext": context,
+            "additionalContext": "\n".join(lines),
         }
     }))
 

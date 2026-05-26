@@ -29,6 +29,11 @@
             "type": "command",
             "command": "bash \"$HOME/.claude/hooks/memory-autocommit.sh\"",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/qmd-refresh.sh\"",
+            "timeout": 15
           }
         ]
       }
