@@ -92,9 +92,39 @@ tags:
 
 ## Learnings
 - {non-obvious insight or discovery}
+
+## Related
+- [[{slip-box atom, reference note, or project page this session touched}]]
+- [[{another related note}]]
 ```
 
-### 4. Confirm & Exit
+### 4. Link Outward (Required)
+
+A breadcrumb that links to nothing is a dead leaf — it accumulates but never
+becomes part of the knowledge graph. Before saving, populate the `## Related`
+section:
+
+1. **Find homes for the session's concepts.** For the main topics/decisions,
+   search the vault for existing notes that relate:
+
+   ```bash
+   # Search slip-box atoms, reference, and project pages for matching concepts
+   rg -li "{key concept}" ~/personal/obsidian/second-brain/"80 slip-box" \
+     ~/personal/obsidian/second-brain/"40 reference" \
+     ~/personal/obsidian/second-brain/"60 reference" 2>/dev/null | head
+   ```
+
+2. **Add `[[wikilinks]]`** to every genuinely related note you find. Link by the
+   note's basename (Obsidian resolves it).
+
+3. **No match for a durable concept?** That's a signal, not a dead end. Add a
+   follow-up: `- [ ] slip-box candidate: {concept}` so it can be promoted into a
+   permanent atom later. Do **not** invent a link to a note that doesn't exist.
+
+Aim for at least one real outbound link per breadcrumb. Zero links is only
+acceptable for a genuinely self-contained session (rare).
+
+### 5. Confirm & Exit
 
 After saving, tell the user:
 - The file path
@@ -117,3 +147,4 @@ This terminates the Claude Code process. Do this AFTER printing the confirmation
 - **Use the Obsidian checkbox format** (`- [ ]`) for follow-ups so they're actionable in Obsidian.
 - **Add relevant tags** beyond the defaults if the session touched specific technologies or domains (e.g., `react`, `database`, `devops`).
 - **Omit empty sections.** If no code was changed, drop "Code Changes" entirely.
+- **Always link outward.** A breadcrumb with an empty `## Related` section is a failure mode — it's how 112 of your past breadcrumbs became orphans. Find the real connections or log a slip-box candidate.

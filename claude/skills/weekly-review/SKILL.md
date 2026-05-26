@@ -1,13 +1,13 @@
 ---
 name: weekly-review
-description: Weekly review that scans git activity across all repos, pulls recent session notes and memento entries, surfaces stalled work, and outputs a structured weekly status to Obsidian. Invoke with /weekly-review.
+description: Weekly review that scans git activity across all repos, pulls recent session breadcrumbs, surfaces stalled work, and outputs a structured weekly status to Obsidian. Invoke with /weekly-review.
 ---
 
 # Weekly Review — Cross-Project Status Synthesis
 
 ## Overview
 
-Synthesizes a weekly status report by scanning git activity across all projects, pulling recent session breadcrumbs and memento notes, and surfacing stalled or forgotten work. Outputs a structured markdown note to Obsidian.
+Synthesizes a weekly status report by scanning git activity across all projects, pulling recent session breadcrumbs, and surfacing stalled or forgotten work. Outputs a structured markdown note to Obsidian.
 
 ## Procedure
 
@@ -96,16 +96,14 @@ find ~/personal/obsidian/second-brain/claude-breadcrumbs/ -name "*.md" -newer "$
 
 For each breadcrumb file found within the date range, read the **Summary** and **Follow-ups** sections. Collect all open follow-ups (`- [ ]`) across sessions.
 
-### 5. Pull Recent Memento Notes
+### 5. Extract Decisions & Discoveries from Breadcrumbs
 
-Check the memento vault for notes created this week:
+The breadcrumbs pulled in step 4 already contain Key Decisions and Learnings.
+Re-read those sections across the week's breadcrumbs and collect the notable
+decisions and discoveries — no separate vault to query.
 
-```bash
-# Notes created in the last 7 days
-find ~/memento/notes/ -name "*.md" -newer "$(date -v-7d +%Y-%m-%d)" -type f 2>/dev/null | sort
-```
-
-Read each note's title and frontmatter. Group by type (decision, discovery, pattern, bugfix, tool).
+(The standalone `~/memento` vault was retired 2026-05-26; capture is unified in
+`claude-breadcrumbs/`.)
 
 ### 6. Synthesize the Report
 
@@ -163,7 +161,7 @@ tags:
 - [ ] {follow-up from session Y}
 
 ## Decisions & Discoveries
-{From memento notes this week}
+{From this week's breadcrumbs — Key Decisions and Learnings sections}
 
 - **{note title}**: {one-line summary}
 

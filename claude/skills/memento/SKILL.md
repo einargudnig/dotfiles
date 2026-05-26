@@ -1,98 +1,67 @@
 ---
 name: memento
-description: Capture the current session to the memento vault. Use when you want to record decisions, discoveries, or patterns from this session. Also use when the user says "remember this" or "save this to memento".
+description: Capture the current session as a breadcrumb in the second-brain vault. Use when you want to record decisions, discoveries, or patterns mid-session. Also use when the user says "remember this" or "save this".
 ---
 
 # Memento — manual session capture
 
-Capture the current session as atomic Zettelkasten notes in the memento vault.
+Capture the current session as a breadcrumb note in the second-brain vault.
+This is the *mid-session* sibling of `/done`: same note format, but it does
+**not** end the session — you keep working afterward.
 
-The vault location is configured in `memento.yml` (default: `~/memento`). Check `~/.config/memento-vault/memento.yml` or `~/memento/memento.yml` for the active config. If neither exists, use `~/memento`.
+Vault: `/Users/einargudjonsson/personal/obsidian/second-brain/claude-breadcrumbs/`
+
+> Consolidated 2026-05-26. The old standalone `~/memento` vault (atomic
+> Zettelkasten notes, certainty scores, QMD recall) is retired. Capture is now
+> one flat breadcrumb per session, in the vault you actually open in Obsidian.
 
 ## When to use
 
 - User invokes `/memento`
 - User says "remember this", "save this", or similar
-- A session contains noteworthy decisions or discoveries worth preserving
+- A milestone is reached mid-session and you want it recorded before continuing
 
 ## Arguments
 
-- `/memento` — capture the full current session
-- `/memento "context"` — capture with the user's framing of what matters
+- `/memento` — capture the session so far
+- `/memento "context"` — capture with the user's framing of what matters most
 
 ## Process
 
-1. **Scan the current session** for distinct ideas: decisions made, things discovered, patterns identified, bugs fixed, tools built or configured.
-
-2. **Search existing notes** in the vault's `notes/` directory for related topics. Use Glob and Grep to check what's already there. Do not create duplicates — if a note already covers the same idea, update the Related section with a link instead.
-
-3. **Create atomic notes** in the vault's `notes/` directory. One idea per file. Each note must have:
-
-   ```yaml
-   ---
-   title: Short descriptive title
-   type: decision | discovery | pattern | bugfix | tool
-   tags: [relevant, tags, here]
-   source: manual
-   certainty: 1-5
-   validity-context: what makes this true or false
-   supersedes: "[[note-name]]" or omit
-   project: /full/path/to/working/directory
-   branch: branch-name-if-applicable
-   date: YYYY-MM-DDTHH:MM
-   session_id: current-session-id
-   ---
-   ```
-
-   **Certainty scale:** 1 = speculative (untested idea), 2 = observed once (single session), 3 = confirmed in code (read it, verified), 4 = tested/shipped (PR merged), 5 = established pattern (seen across multiple tickets).
-
-   **validity-context:** a short phrase describing what this note depends on. Examples: "while on feature branch X", "requires lib >= 2.0", "only in local dev". Omit if the note is unconditionally true.
-
-   **supersedes:** if this note replaces an older one, link it. The older note stays in the vault but search should prefer the newer one.
-
-   Body: the insight in 2-5 sentences. Context for why it matters. A `## Related` section at the bottom with `[[wikilinks]]` to related existing notes.
-
-   File naming: slugified concept title. `redis-cache-requires-explicit-ttl.md`, not `2026-03-05-session.md`.
-
-4. **Update the project index** in the vault's `projects/` directory. Detect the project from the working directory and branch. Add `[[note-name]]` links under `## Notes` and a session line under `## Sessions`. Create the project index if it doesn't exist, using this template:
-
-   ```yaml
-   ---
-   title: Project Name
-   project: /full/path/to/working/directory
-   branch: branch-name
-   ---
-   ```
-
-   ```markdown
-   ## Notes
-
-   ## Sessions
-   ```
-
-5. **Run post-capture extensions.** Check if `~/.claude/skills/memento-post/SKILL.md` exists. If it does, read it and follow its instructions. This is the extension point for project-specific workflows (e.g., promoting notes to a team vault, tagging with domain-specific labels, notifying external systems). Skip this step if the file doesn't exist.
-
-6. **Commit to vault repo.** After all writes are done, run:
+1. **Gather context** (run in parallel):
 
    ```bash
-   ~/.claude/hooks/vault-commit.sh "memento: [short description of what was captured]"
+   git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "no-branch"
+   date +%Y-%m-%d
+   basename "$(pwd)"
    ```
 
-7. **Trigger Inception check.** Manual captures bypass SessionEnd triage, so Inception's threshold check doesn't fire automatically. Run it explicitly:
+2. **Check for an existing breadcrumb from this session today.** Glob
+   `claude-breadcrumbs/{date}_*.md`. If one already covers this session
+   (same branch/topic), **update it in place** rather than creating a second
+   file — append new decisions/learnings and refresh the Summary.
 
-   ```bash
-   python3 ~/.claude/hooks/memento-inception.py --verbose 2>&1 | tail -5
-   ```
+3. **Analyze the conversation** and extract: Summary (2-3 sentences), Topics,
+   Key Decisions (with rationale — *why*, not just *what*), Code Changes,
+   Questions & Answers, Follow-ups, Learnings.
 
-   This is a no-op if Inception is disabled, if there aren't enough new notes, or if another instance is already running. It runs in the foreground but returns quickly (~20ms) if the threshold isn't met.
+4. **Write the breadcrumb** to `claude-breadcrumbs/{date}_{branch-or-topic}.md`
+   (append a counter on collision: `_main-2.md`). Use the shared template in
+   `~/.claude/skills/done/SKILL.md` — keep `/memento` and `/done` byte-identical
+   in format so breadcrumbs are uniform.
 
-8. **Confirm to the user** what was captured: list the notes created and links added. Include any output from post-capture extensions.
+5. **Link outward** (see Rules). A breadcrumb that links nothing is a dead leaf.
+
+6. **Confirm to the user**: the file path, a one-line summary, and the count of
+   open follow-ups. Do **not** kill the session — `/memento` is mid-session.
 
 ## Rules
 
-- Never delete or overwrite existing notes
-- Never modify notes not created in this invocation
-- Never write to `fleeting/`
-- One idea per note — if you find yourself writing more than a paragraph, split it
-- If the user provided context via `/memento "..."`, use their framing as the primary lens
-- Use controlled tags — prefer reusing tags from existing notes over inventing new ones
+- **One breadcrumb per session**, not per idea. Update, don't fragment.
+- **Link outward.** Add `[[wikilinks]]` to the slip-box atoms, reference notes,
+  or project pages this session actually touched. If a durable concept emerged
+  that has no home yet, note it under Follow-ups as a slip-box candidate.
+- **Preserve decisions with rationale.** "Chose X" is useless without "because Y."
+- **Be comprehensive, not verbose.** Substance over filler; omit empty sections.
+- If the user provided context via `/memento "..."`, use their framing as the lens.
+- Never delete or overwrite breadcrumbs from other sessions.
