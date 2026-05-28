@@ -23,15 +23,20 @@ Breadcrumbs folder:
 ## Process
 
 1. **List breadcrumbs.** Glob `claude-breadcrumbs/*.md` (skip `_archive/` and
-   the `les/` migrated subfolder). Parse frontmatter for `date`, `project`,
-   `tags`, and read the Summary + Follow-ups sections.
+   the `les/` migrated subfolder). Parse frontmatter — prefer the current
+   `template1` keys (`Type`, `Area` → project from `#area/{name}`, `Keywords`,
+   `Status`, `Date Created`), fall back to the legacy lowercase keys (`date`,
+   `project`, `tags`) for breadcrumbs not yet migrated. Read the Summary +
+   Follow-ups sections.
 
 2. **Identify archive candidates.** A breadcrumb is a candidate if ANY hold:
    - Older than 90 days (regardless of follow-ups — see staleness note below)
    - Orphaned: not referenced by any other note in the vault AND contains no
      outbound `[[wikilinks]]` of its own AND older than 60 days (a dead leaf)
-   - Superseded: a later breadcrumb for the same project/branch covers the same
-     ground and is at least 14 days newer
+   - Superseded: a later breadcrumb for the same project covers the same
+     ground and is at least 14 days newer (branch is no longer in frontmatter
+     under template1, and was always a noisy signal — project-level matching is
+     enough)
 
    A breadcrumb is NEVER a candidate if:
    - It is referenced by a weekly-review or any slip-box / reference note
@@ -60,7 +65,10 @@ Breadcrumbs folder:
    Wait for confirmation. The user can exclude specific files.
 
 4. **Move confirmed candidates** to `claude-breadcrumbs/_archive/`. Create the
-   directory if needed.
+   directory if needed. For each moved breadcrumb that uses the `template1`
+   shape, flip its frontmatter `Status: #status/active` → `Status:
+   #status/archived` (legacy-shape breadcrumbs have no Status field — leave
+   them as-is; the `_archive/` location is the signal).
 
 5. **Fix inbound links.** In any active note that links to an archived
    breadcrumb, keep the link but add an `(archived)` suffix.

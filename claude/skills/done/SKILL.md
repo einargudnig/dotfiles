@@ -55,19 +55,20 @@ Examples:
 
 If a file with the same name exists, append a counter: `2026-02-17_main-2.md`
 
-**Note template**:
+**Note template** (uses the vault-wide `template1` shape — every vault write goes through it, breadcrumbs included):
 
 ```markdown
 ---
-date: {YYYY-MM-DD}
-project: {project-name or "general"}
-branch: {branch-name or "none"}
-tags:
-  - claude-session
-  - {project-name}
+Type: #type/breadcrumb
+Area: #area/{project-name or "general"}
+Keywords: #keyword/{topic1} #keyword/{topic2}
+Status: #status/active
+Date Created: {YYYY-MM-DD}
 ---
 
 # {Descriptive Session Title}
+
+**Branch:** `{branch-name or "none"}` · **Project:** `{project-name or "general"}`
 
 ## Summary
 {2-3 sentence overview of what was accomplished this session}
@@ -97,6 +98,14 @@ tags:
 - [[{slip-box atom, reference note, or project page this session touched}]]
 - [[{another related note}]]
 ```
+
+**Frontmatter mapping rules:**
+- `Type` is **always** `#type/breadcrumb` — this is the field briefing/defrag use to recognise a breadcrumb.
+- `Area` carries the project: `#area/{project-name}` (e.g. `#area/maul-backend`), or `#area/general` when there is no project.
+- `Keywords` carries topical tags — technologies, domains, libraries the session touched (e.g. `#keyword/zod #keyword/retool`). If none apply, leave a single bare `#keyword/` placeholder.
+- `Status` starts at `#status/active`. `/memento-defrag` flips it to `#status/archived` on move; do not pre-archive.
+- `Date Created` is the session date in ISO form (`YYYY-MM-DD`), same as the filename prefix.
+- Branch lives in the **body** (under the H1) because `template1` has no frontmatter slot for it. Briefings don't need branch; defrag matches on project only.
 
 ### 4. Link Outward (Required)
 

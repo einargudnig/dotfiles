@@ -28,15 +28,29 @@ def project_from_cwd(cwd: str) -> str:
 
 
 def parse(md: str) -> dict:
-    """Pull project, date, title, and the Summary section out of a breadcrumb."""
+    """Pull project, date, title, and the Summary section out of a breadcrumb.
+
+    Reads both the current `template1` shape (`Area: #area/{project}`,
+    `Date Created: ...`) and the legacy lowercase shape (`project:`, `date:`).
+    template1 keys win when both are present.
+    """
     project, date = "", ""
+    legacy_project, legacy_date = "", ""
     fm = re.match(r"^---\n(.*?)\n---\n", md, re.DOTALL)
     if fm:
         for line in fm.group(1).splitlines():
-            if line.startswith("project:"):
-                project = line.split(":", 1)[1].strip().strip("\"'")
-            elif line.startswith("date:"):
+            if line.startswith("Area:"):
+                # `Area: #area/maul-backend` → `maul-backend`
+                val = line.split(":", 1)[1].strip().strip("\"'")
+                project = val.removeprefix("#area/").strip() or project
+            elif line.startswith("Date Created:"):
                 date = line.split(":", 1)[1].strip().strip("\"'")[:10]
+            elif line.startswith("project:"):
+                legacy_project = line.split(":", 1)[1].strip().strip("\"'")
+            elif line.startswith("date:"):
+                legacy_date = line.split(":", 1)[1].strip().strip("\"'")[:10]
+    project = project or legacy_project
+    date = date or legacy_date
     title_m = re.search(r"^#\s+(.+)$", md, re.MULTILINE)
     title = title_m.group(1).strip() if title_m else ""
     sum_m = re.search(r"^##\s+Summary\s*\n(.+?)(?:\n##\s|\Z)", md, re.DOTALL | re.MULTILINE)
