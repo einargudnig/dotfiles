@@ -28,9 +28,8 @@ Everything lives in `~/dotfiles/claude/` and is symlinked into `~/.claude/` by
 | manual `/memento-defrag` | `skills/memento-defrag` | Archives stale breadcrumbs to `claude-breadcrumbs/_archive/`. |
 | on demand | `agents/concierge.md` | Searches the whole vault via qmd to answer knowledge questions. The CLAUDE.md global rule tells the main agent to consult it. |
 
-Inert but tracked (not wired into settings): `hooks/vault-commit.sh`. Leftover
-from the retired `~/memento` vault — it doesn't fire. (`memento-triage.py` and
-`memento-sweeper.py` were deleted 2026-05-28.)
+All leftover hooks from the retired `~/memento` vault (`memento-triage.py`,
+`memento-sweeper.py`, `vault-commit.sh`) were deleted 2026-05-28.
 
 ## Where things are
 
