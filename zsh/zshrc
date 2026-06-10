@@ -3,7 +3,13 @@
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
 # zsh completions
-autoload -Uz compinit && compinit
+# compinit security audit only runs once per 24h (compaudit costs ~15ms per shell)
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 
@@ -37,6 +43,7 @@ alias lg='Lazygit'
 
 # Claude
 alias csd='claude --dangerously-skip-permissions'
+alias cl='tmux-claude-picker'
 alias report='~/dotfiles/scripts/daily-report.sh'
 alias kill-port='~/dotfiles/scripts/kill-port.sh'
 
@@ -112,10 +119,6 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 [ -s "/Users/einargudjonsson/.bun/_bun" ] && source "/Users/einargudjonsson/.bun/_bun"
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/einargudjonsson/.lmstudio/bin"
-# End of LM Studio CLI section
-
 
 # pnpm
 export PNPM_HOME="/Users/einargudjonsson/Library/pnpm"
@@ -147,15 +150,48 @@ eval "$(fnm env --use-on-cd --shell zsh)"
 
 # fnm (Node version manager) - initialized on line 132
 export PATH=$PATH:$HOME/go/bin
-eval "$(~/.local/try.rb init)"
+# try.rb shell integration (inlined -- `try.rb init` spawns ruby, ~100ms per shell)
+# This is the verbatim output of `~/.local/try.rb init`; re-run that if try.rb's init changes.
+try() {
+  script_path="$HOME/.local/try.rb"
+  cmd=$(/usr/bin/env ruby "$script_path" cd --path "$HOME/src/tries" "$@" 2>/dev/tty)
+  rc=$?
+  if [ $rc -eq 0 ]; then
+    case "$cmd" in
+      *" && "*) eval "$cmd" ;;
+      *) printf %s "$cmd" ;;
+    esac
+  else
+    printf %s "$cmd"
+  fi
+}
 
-# Shopify Hydrogen alias to local projects
-alias h2='$(npm prefix -s)/node_modules/.bin/shopify hydrogen'
 
-# OpenClaw Completion
-source <(openclaw completion --shell zsh)
+# Hermes Agent completion (cached - hermes completion costs ~240ms)
+# Refresh: rm ~/.cache/hermes-completion.zsh && open a new shell
+_hermes_cache="$HOME/.cache/hermes-completion.zsh"
+if [[ ! -s "$_hermes_cache" ]] || [[ -n "$(find "$_hermes_cache" -mtime +14 2>/dev/null)" ]]; then
+  mkdir -p "$HOME/.cache"
+  command -v hermes >/dev/null 2>&1 && hermes completion zsh > "$_hermes_cache" 2>/dev/null
+fi
+[[ -s "$_hermes_cache" ]] && source "$_hermes_cache"
+unset _hermes_cache
 
-if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+# Hermes Agent aliases
+alias h='hermes chat'
+alias hs='hermes status'
+
+# worktrunk shell integration (cached -- `wt config shell init` costs ~20ms)
+# Refresh: rm ~/.cache/wt-init.zsh && open a new shell
+_wt_cache="$HOME/.cache/wt-init.zsh"
+if command -v wt >/dev/null 2>&1; then
+  if [[ ! -s "$_wt_cache" ]] || [[ -n "$(find "$_wt_cache" -mtime +14 2>/dev/null)" ]]; then
+    mkdir -p "$HOME/.cache"
+    command wt config shell init zsh > "$_wt_cache" 2>/dev/null
+  fi
+  [[ -s "$_wt_cache" ]] && source "$_wt_cache"
+fi
+unset _wt_cache
 ###-begin-npm-completion-###
 #
 # npm command completion script

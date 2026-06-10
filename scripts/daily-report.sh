@@ -14,7 +14,7 @@
 #   WORK_GIT_AUTHOR  - git author email (default: einargudnig@gmail.com)
 
 REPOS_DIR="${WORK_REPOS_DIR:-$HOME/work}"
-read -ra REPOS <<<"${WORK_REPOS:-maul-backend maul-foodie-web maul-kitchen-web maul-detrack-driverscreen maul-punctuality maul-secondary-market-dashboard maul-temperature}"
+read -ra REPOS <<<"${WORK_REPOS:-maul-backend maul-foodie-web maul-kitchen-web maul-detrack-driverscreen maul-punctuality maul-secondary-market-dashboard maul-temperature maul-admin maul-agents}"
 AUTHOR="${WORK_GIT_AUTHOR:-einargudnig@gmail.com}"
 DATE="${1:-today}"
 

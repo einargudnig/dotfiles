@@ -3,48 +3,16 @@
     "commit": "",
     "pr": ""
   },
+  "model": "claude-fable-5[1m]",
   "hooks": {
-    "UserPromptSubmit": [
+    "PermissionRequest": [
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$HOME/.claude/hooks/qmd-recall.py\"",
+            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' blocked",
             "timeout": 10
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "startup|resume|clear",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"$HOME/.claude/hooks/breadcrumb-briefing.py\"",
-            "timeout": 10,
-            "statusMessage": "Recalling project breadcrumbs..."
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"$HOME/.claude/hooks/breadcrumb-capture.py\"",
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.claude/hooks/memory-autocommit.sh\"",
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.claude/hooks/qmd-refresh.sh\"",
-            "timeout": 15
           }
         ]
       }
@@ -72,6 +40,103 @@
             "if": "Bash(git push *)"
           }
         ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' working",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/breadcrumb-capture.py\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/memory-autocommit.sh\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/qmd-refresh.sh\"",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' release",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/breadcrumb-briefing.py\"",
+            "timeout": 10,
+            "statusMessage": "Recalling project breadcrumbs..."
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' idle",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' idle",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/qmd-recall.py\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' working",
+            "timeout": 10
+          }
+        ]
       }
     ]
   },
@@ -80,25 +145,32 @@
     "command": "bash ~/.claude/statusline.sh"
   },
   "enabledPlugins": {
-    "typescript-lsp@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": false,
-    "playwright@claude-plugins-official": true,
-    "commit-commands@claude-plugins-official": true,
-    "vercel@claude-plugins-official": true,
-    "learning-output-style@claude-plugins-official": true,
     "asana@claude-plugins-official": false,
+    "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "learning-output-style@claude-plugins-official": true,
     "plannotator@plannotator": true,
-    "posthog@claude-plugins-official": true
+    "playwright@claude-plugins-official": true,
+    "posthog@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": false,
+    "typescript-lsp@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true,
+    "last30days@last30days-skill": true
   },
   "extraKnownMarketplaces": {
     "plannotator": {
       "source": {
         "source": "github",
         "repo": "backnotprop/plannotator"
+      }
+    },
+    "last30days-skill": {
+      "source": {
+        "source": "github",
+        "repo": "mvanhorn/last30days-skill"
       }
     }
   },

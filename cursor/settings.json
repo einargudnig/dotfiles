@@ -48,8 +48,11 @@
   "prettier.printWidth": 100,
   "editor.formatOnType": true,
   "editor.formatOnPaste": true,
+  // "editor.formatOnSave": true,
+  // "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.organizeImports": "always",
     "source.sortImports": "always",
@@ -248,6 +251,19 @@
   "git.blame.editorDecoration.enabled": true,
   "gitlens.currentLine.enabled": false,
   "window.autoDetectColorScheme": false,
+  "amp.workspaces": [
+    {
+      "path": "/Users/einargudjonsson/work/maul-foodie-web",
+      "allowAllMcpServers": true,
+    },
+  ],
+  "amp.mcpTrustedServers": [
+    {
+      "serverName": "css-studio",
+      "specHash": "2c82eaca50af4c3125007c7664bb84283faa7c9f17350b2ae943ee4b4ecc2b06",
+      "allow": true,
+    },
+  ],
   // This is experimental!!
   // "typescript.experimental.useTsgo": true
 }
