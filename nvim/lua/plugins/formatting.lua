@@ -27,4 +27,18 @@ return {
     "mason-org/mason.nvim",
     opts = { ensure_installed = { "prettierd" } },
   },
+  -- The `formatting.prettier` extra also registers prettier as a none-ls
+  -- source at priority 200, which outranks conform (100) and shadows ALL of
+  -- conform's mappings above (oxfmt, prettierd). Drop the none-ls prettier
+  -- source so conform owns JS/TS/JSON/Vue/markdown/etc; none-ls keeps stylua,
+  -- shfmt, fish, hadolint. Prettier-only filetypes (css/yaml/html/graphql)
+  -- still format via conform's prettier mapping from the same extra.
+  {
+    "nvimtools/none-ls.nvim",
+    opts = function(_, opts)
+      opts.sources = vim.tbl_filter(function(source)
+        return source.name ~= "prettier"
+      end, opts.sources or {})
+    end,
+  },
 }
