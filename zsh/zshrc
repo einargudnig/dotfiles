@@ -264,3 +264,5 @@ fi
 
 # whoop-cli credentials (file lives outside dotfiles, chmod 600)
 [ -f "$HOME/.config/whoop-cli/env" ] && source "$HOME/.config/whoop-cli/env"
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"

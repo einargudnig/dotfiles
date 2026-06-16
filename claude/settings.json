@@ -3,7 +3,7 @@
     "commit": "",
     "pr": ""
   },
-  "model": "claude-fable-5[1m]",
+  "model": "opus[1m]",
   "hooks": {
     "PermissionRequest": [
       {
@@ -48,6 +48,17 @@
             "type": "command",
             "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' working",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting"
           }
         ]
       }
@@ -118,7 +129,27 @@
         ]
       }
     ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/plugins/tmux-claude-session-manager/scripts/state.sh idle"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/plugins/tmux-claude-session-manager/scripts/state.sh working"
+          }
+        ]
+      },
       {
         "hooks": [
           {
@@ -135,6 +166,17 @@
             "type": "command",
             "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' working",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting"
           }
         ]
       }
@@ -158,7 +200,8 @@
     "superpowers@claude-plugins-official": false,
     "typescript-lsp@claude-plugins-official": true,
     "vercel@claude-plugins-official": true,
-    "last30days@last30days-skill": true
+    "last30days@last30days-skill": true,
+    "swift-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "plannotator": {
