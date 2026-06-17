@@ -140,14 +140,6 @@ After saving, tell the user:
 - A one-line summary of what was captured
 - Count of follow-up items (so they know there are open threads)
 
-Then immediately run:
-
-```bash
-kill $PPID
-```
-
-This terminates the Claude Code process. Do this AFTER printing the confirmation — it is the final action.
-
 ## Rules
 
 - **Be comprehensive, not verbose.** Capture substance, skip filler.
