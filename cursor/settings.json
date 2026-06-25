@@ -264,6 +264,7 @@
       "allow": true,
     },
   ],
+  "vim.disableExtension": true,
   // This is experimental!!
   // "typescript.experimental.useTsgo": true
 }

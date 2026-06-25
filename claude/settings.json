@@ -197,7 +197,8 @@
     "typescript-lsp@claude-plugins-official": true,
     "vercel@claude-plugins-official": true,
     "last30days@last30days-skill": true,
-    "swift-lsp@claude-plugins-official": true
+    "swift-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "plannotator": {
