@@ -137,7 +137,7 @@ const daily: Period = {
   },
   anchor: parseIso,
   enrich: (content) =>
-    MARK ? content.replace(/^type:\s*$/m, "type: backfill") : content,
+    MARK ? content.replace(/^tags:/m, "type: backfill\ntags:") : content,
 };
 
 const weekly: Period = {
@@ -153,10 +153,14 @@ const weekly: Period = {
   anchor: mondayOfWeekKey,
   enrich: (content, key) => {
     const monday = mondayOfWeekKey(key);
-    return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].reduce(
+    const linked = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].reduce(
       (out, day, i) =>
         out.replace(new RegExp(`^## ${day}$`, "m"), `## ${day}\n\n[[${iso(addDays(monday, i))}]]`),
       content,
+    );
+    return linked.replace(
+      /^## Weekend$/m,
+      `## Weekend\n\n[[${iso(addDays(monday, 5))}]] · [[${iso(addDays(monday, 6))}]]`,
     );
   },
 };
