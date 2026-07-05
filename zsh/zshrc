@@ -266,3 +266,6 @@ fi
 [ -f "$HOME/.config/whoop-cli/env" ] && source "$HOME/.config/whoop-cli/env"
 
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+# life-os terminal client (bun run life today|sources|query|ask)
+alias life='bun run --cwd ~/personal/life-os life'
