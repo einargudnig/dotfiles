@@ -269,3 +269,7 @@ fi
 
 # life-os terminal client (bun run life today|sources|query|ask)
 alias life='bun run --cwd ~/personal/life-os life'
+
+# scaffold a new project with the TS7 + oxc toolchain
+# newproj <name> [--preset bun-lib|hono|vite-react] [--no-git] [--no-install]
+alias newproj='bun ~/dotfiles/scripts/newproj.ts'
