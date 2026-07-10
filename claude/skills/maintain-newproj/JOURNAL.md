@@ -16,6 +16,24 @@ lessons also graduate into `references/conventions.md`.
 
 ---
 
+## 2026-07-10 — maintenance run 1 (+ vitest)
+
+**Versions (pinned → set):** oxfmt ^0.20.0 → ^0.58.0 · vite ^6 → ^8 ·
+@vitejs/plugin-react ^4 → ^6. typescript/next/react/hono/oxlint already current.
+**Deliberate non-bump:** @types/node stayed ^24 (latest is 26) — it tracks the
+runtime Node version (24), not npm "latest". Promoted to conventions.md.
+**Added:** vitest to the two non-Bun presets (vite-react, next) —
+vitest ^4 + jsdom ^29 + @testing-library/react ^16 (+ /dom ^10), a sample
+component test, `test` script, and vitest folded into `check`.
+**Issues found + fixes:** none — vite 6→8 (two majors) built clean with the
+minimal config; no regressions. next+vitest needed @vitejs/plugin-react to
+transform JSX (Next has no Vite) — added to next devDeps + a `vitest.config.ts`.
+**New gotchas:** (1) next+vitest requires @vitejs/plugin-react for the JSX
+transform; (2) @types/node tracks runtime, not latest. Both → conventions.md.
+**Verified:** all 4 presets check green; vite build (8.1.4) ✓; next build ✓;
+vitest ran 1 test in each of vite-react + next, passed. tsc: bun/vite 7.0.2,
+next 5.9.3 + tsgo 7.0.0-dev.
+
 ## 2026-07-10 — baseline (skill created)
 
 **State at creation.** Scaffolder pins:

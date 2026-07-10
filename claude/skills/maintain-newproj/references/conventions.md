@@ -37,11 +37,15 @@ until it declares TS7 support — re-check each maintenance run.
 - **vite-react** — Vite + React 19 + `typescript@7`. Needs `@types/node` and
   `types:["vite/client","node"]` (vite.config.ts uses `node:path`/`import.meta.dirname`).
   oxlint `react` plugin, `react/react-in-jsx-scope` off, `import/no-unassigned-import`
-  off (CSS side-effect imports). check = oxlint + tsc; `build` = tsc + vite build.
+  off (CSS side-effect imports). **Tests: vitest** (jsdom + @testing-library/react),
+  config in vite.config.ts via `defineConfig` from `vitest/config`. check = oxlint +
+  tsc + vitest; `build` = tsc + vite build.
 - **next** — Next 16 + React 19. `typescript@5` (build) + `@typescript/native-preview`
   (tsgo typecheck). oxlint `react` + `nextjs` plugins. Ships `types/css.d.ts` and a
   static `next-env.d.ts` (so a first `check` before `next dev` has Next's ambient
-  types). check = oxlint + tsgo. `next build` uses typescript@5.
+  types). **Tests: vitest** with a separate `vitest.config.ts` that applies
+  `@vitejs/plugin-react` (Next has no Vite, so vitest needs the plugin to transform
+  JSX). check = oxlint + tsgo + vitest. `next build` uses typescript@5.
 
 ## Durable gotchas (grow this list)
 
@@ -59,3 +63,8 @@ until it declares TS7 support — re-check each maintenance run.
 6. **fnm + global tsgo:** a global tsgo installed under one Node version isn't on
    PATH after `fnm use <other>`. Not the scaffolder's concern (projects install
    locally), but relevant if verifying with a global binary.
+7. **`@types/node` tracks the runtime Node version, not npm "latest".** Pin it to
+   the Node major actually in use (^24 for Node 24), not whatever `npm view` returns.
+8. **next + vitest needs `@vitejs/plugin-react`.** Next has no Vite, so vitest can't
+   transform JSX without the plugin; add it to devDeps + a standalone `vitest.config.ts`
+   (`defineConfig` from `vitest/config`). The `test`/`check` still use `tsgo` for types.
