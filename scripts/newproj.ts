@@ -2,7 +2,7 @@
 // Scaffold a new project preconfigured with the TypeScript 7 + oxc toolchain
 // (oxlint + oxfmt), a `check` gate, and a starter file + test.
 //
-//   newproj <name> [--preset bun-lib|hono|vite-react|next] [--no-git] [--no-install]
+//   newproj <name> [--preset bun-lib|hono|vite-react|next|astro] [--no-git] [--no-install]
 //
 // Omit the name or preset and you'll be prompted.
 
@@ -10,13 +10,14 @@ import { $ } from "bun";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
-type Preset = "bun-lib" | "hono" | "vite-react" | "next";
-const PRESETS = ["bun-lib", "hono", "vite-react", "next"] as const;
+type Preset = "bun-lib" | "hono" | "vite-react" | "next" | "astro";
+const PRESETS = ["bun-lib", "hono", "vite-react", "next", "astro"] as const;
 const PRESET_LABELS: Record<Preset, string> = {
   "bun-lib": "Bun CLI / library (plain Bun + TS7)",
   hono: "Hono API (Hono on Bun)",
   "vite-react": "Vite + React SPA",
   next: "Next.js app (React 19, tsgo typecheck)",
+  astro: "Astro site (astro check, TS5)",
 };
 
 const TOOLING = {
@@ -159,6 +160,7 @@ const CHECK_DESC: Record<Preset, string> = {
   hono: "oxlint + tsc --noEmit + bun test",
   "vite-react": "oxlint + tsc --noEmit + vitest",
   next: "oxlint + tsgo --noEmit + vitest",
+  astro: "oxlint + astro check",
 };
 
 const TYPECHECK_DESC: Record<Preset, string> = {
@@ -166,6 +168,7 @@ const TYPECHECK_DESC: Record<Preset, string> = {
   hono: "TypeScript 7 (`tsc --noEmit`)",
   "vite-react": "TypeScript 7 (`tsc --noEmit`)",
   next: "TypeScript 7 via `tsgo` (typescript@5 kept for `next build`)",
+  astro: "`astro check` on typescript@5 (Volar embeds the TS API — no TS7)",
 };
 
 const readme = (name: string, preset: Preset, run: string) =>
@@ -382,6 +385,70 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     };
   }
 
+  if (preset === "astro") {
+    return {
+      "package.json": pkg({
+        name,
+        type: "module",
+        private: true,
+        scripts: {
+          dev: "astro dev",
+          build: "astro build",
+          preview: "astro preview",
+          lint: "oxlint",
+          // astro check embeds the TS API via Volar → typescript@5, not TS7
+          typecheck: "astro check",
+          format: "oxfmt --write .",
+          "format:check": "oxfmt --check .",
+          check: "oxlint && astro check",
+        },
+        dependencies: { astro: "^7" },
+        devDependencies: {
+          "@astrojs/check": "^0.9.9",
+          oxfmt: TOOLING.oxfmt,
+          oxlint: TOOLING.oxlint,
+          typescript: "^5",
+        },
+      }),
+      // Astro ships tsconfig presets; extend the strict one.
+      "tsconfig.json":
+        JSON.stringify(
+          {
+            extends: "astro/tsconfigs/strict",
+            include: [".astro/types.d.ts", "**/*"],
+            exclude: ["dist"],
+          },
+          null,
+          2,
+        ) + "\n",
+      "astro.config.ts": `import { defineConfig } from "astro/config";
+
+export default defineConfig({});
+`,
+      ".oxlintrc.json": oxlintrc(),
+      ".gitignore": gitignore + `.astro/\n.output/\n`,
+      "README.md": readme(name, preset, "bun run dev"),
+      "src/pages/index.astro": `---
+const title = "${name}";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main>
+      <h1>{title}</h1>
+      <p>Astro + TypeScript — checked by astro check, linted by oxlint.</p>
+    </main>
+  </body>
+</html>
+`,
+    };
+  }
+
   // vite-react
   return {
     "package.json": pkg({
@@ -529,7 +596,7 @@ let preset = presetFromArgs() as Preset | undefined;
 if (!preset) {
   console.log("Choose a preset:");
   PRESETS.forEach((p, i) => console.log(`  ${i + 1}) ${PRESET_LABELS[p]}`));
-  const answer = prompt("Preset [1-4]?")?.trim() ?? "";
+  const answer = prompt("Preset [1-5]?")?.trim() ?? "";
   const byNumber = PRESETS[Number(answer) - 1];
   const byName = (PRESETS as readonly string[]).includes(answer)
     ? (answer as Preset)
@@ -562,6 +629,9 @@ if (!noGit) {
 if (!noInstall) {
   console.log("📥 Installing dependencies…");
   await $`bun install`.cwd(dir).nothrow();
+  // Format the freshly-written files to the toolchain's current oxfmt style,
+  // so a fresh scaffold is oxfmt-clean regardless of template/formatter drift.
+  await $`bun run format`.cwd(dir).nothrow();
 }
 
 if (!noGit) {

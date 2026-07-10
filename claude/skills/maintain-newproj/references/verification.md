@@ -9,16 +9,18 @@ Use a scratch dir outside any repo (e.g. the session scratchpad, or `mktemp -d`)
 ```sh
 WORK=$(mktemp -d)/np-verify && mkdir -p "$WORK" && cd "$WORK"
 
-# 1. Every preset scaffolds + passes its check gate
-for preset in bun-lib hono vite-react next; do
+# 1. Every preset scaffolds + passes its check gate AND format:check
+for preset in bun-lib hono vite-react next astro; do
   echo "===== $preset ====="
   bun ~/dotfiles/scripts/newproj.ts "v-$preset" --preset "$preset" || { echo "SCAFFOLD FAILED: $preset"; continue; }
-  ( cd "v-$preset" && bun run check ) && echo "check OK: $preset" || echo "CHECK FAILED: $preset"
+  ( cd "v-$preset" && bun run check )        && echo "check OK: $preset"        || echo "CHECK FAILED: $preset"
+  ( cd "v-$preset" && bun run format:check ) && echo "format:check OK: $preset" || echo "FORMAT DRIFT: $preset"
 done
 
-# 2. Web presets must also build
+# 2. Build presets must also build
 ( cd "$WORK/v-vite-react" && bun run build ) && echo "vite build OK"
 ( cd "$WORK/v-next"       && bun run build ) && echo "next build OK"   # proves the tsgo + typescript@5 split
+( cd "$WORK/v-astro"      && bun run build ) && echo "astro build OK"
 
 # 3. Confirm the compilers resolved as intended
 echo "bun-lib tsc:  $("$WORK"/v-bun-lib/node_modules/.bin/tsc --version)"       # expect 7.x

@@ -16,6 +16,23 @@ lessons also graduate into `references/conventions.md`.
 
 ---
 
+## 2026-07-10 — maintenance run 2 (+ astro preset)
+
+**Added preset: `astro`** (user request) — Astro `^7` + `typescript@5` +
+`@astrojs/check ^0.9.9`. `astro check` is the typecheck (Volar embeds the TS API,
+same embedder rule as Next → no TS7). tsconfig extends `astro/tsconfigs/strict`;
+oxlint lints .ts/config only (not .astro); no vitest by default. Now 5 presets.
+**Issues found + fixes:** verification surfaced that `format:check` failed on a
+fresh scaffold for **every** preset — fallout from run 1's oxfmt `0.20→0.58` bump
+(new oxfmt reformats the hand-written templates). Fixed structurally: the scaffolder
+now runs `bun run format` after `bun install`, so scaffolds are always oxfmt-clean
+regardless of template/formatter drift. Added `format:check` to the verify recipe
+so this class of drift is caught in future runs.
+**New gotchas:** oxfmt only formats JS/TS, not `.astro` (known gap); the auto-format
+step means bumping oxfmt never leaves templates stale. Both → conventions.md.
+**Verified:** all 5 presets check ✅ + format:check ✅; vite/next/astro builds ✅;
+astro check clean (3 files, 0 errors) on astro 7.
+
 ## 2026-07-10 — maintenance run 1 (+ vitest)
 
 **Versions (pinned → set):** oxfmt ^0.20.0 → ^0.58.0 · vite ^6 → ^8 ·

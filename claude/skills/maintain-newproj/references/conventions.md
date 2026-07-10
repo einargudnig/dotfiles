@@ -46,6 +46,17 @@ until it declares TS7 support — re-check each maintenance run.
   types). **Tests: vitest** with a separate `vitest.config.ts` that applies
   `@vitejs/plugin-react` (Next has no Vite, so vitest needs the plugin to transform
   JSX). check = oxlint + tsgo + vitest. `next build` uses typescript@5.
+- **astro** — Astro + `typescript@5` + `@astrojs/check` (`astro check` = typecheck;
+  Volar embeds the TS API, so no TS7 — same rule as Next). tsconfig extends
+  `astro/tsconfigs/strict`. oxlint lints the `.ts`/config (it does **not** parse
+  `.astro`); no vitest by default. check = oxlint + astro check. `.astro` files are
+  not formatted by oxfmt (JS/TS only) — a known gap.
+
+## Scaffolder behavior
+
+- After `bun install`, the scaffolder runs `bun run format` (oxfmt) on the generated
+  project, so a fresh scaffold is oxfmt-clean regardless of template-vs-formatter
+  drift. Bumping oxfmt therefore never leaves the templates stale.
 
 ## Durable gotchas (grow this list)
 
