@@ -2,7 +2,7 @@
 // Scaffold a new project preconfigured with the TypeScript 7 + oxc toolchain
 // (oxlint + oxfmt), a `check` gate, and a starter file + test.
 //
-//   newproj <name> [--preset bun-lib|hono|vite-react|next|astro] [--no-git] [--no-install]
+//   newproj <name> [--preset bun-lib|hono|vite-react|tanstack-start|astro] [--no-git] [--no-install]
 //
 // Omit the name or preset and you'll be prompted.
 
@@ -10,13 +10,13 @@ import { $ } from "bun";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
-type Preset = "bun-lib" | "hono" | "vite-react" | "next" | "astro";
-const PRESETS = ["bun-lib", "hono", "vite-react", "next", "astro"] as const;
+type Preset = "bun-lib" | "hono" | "vite-react" | "tanstack-start" | "astro";
+const PRESETS = ["bun-lib", "hono", "vite-react", "tanstack-start", "astro"] as const;
 const PRESET_LABELS: Record<Preset, string> = {
   "bun-lib": "Bun CLI / library (plain Bun + TS7)",
   hono: "Hono API (Hono on Bun)",
   "vite-react": "Vite + React SPA",
-  next: "Next.js app (React 19, tsgo typecheck)",
+  "tanstack-start": "TanStack Start (full-stack React, Vite + Nitro, TS7)",
   astro: "Astro site (astro check, TS5)",
 };
 
@@ -45,11 +45,10 @@ dist/
 .env.*.local
 `;
 
-const oxlintrc = (opts: { react?: boolean; next?: boolean } = {}) => {
-  const framework = Boolean(opts.react || opts.next);
+const oxlintrc = (opts: { react?: boolean } = {}) => {
+  const framework = Boolean(opts.react);
   const plugins = ["import", "typescript"];
   if (framework) plugins.push("react");
-  if (opts.next) plugins.push("nextjs");
   return (
     JSON.stringify(
       {
@@ -121,45 +120,13 @@ const viteTsconfig =
     2,
   ) + "\n";
 
-// Next.js: TS7 breaks `next build` (it probes the removed legacy TS API), so we
-// keep typescript@5 for the build and type-check with tsgo (the TS7 engine).
-const nextTsconfig =
-  JSON.stringify(
-    {
-      compilerOptions: {
-        target: "ES2022",
-        lib: ["dom", "dom.iterable", "esnext"],
-        allowJs: true,
-        skipLibCheck: true,
-        strict: true,
-        noEmit: true,
-        esModuleInterop: true,
-        module: "esnext",
-        moduleResolution: "bundler",
-        resolveJsonModule: true,
-        isolatedModules: true,
-        jsx: "preserve",
-        incremental: true,
-        plugins: [{ name: "next" }],
-        // No baseUrl — removed in TS7; explicit relative paths resolve fine.
-        paths: { "@/*": ["./*"] },
-      },
-      include: ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-      exclude: ["node_modules"],
-    },
-    null,
-    2,
-  ) + "\n";
-
-const nextGitignore = gitignore + `.next/\n/out/\nnext-env.d.ts\n.vercel\n`;
-
 const pkg = (obj: Record<string, unknown>) => JSON.stringify(obj, null, 2) + "\n";
 
 const CHECK_DESC: Record<Preset, string> = {
   "bun-lib": "oxlint + tsc --noEmit + bun test",
   hono: "oxlint + tsc --noEmit + bun test",
   "vite-react": "oxlint + tsc --noEmit + vitest",
-  next: "oxlint + tsgo --noEmit + vitest",
+  "tanstack-start": "oxlint + tsc --noEmit + vitest",
   astro: "oxlint + astro check",
 };
 
@@ -167,7 +134,7 @@ const TYPECHECK_DESC: Record<Preset, string> = {
   "bun-lib": "TypeScript 7 (`tsc --noEmit`)",
   hono: "TypeScript 7 (`tsc --noEmit`)",
   "vite-react": "TypeScript 7 (`tsc --noEmit`)",
-  next: "TypeScript 7 via `tsgo` (typescript@5 kept for `next build`)",
+  "tanstack-start": "TypeScript 7 (`tsc --noEmit`) — Vite-native, no embedder caveat",
   astro: "`astro check` on typescript@5 (Volar embeds the TS API — no TS7)",
 };
 
@@ -278,109 +245,6 @@ test("GET /health", async () => {
   expect(res.status).toBe(200);
   expect(await res.json()).toEqual({ status: "ok" });
 });
-`,
-    };
-  }
-
-  if (preset === "next") {
-    return {
-      "package.json": pkg({
-        name,
-        private: true,
-        scripts: {
-          dev: "next dev --turbopack",
-          build: "next build",
-          start: "next start",
-          lint: "oxlint",
-          typecheck: "tsgo --noEmit",
-          test: "vitest run",
-          format: "oxfmt --write .",
-          "format:check": "oxfmt --check .",
-          check: "oxlint && tsgo --noEmit && vitest run",
-        },
-        dependencies: { next: "^16", react: "^19", "react-dom": "^19" },
-        devDependencies: {
-          "@types/node": "^24",
-          "@types/react": "^19",
-          "@types/react-dom": "^19",
-          // tsgo = the TS7 engine, run alongside typescript@5 (next build needs it)
-          "@typescript/native-preview": "latest",
-          // @vitejs/plugin-react lets vitest transform JSX (Next doesn't use Vite)
-          "@vitejs/plugin-react": "^6",
-          oxfmt: TOOLING.oxfmt,
-          oxlint: TOOLING.oxlint,
-          typescript: "^5",
-          ...VITEST_DEPS,
-        },
-      }),
-      "tsconfig.json": nextTsconfig,
-      "next.config.ts": `import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {};
-
-export default nextConfig;
-`,
-      ".oxlintrc.json": oxlintrc({ next: true }),
-      ".gitignore": nextGitignore,
-      "README.md": readme(name, preset, "bun run dev"),
-      "vitest.config.ts": `import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
-
-export default defineConfig({
-  plugins: [react()],
-  test: { environment: "jsdom" },
-});
-`,
-      "app/page.test.tsx": `import { render, screen } from "@testing-library/react";
-import { expect, test } from "vitest";
-import Home from "./page";
-
-test("renders the project heading", () => {
-  render(<Home />);
-  expect(screen.getByRole("heading", { name: "${name}" })).toBeDefined();
-});
-`,
-      // ambient decl so tsgo matches Turbopack's CSS handling
-      "types/css.d.ts": `declare module "*.css";\n`,
-      "next-env.d.ts": `/// <reference types="next" />
-/// <reference types="next/image-types/global" />
-
-// NOTE: This file should not be edited. Next regenerates it.
-`,
-      "app/globals.css": `:root {
-  font-family: system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
-}
-
-body {
-  margin: 0;
-  padding: 2rem;
-}
-`,
-      "app/layout.tsx": `import type { ReactNode } from "react";
-import "./globals.css";
-
-export const metadata = {
-  title: "${name}",
-  description: "Next.js + TypeScript 7 (tsgo) + oxc",
-};
-
-export default function RootLayout({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
-}
-`,
-      "app/page.tsx": `export default function Home() {
-  return (
-    <main>
-      <h1>${name}</h1>
-      <p>Next.js + React 19 — type-checked by tsgo (TS7), linted by oxlint.</p>
-    </main>
-  );
-}
 `,
     };
   }
@@ -610,6 +474,65 @@ if (!preset || !(PRESETS as readonly string[]).includes(preset)) {
 
 // ---------- scaffold ----------
 
+// TanStack Start is delegated to the official CLI (its structure evolves and is
+// non-trivial), then we overlay the TS7 + oxc toolchain. It's Vite-native, so —
+// unlike Next — real typescript@7 works (verified: tsc --noEmit + build clean).
+const tssOxlintrc =
+  JSON.stringify(
+    {
+      $schema:
+        "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+      plugins: ["import", "typescript", "react"],
+      categories: { correctness: "error", suspicious: "warn", perf: "warn" },
+      rules: {
+        "react/react-in-jsx-scope": "off",
+        "import/no-unassigned-import": "off",
+      },
+      ignorePatterns: [
+        "node_modules/",
+        "dist/",
+        ".output/",
+        ".nitro/",
+        ".tanstack/",
+        "src/routeTree.gen.ts",
+        "**/*.d.ts",
+      ],
+    },
+    null,
+    2,
+  ) + "\n";
+
+const scaffoldTanstackStart = async (projName: string, projDir: string) => {
+  console.log("📥 Running the official TanStack Start scaffold…");
+  await $`bunx @tanstack/cli@latest create ${projName} -y`.nothrow();
+
+  // Overlay: TS7 + oxc on top of the official scaffold (which ships TS ~6 + vitest).
+  const pkgPath = resolve(projDir, "package.json");
+  const p = JSON.parse(await Bun.file(pkgPath).text());
+  p.devDependencies = p.devDependencies ?? {};
+  p.devDependencies.typescript = "^7.0.0";
+  p.devDependencies.oxlint = TOOLING.oxlint;
+  p.devDependencies.oxfmt = TOOLING.oxfmt;
+  p.scripts = p.scripts ?? {};
+  p.scripts.lint = "oxlint";
+  p.scripts.typecheck = "tsc --noEmit";
+  p.scripts.format = "oxfmt --write .";
+  p.scripts["format:check"] = "oxfmt --check .";
+  p.scripts.check = "oxlint && tsc --noEmit && vitest run";
+  await Bun.write(pkgPath, JSON.stringify(p, null, 2) + "\n");
+  await Bun.write(resolve(projDir, ".oxlintrc.json"), tssOxlintrc);
+  // A sample test so the scaffold's vitest (and `check`) has something to run.
+  await Bun.write(
+    resolve(projDir, "src/smoke.test.ts"),
+    `import { expect, test } from "vitest";\n\ntest("smoke", () => {\n  expect(1 + 1).toBe(2);\n});\n`,
+  );
+  await $`rm -f ${resolve(projDir, ".cta.json")}`.nothrow(); // create-tool metadata
+
+  console.log("📥 Installing toolchain overlay…");
+  await $`bun install`.cwd(projDir).nothrow();
+  await $`bun run format`.cwd(projDir).nothrow();
+};
+
 const dir = resolve(process.cwd(), name);
 if (existsSync(dir)) {
   console.error(`Directory already exists: ${dir}`);
@@ -617,24 +540,25 @@ if (existsSync(dir)) {
 }
 
 console.log(`\n📦 Scaffolding ${name} (${preset})…`);
-const tree = files(name, preset);
-for (const [rel, content] of Object.entries(tree)) {
-  await Bun.write(resolve(dir, rel), content);
+
+if (preset === "tanstack-start") {
+  await scaffoldTanstackStart(name, dir);
+} else {
+  const tree = files(name, preset);
+  for (const [rel, content] of Object.entries(tree)) {
+    await Bun.write(resolve(dir, rel), content);
+  }
+  if (!noInstall) {
+    console.log("📥 Installing dependencies…");
+    await $`bun install`.cwd(dir).nothrow();
+    // Format the freshly-written files to the current oxfmt style, so a fresh
+    // scaffold is oxfmt-clean regardless of template/formatter drift.
+    await $`bun run format`.cwd(dir).nothrow();
+  }
 }
 
 if (!noGit) {
   await $`git init -q`.cwd(dir).nothrow();
-}
-
-if (!noInstall) {
-  console.log("📥 Installing dependencies…");
-  await $`bun install`.cwd(dir).nothrow();
-  // Format the freshly-written files to the toolchain's current oxfmt style,
-  // so a fresh scaffold is oxfmt-clean regardless of template/formatter drift.
-  await $`bun run format`.cwd(dir).nothrow();
-}
-
-if (!noGit) {
   await $`git add -A`.cwd(dir).nothrow();
   await $`git commit -q -m ${`chore: scaffold ${name} (${preset}) — TS7 + oxc`}`
     .cwd(dir)

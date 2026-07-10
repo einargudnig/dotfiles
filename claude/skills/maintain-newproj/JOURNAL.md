@@ -16,6 +16,28 @@ lessons also graduate into `references/conventions.md`.
 
 ---
 
+## 2026-07-10 — maintenance run 3 (replace next → tanstack-start)
+
+**Replaced the `next` preset with `tanstack-start`** (user decision). Rationale:
+Next was the *only* preset that couldn't run TS7 — it embeds the TS compiler API,
+forcing the typescript@5 + tsgo split. TanStack Start (v1.0, Mar 2026) is Vite +
+TanStack Router + Nitro; being Vite-native it runs real `typescript@7`. Removing
+Next makes every preset TS7-native except Astro (justified: Volar embedder).
+**Approach:** `tanstack-start` is the first **delegated** preset — it runs the
+official `bunx @tanstack/cli@latest create <name> -y` then overlays TS7 + oxc
+(bump typescript→^7, add oxlint/oxfmt + scripts + .oxlintrc.json + a smoke test,
+drop .cta.json). Hand-templating was rejected as too fragile (structure evolves).
+**Verified (recon + via newproj):** official code type-checks clean on tsc@7 (0
+errors); vite build produces the SSR bundle; oxlint passes at correctness=error on
+the generated code; check gate green (oxlint + tsc@7 + vitest 1 test); the other 4
+presets still green after the refactor.
+**New gotchas:** (1) delegated-preset pattern (CLI + overlay) for frameworks whose
+structure is non-trivial/evolving; (2) `format:check` must run on source *before*
+build — oxfmt scans `dist/` (doesn't honor .gitignore), so post-build it flags
+build artifacts (this caused a false-negative in my first test). Both → conventions.md.
+**Removed:** the Next tsgo/typescript@5 machinery, `nextTsconfig`/`nextGitignore`,
+the oxlint `nextjs` plugin option.
+
 ## 2026-07-10 — maintenance run 2 (+ astro preset)
 
 **Added preset: `astro`** (user request) — Astro `^7` + `typescript@5` +

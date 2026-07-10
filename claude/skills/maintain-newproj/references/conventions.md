@@ -8,16 +8,19 @@ personal repos (2026-07). When a journal lesson becomes durable, add it here.
 TypeScript 7's native compiler is a drop-in **CLI** (`tsc`), but TS7 does **not yet
 expose a stable programmatic API** (arrives ~7.1). So:
 
-| Consumer | How it uses TS | Preset choice |
+| Consumer | How it uses TS | TS7? |
 |---|---|---|
-| Bun / Node / plain `tsc` | calls `tsc` as a CLI | **`typescript@7`** + `tsc` |
-| Vite | esbuild transpiles; `tsc` only type-checks | **`typescript@7`** + `tsc` |
-| Next `next build` | **embeds** the TS compiler API | `typescript@5` for build + **`tsgo`** for typecheck |
-| `astro check` / Volar | **embeds** the TS API | `typescript@5` + `astro check` |
+| Bun / Node / plain `tsc` | calls `tsc` as a CLI | ✅ `typescript@7` |
+| Vite — incl. **TanStack Start** | esbuild transpiles; `tsc` only type-checks | ✅ `typescript@7` |
+| Next.js `next build` | **embeds** the TS compiler API | ❌ needs TS5 + tsgo |
+| `astro check` / Volar | **embeds** the TS API | ❌ `typescript@5` |
 
-`tsgo` (`@typescript/native-preview`) *is* the TS7 engine, packaged separately so it
-can coexist with a framework's `typescript@5`. Never bump an embedder to `typescript@7`
-until it declares TS7 support — re-check each maintenance run.
+This rule is *why the Next preset was dropped* (see JOURNAL 2026-07-10 run 3):
+Next is the only full-stack React option that embeds the TS API and can't run TS7.
+**TanStack Start replaced it** — it's Vite-native (built on Vite + TanStack Router +
+Nitro), so real `typescript@7` works (verified: `tsc --noEmit` + build clean). If a
+future full-stack option embeds the TS API, it'd need the TS5 treatment like Astro —
+re-check each maintenance run.
 
 ## Every preset ships
 
@@ -40,12 +43,14 @@ until it declares TS7 support — re-check each maintenance run.
   off (CSS side-effect imports). **Tests: vitest** (jsdom + @testing-library/react),
   config in vite.config.ts via `defineConfig` from `vitest/config`. check = oxlint +
   tsc + vitest; `build` = tsc + vite build.
-- **next** — Next 16 + React 19. `typescript@5` (build) + `@typescript/native-preview`
-  (tsgo typecheck). oxlint `react` + `nextjs` plugins. Ships `types/css.d.ts` and a
-  static `next-env.d.ts` (so a first `check` before `next dev` has Next's ambient
-  types). **Tests: vitest** with a separate `vitest.config.ts` that applies
-  `@vitejs/plugin-react` (Next has no Vite, so vitest needs the plugin to transform
-  JSX). check = oxlint + tsgo + vitest. `next build` uses typescript@5.
+- **tanstack-start** — full-stack React (Vite + TanStack Router + Nitro). **Delegated:**
+  scaffolded via the official `bunx @tanstack/cli@latest create <name> -y` (its structure
+  is non-trivial and evolves), then an overlay bumps `typescript` to `^7` and adds
+  oxlint + oxfmt + `lint`/`typecheck`/`format`/`check` scripts + `.oxlintrc.json` +
+  a `src/smoke.test.ts` (the scaffold ships `test: vitest run` but no tests). `.cta.json`
+  (create-tool metadata) is removed. Vite-native → real `typescript@7` (tsc --noEmit +
+  vite build both clean). oxlint passes on the official code. Ignore `src/routeTree.gen.ts`
+  (generated) + `.output`/`.nitro`/`.tanstack`. check = oxlint + tsc + vitest.
 - **astro** — Astro + `typescript@5` + `@astrojs/check` (`astro check` = typecheck;
   Volar embeds the TS API, so no TS7 — same rule as Next). tsconfig extends
   `astro/tsconfigs/strict`. oxlint lints the `.ts`/config (it does **not** parse
@@ -54,9 +59,16 @@ until it declares TS7 support — re-check each maintenance run.
 
 ## Scaffolder behavior
 
-- After `bun install`, the scaffolder runs `bun run format` (oxfmt) on the generated
-  project, so a fresh scaffold is oxfmt-clean regardless of template-vs-formatter
-  drift. Bumping oxfmt therefore never leaves the templates stale.
+- Presets are either **template** (a static file map written directly) or **delegated**
+  (run an official CLI, then overlay the toolchain). `tanstack-start` is the only
+  delegated preset; the rest are templates. Delegated presets always install (the CLI
+  installs), so `--no-install` doesn't apply to them.
+- After install, the scaffolder runs `bun run format` (oxfmt) on the generated project,
+  so a fresh scaffold is oxfmt-clean regardless of template-vs-formatter drift. Bumping
+  oxfmt therefore never leaves the templates stale.
+- Run `format:check` on **source, before building** — oxfmt scans `dist/` build output
+  if present (it doesn't honor `.gitignore`), so a post-build `format:check` will flag
+  build artifacts. The verify recipe orders format:check before builds for this reason.
 
 ## Durable gotchas (grow this list)
 

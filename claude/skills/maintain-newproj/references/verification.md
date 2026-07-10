@@ -10,22 +10,22 @@ Use a scratch dir outside any repo (e.g. the session scratchpad, or `mktemp -d`)
 WORK=$(mktemp -d)/np-verify && mkdir -p "$WORK" && cd "$WORK"
 
 # 1. Every preset scaffolds + passes its check gate AND format:check
-for preset in bun-lib hono vite-react next astro; do
+# (tanstack-start is delegated — it runs the official CLI, so it needs network + is slower)
+for preset in bun-lib hono vite-react tanstack-start astro; do
   echo "===== $preset ====="
   bun ~/dotfiles/scripts/newproj.ts "v-$preset" --preset "$preset" || { echo "SCAFFOLD FAILED: $preset"; continue; }
   ( cd "v-$preset" && bun run check )        && echo "check OK: $preset"        || echo "CHECK FAILED: $preset"
   ( cd "v-$preset" && bun run format:check ) && echo "format:check OK: $preset" || echo "FORMAT DRIFT: $preset"
 done
 
-# 2. Build presets must also build
-( cd "$WORK/v-vite-react" && bun run build ) && echo "vite build OK"
-( cd "$WORK/v-next"       && bun run build ) && echo "next build OK"   # proves the tsgo + typescript@5 split
-( cd "$WORK/v-astro"      && bun run build ) && echo "astro build OK"
+# 2. Build presets must also build (run AFTER format:check — oxfmt scans dist/)
+( cd "$WORK/v-vite-react"     && bun run build ) && echo "vite build OK"
+( cd "$WORK/v-tanstack-start" && bun run build ) && echo "tanstack build OK"   # SSR bundle, on TS7
+( cd "$WORK/v-astro"          && bun run build ) && echo "astro build OK"
 
 # 3. Confirm the compilers resolved as intended
-echo "bun-lib tsc:  $("$WORK"/v-bun-lib/node_modules/.bin/tsc --version)"       # expect 7.x
-echo "next tsc:     $("$WORK"/v-next/node_modules/.bin/tsc --version)"          # expect 5.x (for next build)
-echo "next tsgo:    $("$WORK"/v-next/node_modules/.bin/tsgo --version)"         # expect 7.x
+echo "bun-lib tsc:        $("$WORK"/v-bun-lib/node_modules/.bin/tsc --version)"        # expect 7.x
+echo "tanstack-start tsc: $("$WORK"/v-tanstack-start/node_modules/.bin/tsc --version)" # expect 7.x (Vite-native, no embedder caveat)
 
 # 4. Interactive path still parses (name + preset by number)
 printf 'v-int\n2\n' | bun ~/dotfiles/scripts/newproj.ts --no-install --no-git
