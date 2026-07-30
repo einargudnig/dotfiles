@@ -70,14 +70,14 @@ const rules: KarabinerRules[] = [
       // a: app("Google Chrome"),
       a: app("Helium"),
       c: app("Notion Calendar"),
-      l: app("Linear"),
+      l: app("Lumen"),
       e: app("Spark Desktop"),
       n: app("Notion"),
       t: app("Things3"),
       m: app("Obsidian"),
       p: app("Spotify"),
       w: app("Wezterm"),
-      // w: app("Ghostty"),
+      g: app("Ghostty"),
       z: app("Zed"),
     },
 
@@ -235,9 +235,7 @@ const rules: KarabinerRules[] = [
         ],
       },
       // "D"o not disturb toggle
-      d: open(
-        `raycast://extensions/yakitrak/do-not-disturb/toggle?launchType=background`
-      ),
+      d: open(`raycast://extensions/yakitrak/do-not-disturb/toggle?launchType=background`),
       // "T"heme
       t: open(`raycast://extensions/raycast/system/toggle-system-appearance`),
       c: open("raycast://extensions/raycast/system/open-camera"),
@@ -303,25 +301,17 @@ const rules: KarabinerRules[] = [
     // r = "Raycast"
     r: {
       c: open("raycast://extensions/thomas/color-picker/pick-color"),
-      e: open(
-        "raycast://extensions/raycast/emoji-symbols/search-emoji-symbols"
-      ),
+      e: open("raycast://extensions/raycast/emoji-symbols/search-emoji-symbols"),
       p: open("raycast://extensions/raycast/raycast/confetti"),
       a: open("raycast://extensions/raycast/raycast-ai/ai-chat"),
       // s: open("raycast://extensions/peduarte/silent-mention/index"),
-      h: open(
-        "raycast://extensions/raycast/clipboard-history/clipboard-history"
-      ),
+      h: open("raycast://extensions/raycast/clipboard-history/clipboard-history"),
       k: open("raycast://extensions/rolandleth/kill-process/index"),
       f: open("raycast://extensions/raycast/raycast-focus/start-focus-session"),
       s: open("raycast://extensions/raycast/calendar/my-schedule"),
       t: open("raycast://extensions/loris/things/show-today-list"),
-      1: open(
-        "raycast://extensions/VladCuciureanu/toothpick/connect-favorite-device-1"
-      ),
-      2: open(
-        "raycast://extensions/VladCuciureanu/toothpick/connect-favorite-device-2"
-      ),
+      1: open("raycast://extensions/VladCuciureanu/toothpick/connect-favorite-device-1"),
+      2: open("raycast://extensions/VladCuciureanu/toothpick/connect-favorite-device-2"),
     },
   }),
 ];
@@ -343,6 +333,6 @@ fs.writeFileSync(
       ],
     },
     null,
-    2
-  )
+    2,
+  ),
 );

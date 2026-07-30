@@ -27,8 +27,9 @@ window-width = 9999
 window-height = 9999
 
 
-theme = Catppuccin Mocha
-# theme = catppuccin-latte
+# Follows the macOS appearance setting. window-theme = auto above only controls
+# window chrome -- this is what actually switches the palette.
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
 font-family = Geist Mono
 font-style = Regular
 font-size = 24

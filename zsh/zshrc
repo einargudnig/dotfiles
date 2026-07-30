@@ -273,3 +273,16 @@ alias life='bun run --cwd ~/personal/life-os life'
 # scaffold a new project with the TS7 + oxc toolchain
 # newproj <name> [--preset bun-lib|hono|vite-react] [--no-git] [--no-install]
 alias newproj='bun ~/dotfiles/scripts/newproj.ts'
+
+# Run the gigover Java backend locally (needs JDK 17; local-only, never pushed)
+gigback() { cd ~/work/gigover-backend && JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn jetty:run; }
+
+# Pull upstream backend changes from Bitbucket, preserving local edits (never pushes)
+gigpull() {
+  local d=~/work/gigover-backend
+  if [ -n "$(git -C "$d" status --porcelain)" ]; then
+    git -C "$d" stash && git -C "$d" pull && git -C "$d" stash pop
+  else
+    git -C "$d" pull
+  fi
+}

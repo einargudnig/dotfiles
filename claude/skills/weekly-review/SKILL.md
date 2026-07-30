@@ -105,7 +105,23 @@ decisions and discoveries — no separate vault to query.
 (The standalone `~/memento` vault was retired 2026-05-26; capture is unified in
 `claude-breadcrumbs/`.)
 
-### 6. Synthesize the Report
+### 6. Backfill Missing Periodic Notes
+
+Fill and link any gaps in the vault's periodic-note chains (daily / weekly / monthly) using the `backfill-daily-notes` skill's script:
+
+```bash
+# Dry run first — see what's missing
+node ~/.claude/skills/backfill-daily-notes/backfill.ts
+
+# Then create the missing notes (never overwrites existing files)
+node ~/.claude/skills/backfill-daily-notes/backfill.ts --write
+```
+
+The script renders each note from the vault's own templates and links it into the chain (yesterday/tomorrow for dailies, day links in weeklies, week links in monthlies). The current ISO week's note is a common gap when the review runs on a Monday.
+
+Record the result for the report: which notes were created, or "no gaps" if the chains were already complete.
+
+### 7. Synthesize the Report
 
 Analyze all gathered data and produce the weekly review. Think about:
 
@@ -114,7 +130,7 @@ Analyze all gathered data and produce the weekly review. Think about:
 - **Open loops**: Follow-ups from sessions that haven't been addressed
 - **Wins**: What actually shipped or was completed?
 
-### 7. Write the Report to Obsidian
+### 8. Write the Report to Obsidian
 
 Save to: `/Users/einargudjonsson/personal/obsidian/second-brain/weekly-reviews/`
 
@@ -165,17 +181,21 @@ tags:
 
 - **{note title}**: {one-line summary}
 
+## Vault Upkeep
+{Result of the periodic-note backfill — created notes as [[wikilinks]], or "chains complete, no gaps". Omit only if the backfill couldn't run.}
+
 ## Focus Suggestions
 {Based on the data: what deserves attention next week?}
 
 - {suggestion based on stalled work, open follow-ups, or momentum}
 ```
 
-### 8. Confirm
+### 9. Confirm
 
 Tell the user:
 - The file path of the saved report
 - Count of active projects, stalled branches, and open follow-ups
+- Any periodic notes that were backfilled
 - Top 1-2 suggested focus areas for the coming week
 
 ## Rules

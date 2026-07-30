@@ -1,222 +1,183 @@
 {
+  "agentPushNotifEnabled": true,
+  "alwaysThinkingEnabled": true,
   "attribution": {
     "commit": "",
     "pr": ""
   },
-  "model": "claude-fable-5[1m]",
+  "editorMode": "vim",
+  "enabledPlugins": {
+    "asana@claude-plugins-official": false,
+    "code-review@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "fjarmalalaesi@fjarmalalaesi": true,
+    "frontend-design@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "last30days@last30days-skill": true,
+    "learning-output-style@claude-plugins-official": true,
+    "plannotator@plannotator": true,
+    "playwright@claude-plugins-official": true,
+    "posthog@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": false,
+    "superwhisper@superwhisper": true,
+    "swift-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "fjarmalalaesi": {
+      "source": {
+        "repo": "jokull/fjarmalalaesi",
+        "source": "github"
+      }
+    },
+    "last30days-skill": {
+      "source": {
+        "repo": "mvanhorn/last30days-skill",
+        "source": "github"
+      }
+    },
+    "plannotator": {
+      "source": {
+        "repo": "backnotprop/plannotator",
+        "source": "github"
+      }
+    },
+    "superwhisper": {
+      "source": {
+        "repo": "superultrainc/superwhisper-claude-code",
+        "source": "github"
+      }
+    }
+  },
   "hooks": {
-    "PermissionRequest": [
+    "Notification": [
       {
-        "matcher": "*",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' blocked",
-            "timeout": 10
+            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "permission_prompt"
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit",
         "hooks": [
           {
-            "type": "command",
             "command": "case \"$CLAUDE_TOOL_INPUT_FILE_PATH\" in *.ts|*.tsx) cd \"$(git rev-parse --show-toplevel 2>/dev/null || echo .)\" && npx tsc --noEmit 2>&1 | head -20 ;; esac",
+            "statusMessage": "Typechecking...",
             "timeout": 30,
-            "statusMessage": "Typechecking..."
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "Edit"
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash",
         "hooks": [
           {
-            "type": "command",
             "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\-\\-force|\\-f'; then if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\bmain\\b|\\bmaster\\b'; then echo 'BLOCKED: force-push to main/master is not allowed' && exit 1; fi; fi",
-            "if": "Bash(git push *)"
+            "if": "Bash(git push *)",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "Bash"
       },
       {
-        "matcher": "*",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' working",
-            "timeout": 10
+            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting",
+            "type": "command"
           }
-        ]
-      },
-      {
-        "matcher": "AskUserQuestion",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting"
-          }
-        ]
+        ],
+        "matcher": "AskUserQuestion"
       }
     ],
     "SessionEnd": [
       {
         "hooks": [
           {
-            "type": "command",
             "command": "python3 \"$HOME/.claude/hooks/breadcrumb-capture.py\"",
-            "timeout": 15
+            "timeout": 15,
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "bash \"$HOME/.claude/hooks/memory-autocommit.sh\"",
-            "timeout": 15
+            "timeout": 15,
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "bash \"$HOME/.claude/hooks/qmd-refresh.sh\"",
-            "timeout": 15
-          }
-        ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' release",
-            "timeout": 10
+            "timeout": 15,
+            "type": "command"
           }
         ]
       }
     ],
     "SessionStart": [
       {
-        "matcher": "startup|resume|clear",
         "hooks": [
           {
-            "type": "command",
             "command": "python3 \"$HOME/.claude/hooks/breadcrumb-briefing.py\"",
+            "statusMessage": "Recalling project breadcrumbs...",
             "timeout": 10,
-            "statusMessage": "Recalling project breadcrumbs..."
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "startup|resume|clear"
       },
       {
-        "matcher": "*",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' idle",
-            "timeout": 10
+            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10,
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "*"
       }
     ],
     "Stop": [
       {
-        "matcher": "*",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' idle",
-            "timeout": 10
+            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh idle",
+            "type": "command"
           }
-        ]
-      },
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh idle"
-          }
-        ]
+        ],
+        "matcher": ""
       }
     ],
     "UserPromptSubmit": [
       {
-        "matcher": "",
         "hooks": [
           {
-            "type": "command",
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh working"
+            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh working",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": ""
       },
       {
         "hooks": [
           {
-            "type": "command",
             "command": "python3 \"$HOME/.claude/hooks/qmd-recall.py\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' working",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "matcher": "permission_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting"
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }
     ]
   },
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline.sh"
-  },
-  "enabledPlugins": {
-    "asana@claude-plugins-official": false,
-    "code-review@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "commit-commands@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
-    "learning-output-style@claude-plugins-official": true,
-    "plannotator@plannotator": true,
-    "playwright@claude-plugins-official": true,
-    "posthog@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": false,
-    "typescript-lsp@claude-plugins-official": true,
-    "vercel@claude-plugins-official": true,
-    "last30days@last30days-skill": true,
-    "swift-lsp@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "plannotator": {
-      "source": {
-        "source": "github",
-        "repo": "backnotprop/plannotator"
-      }
-    },
-    "last30days-skill": {
-      "source": {
-        "source": "github",
-        "repo": "mvanhorn/last30days-skill"
-      }
-    }
-  },
-  "alwaysThinkingEnabled": true,
-  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
-  "editorMode": "vim",
-  "agentPushNotifEnabled": true
+  "statusLine": {
+    "command": "bash ~/.claude/statusline.sh",
+    "type": "command"
+  },
+  "tui": "fullscreen"
 }
