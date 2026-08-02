@@ -1,26 +1,37 @@
+# =============================================================================
+# zshrc -- interactive shells only.
+#
+# Anything needed by *every* zsh process (scripts, `zsh -c`, editor subshells)
+# belongs in ~/.zshenv instead -- a slow call there taxes the whole machine.
+#
+# Startup budget: ~110ms. Before adding an `eval "$(tool init zsh)"`, time it;
+# anything over ~20ms should be cached to a file (see the hermes/wt blocks).
+# Profile with:  PS4=$'+%D{%s.%6.}|%N:%i> ' zsh -ixc exit
+#
+# ZLE widget plugins (autosuggestions, syntax-highlighting) load at the BOTTOM
+# of this file -- they must wrap every widget that other tools add.
+# =============================================================================
 
-# eval "$(starship init zsh)"
-export STARSHIP_CONFIG=~/.config/starship/starship.toml
-
-# zsh completions
-# compinit security audit only runs once per 24h (compaudit costs ~15ms per shell)
+# --- Completions -------------------------------------------------------------
+# Run compinit's security audit (compaudit, ~15ms) at most once per 24h; take
+# the `-C` fast path otherwise. See the GOTCHA note by the cache blocks below
+# for why this is an array assignment and not `[[ -n ~/.zcompdump(#qN.mh+24) ]]`.
 autoload -Uz compinit
-if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+_zcompdump_stale=( ~/.zcompdump(N.mh+24) )
+if [[ ! -s ~/.zcompdump || -n $_zcompdump_stale ]]; then
   compinit
 else
   compinit -C
 fi
+unset _zcompdump_stale
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 
-# zsh autosuggestions
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-# zsh syntax highlighting
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
+# --- Core environment --------------------------------------------------------
 export EDITOR=/opt/homebrew/bin/nvim
+export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
-# history setup
+# --- History -----------------------------------------------------------------
 HISTFILE=$HOME/.zhistory
 SAVEHIST=50000
 HISTSIZE=50000
@@ -29,7 +40,7 @@ setopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_verify
 
-# Git aliases
+# --- Aliases: git ------------------------------------------------------------
 alias ga='git add'
 alias gc='git commit'
 alias gp='git push'
@@ -39,56 +50,55 @@ alias gd='git diff'
 alias gl='git log --oneline -20'
 alias gco='git checkout'
 alias gpl='~/dotfiles/scripts/git-pull.sh'
-alias lg='Lazygit'
+# lowercase: `Lazygit` only resolves because APFS is case-insensitive
+alias lg='lazygit'
 
-# Claude
+# --- Aliases: Claude / scripts -----------------------------------------------
 alias csd='claude --dangerously-skip-permissions'
 alias cl='tmux-claude-picker'
 alias report='~/dotfiles/scripts/daily-report.sh'
 alias kill-port='~/dotfiles/scripts/kill-port.sh'
 
-# Navigation
+# --- Aliases: navigation & safety --------------------------------------------
 alias ..='cd ..'
 alias ...='cd ../..'
 
-# Safety
-alias mv='mv -i'
+alias mv='mv -i'   # prompt before clobbering
 alias cp='cp -i'
 
-# zsh theme?
-source ~/dotfiles/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
-
-bindkey '^[[A' history-search-backward
-bindkey '^[[B' history-search-forward
-
-# fzf is fuzzy finding for the terminal
-source <(fzf --zsh)
-
-# eza is improved ls
+# eza is a better ls
 alias ls="eza --icons=always"
 alias lt="eza --tree --level=2 --icons=always --git"
 
-# zoxide (better cd)
-eval "$(zoxide init zsh)"
+# --- Key bindings ------------------------------------------------------------
+bindkey '^[[A' history-search-backward   # Up: search history by current prefix
+bindkey '^[[B' history-search-forward
 
+# --- fzf ---------------------------------------------------------------------
+source <(fzf --zsh)
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# rg respects .gitignore and skips binaries, so it makes a better file source
+type rg &>/dev/null && export FZF_DEFAULT_COMMAND='rg --files'
+
+# Single source of truth -- catppuccin mocha colours plus layout.
+# (These were previously split across two assignments; the second silently
+#  clobbered the first, so --height/--border/--layout never took effect.)
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+--color=selected-bg:#45475a \
+--height 50% --border --layout=reverse \
+--multi"
+
+# --- zoxide (better cd) ------------------------------------------------------
+eval "$(zoxide init zsh)"
 alias cd="z"
 
-# To help aerospace
-#def ff [] {
-#    aerospace list-windows --all | fzf --bind 'enter:execute(bash -c "aerospace focus --window-id {1}")+abort'
-#}
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export FZF_DEFAULT_OPS="--extended --layout=reverse"
-if type rg &> /dev/null; then
-  export FZF_DEFAULT_COMMAND='rg --files'
-  export FZF_DEFAULT_OPTS='-m --height 50% --border --layout=reverse'
-fi
-
-# yazi is a terminal explorer
-# use y instead of yazi to start, and pressq to quit.
-# press Q to quit without changing directory
-# We suggest using this y shell wrapper that provides the ability to change directories
+# --- yazi (terminal file explorer) -------------------------------------------
+# Use `y` rather than `yazi`: this wrapper cd's the shell to wherever you
+# quit with `q`. Press `Q` to quit *without* changing directory.
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	yazi "$@" --cwd-file="$tmp"
@@ -98,22 +108,15 @@ function y() {
 	rm -f -- "$tmp"
 }
 
-# fzf catpuccin mocha color theme
-export FZF_DEFAULT_OPTS=" \
---color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
---color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
---color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
---color=selected-bg:#45475a \
---multi"
-
-eval "$(starship init zsh)"
+# --- Prompt & history search -------------------------------------------------
+eval "$(starship init zsh)"          # ~10ms; `starship timings` if it ever drags
 
 . "$HOME/.atuin/bin/env"
+eval "$(atuin init zsh)"             # rebinds Up/Ctrl-R to atuin's history
 
-eval "$(atuin init zsh)"
-
-
+# --- PATH --------------------------------------------------------------------
 PATH=~/.console-ninja/.bin:$PATH
+
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
@@ -146,10 +149,12 @@ conda() {
 }
 # <<< conda initialize <<<
 
+# fnm (Node version manager). NOT cacheable: `fnm env` mints a per-shell
+# multishell symlink dir each run, so a cached copy would break version switching.
 eval "$(fnm env --use-on-cd --shell zsh)"
 
-# fnm (Node version manager) - initialized on line 132
 export PATH=$PATH:$HOME/go/bin
+
 # try.rb shell integration (inlined -- `try.rb init` spawns ruby, ~100ms per shell)
 # This is the verbatim output of `~/.local/try.rb init`; re-run that if try.rb's init changes.
 try() {
@@ -167,31 +172,38 @@ try() {
 }
 
 
-# Hermes Agent completion (cached - hermes completion costs ~240ms)
-# Refresh: rm ~/.cache/hermes-completion.zsh && open a new shell
-_hermes_cache="$HOME/.cache/hermes-completion.zsh"
-if [[ ! -s "$_hermes_cache" ]] || [[ -n "$(find "$_hermes_cache" -mtime +14 2>/dev/null)" ]]; then
-  mkdir -p "$HOME/.cache"
-  command -v hermes >/dev/null 2>&1 && hermes completion zsh > "$_hermes_cache" 2>/dev/null
-fi
-[[ -s "$_hermes_cache" ]] && source "$_hermes_cache"
-unset _hermes_cache
+# --- Cached tool integrations ------------------------------------------------
+# Pattern: `tool init`/`completion` output is static, so write it once and source
+# the file. To force a refresh: rm the cache file and open a new shell.
+#
+# GOTCHA -- staleness check. `[[ -n file(N.md+14) ]]` looks right but is ALWAYS
+# TRUE: [[ ]] never performs filename generation, so the pattern is just a
+# non-empty string. The glob must be expanded via an array assignment, and the
+# path must be a LITERAL -- zsh does not glob words that came from a parameter
+# expansion, so `$cache(N.md+14)` silently fails the same way.
+# Qualifier: N = no error if unmatched, .= plain file, md+14 = mtime >14 days.
 
-# Hermes Agent aliases
+# Hermes Agent completion (`hermes completion zsh` costs ~240ms uncached)
+_stale=( ~/.cache/hermes-completion.zsh(N.md+14) )
+if [[ ! -s ~/.cache/hermes-completion.zsh || -n $_stale ]]; then
+  mkdir -p ~/.cache
+  command -v hermes >/dev/null 2>&1 && hermes completion zsh > ~/.cache/hermes-completion.zsh 2>/dev/null
+fi
+[[ -s ~/.cache/hermes-completion.zsh ]] && source ~/.cache/hermes-completion.zsh
+
 alias h='hermes chat'
 alias hs='hermes status'
 
-# worktrunk shell integration (cached -- `wt config shell init` costs ~20ms)
-# Refresh: rm ~/.cache/wt-init.zsh && open a new shell
-_wt_cache="$HOME/.cache/wt-init.zsh"
+# worktrunk shell integration (`wt config shell init` costs ~20ms uncached)
 if command -v wt >/dev/null 2>&1; then
-  if [[ ! -s "$_wt_cache" ]] || [[ -n "$(find "$_wt_cache" -mtime +14 2>/dev/null)" ]]; then
-    mkdir -p "$HOME/.cache"
-    command wt config shell init zsh > "$_wt_cache" 2>/dev/null
+  _stale=( ~/.cache/wt-init.zsh(N.md+14) )
+  if [[ ! -s ~/.cache/wt-init.zsh || -n $_stale ]]; then
+    mkdir -p ~/.cache
+    command wt config shell init zsh > ~/.cache/wt-init.zsh 2>/dev/null
   fi
-  [[ -s "$_wt_cache" ]] && source "$_wt_cache"
+  [[ -s ~/.cache/wt-init.zsh ]] && source ~/.cache/wt-init.zsh
 fi
-unset _wt_cache
+unset _stale
 ###-begin-npm-completion-###
 #
 # npm command completion script
@@ -286,3 +298,19 @@ gigpull() {
     git -C "$d" pull
   fi
 }
+
+# =============================================================================
+# ZLE widget plugins -- KEEP THIS BLOCK LAST.
+#
+# Both plugins work by wrapping ZLE widgets, so they must load *after* every
+# tool that installs one (fzf, zoxide, atuin, fnm, npm completion above).
+# Loading them earlier -- as this file did until now -- leaves the widgets those
+# tools add unhighlighted and without suggestions.
+#
+# Order within the block matters too: the catppuccin theme populates
+# ZSH_HIGHLIGHT_STYLES and must be set before syntax-highlighting activates,
+# and syntax-highlighting must be the very last thing sourced.
+# =============================================================================
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/dotfiles/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
