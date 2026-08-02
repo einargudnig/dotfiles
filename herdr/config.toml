@@ -1,0 +1,140 @@
+onboarding = false
+
+# Ported from ~/dotfiles/tmux/tmux.conf so herdr and tmux share muscle memory.
+# Reference: https://herdr.dev/docs/config-reference/  (search "keys.")
+# Reload after editing: herdr server reload-config   (or prefix+shift+r)
+
+[theme]
+# tmux: set -g @catppuccin_flavor "mocha"
+name = "catppuccin"
+
+# Follow the host terminal's light/dark appearance. Requires Ghostty to switch
+# too -- see ~/.config/ghostty/config: theme = light:...,dark:...
+# Without that, Ghostty stays pinned to Mocha and herdr never sees a light state.
+auto_switch = true
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
+
+[keys]
+# tmux: unbind C-b; set -g prefix C-s
+prefix = "ctrl+s"
+
+# Splits. tmux binds | to `split-window -h` (side by side) and - to `split-window -v` (stacked).
+# herdr names these after the resulting arrangement, same semantics:
+#   split_vertical   = side by side  == tmux `|`
+#   split_horizontal = stacked       == tmux `-`
+split_vertical = "prefix+|"
+split_horizontal = "prefix+minus"
+
+# tmux: unbind r; bind r source-file ~/.tmux.conf
+# herdr's default for prefix+r is resize_mode, so that moves to prefix+shift+r.
+reload_config = "prefix+r"
+resize_mode = "prefix+shift+r"
+
+# tmux: prefix d detaches. herdr's default is prefix+q; prefix+d was unbound.
+detach = "prefix+d"
+
+# tmux: prefix ; -- last-pane (tmux default, still live since `l` was rebound to select-pane -R)
+last_pane = "prefix+semicolon"
+
+# tmux: prefix [ -- copy mode. Set explicitly: copy_mode is a real action but is
+# absent from `herdr --default-config`, so it has no documented default.
+copy_mode = "prefix+["
+
+# tmux: prefix ( / prefix ) -- previous/next session. Unset by default in herdr.
+# Note: prefix+shift+bracketleft is rejected by `herdr config check`; use the parens.
+previous_workspace = "prefix+("
+next_workspace = "prefix+)"
+
+# tmux: prefix 1..9 switches windows; herdr splits this into tabs vs workspaces.
+switch_workspace = "prefix+shift+1..9"
+
+# No tmux equivalent -- jump straight to an agent row in the sidebar.
+focus_agent = "prefix+alt+1..9"
+
+# goto (herdr's built-in navigator over already-open workspaces) stays on its
+# default prefix+g. tmux's prefix+T -> sesh maps to the herdr-navigator plugin below.
+
+# Already matching tmux without an override, listed here as documentation:
+#   focus_pane_left/down/up/right = prefix+h/j/k/l   (tmux: bind-key h/j/k/l select-pane)
+#   navigate_pane_left/down/up/right = h/j/k/l       (vim-style movement in navigate mode)
+#   close_pane = prefix+x                            (tmux: bind-key x kill-pane)
+#   copy_mode  = prefix+[                            (tmux: prefix [)
+#   zoom       = prefix+z                            (tmux: prefix z)
+#   next_tab / previous_tab = prefix+n / prefix+p    (tmux: prefix n / prefix p)
+#   switch_tab = prefix+1..9                         (tmux: prefix 1..9, base-index 1)
+
+# tmux: bind-key T -> sesh connect (fzf over sessions/zoxide/configs)
+# herdr: thanhdat77/herdr-navigator -- fuzzy over workspaces, agents, projects,
+# sessions, remotes, directories, and plugin actions. Focus-or-create, like sesh.
+[[keys.command]]
+key = "prefix+t"
+type = "plugin_action"
+command = "herdr-navigator.open"
+description = "jump to anything (sesh-style)"
+
+# Equivalent of `sesh last`. Not prefix+shift+l -- that's herdr's swap_pane_right.
+[[keys.command]]
+key = "prefix+shift+b"
+type = "plugin_action"
+command = "herdr-navigator.jump-back"
+description = "jump back to last workspace"
+
+[ui]
+# tmux: set -g pane-active-border-style 'fg=magenta'
+accent = "magenta"
+
+# tmux: set -g mouse on / set -g set-clipboard on -- both are herdr defaults, pinned explicitly.
+mouse_capture = true
+copy_on_select = true
+
+agent_panel_sort = "spaces"
+
+# tmux creates windows immediately with a generated name; match that.
+prompt_new_tab_name = false
+hide_tab_bar_when_single_tab = true
+
+# Background agent notifications. This section was absent, and the default is
+# delivery = "off" -- so nothing was being delivered despite 6 agent integrations
+# reporting state. "system" asks macOS directly, so alerts land even when the
+# outer terminal isn't focused.
+[ui.toast]
+delivery = "system"
+delay_seconds = 1
+
+[ui.toast.herdr]
+position = "bottom-right"
+
+[ui.sound]
+enabled = true
+
+# Sidebar rows. No tmux counterpart -- the tmux status bar never showed git state.
+[ui.sidebar.spaces]
+rows = [["state_icon", "workspace"], ["branch", "git_status"]]
+
+[ui.sidebar.agents]
+rows = [["state_icon", "workspace", "tab"], ["agent"]]
+
+[ui.sidebar.agents.rows_by_agent]
+claude = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"], ["agent"]]
+
+[terminal]
+# tmux: split-window -c "#{pane_current_path}" -- new panes inherit the source cwd.
+new_cwd = "follow"
+
+# tmux: @plugin 'tmux-resurrect' + 'tmux-continuum'
+[session]
+resume_agents_on_restore = true
+
+# tmux: @resurrect-capture-pane-contents 'on'. Left off deliberately -- herdr
+# flags pane_history as experimental. Enable when you want full parity.
+# [experimental]
+# pane_history = true
+
+# No tmux equivalent. prefix+shift+g creates a worktree (default binding).
+[worktrees]
+directory = "~/.herdr/worktrees"
+
+[advanced]
+# tmux: set -g history-limit 1000000
+scrollback_limit_bytes = 50_000_000

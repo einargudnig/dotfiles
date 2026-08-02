@@ -1,1 +1,13 @@
+# macOS Finder metadata
+.DS_Store
+
+# Backup sidecars -- history belongs in git, not in *.bak files
+*.bak
+*.bak.*
+*.pre-*
 nvim.bak/
+
+# Runtime state that tools write next to their config
+# (herdr drops these beside config.toml; only the config itself is tracked)
+*.log
+*.sock
