@@ -18,7 +18,7 @@
     "learning-output-style@claude-plugins-official": true,
     "plannotator@plannotator": true,
     "playwright@claude-plugins-official": true,
-    "posthog@claude-plugins-official": true,
+    "posthog@claude-plugins-official": false,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "superpowers@claude-plugins-official": false,
     "superwhisper@superwhisper": true,
@@ -62,19 +62,6 @@
           }
         ],
         "matcher": "permission_prompt"
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "case \"$CLAUDE_TOOL_INPUT_FILE_PATH\" in *.ts|*.tsx) cd \"$(git rev-parse --show-toplevel 2>/dev/null || echo .)\" && npx tsc --noEmit 2>&1 | head -20 ;; esac",
-            "statusMessage": "Typechecking...",
-            "timeout": 30,
-            "type": "command"
-          }
-        ],
-        "matcher": "Edit"
       }
     ],
     "PreToolUse": [
@@ -148,6 +135,10 @@
           {
             "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh idle",
             "type": "command"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/typecheck.sh\""
           }
         ],
         "matcher": ""

@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Build a comprehensive project hand-off document for coworkers before extended leave or when transferring ownership. Sweeps git state, open PRs, repo docs, Claude memory + session breadcrumbs, the Obsidian vault, Asana tasks, and deploy/infra state, then publishes a reviewed handoff page to Notion. Use when the user mentions handoff, hand-off, handing over a project, transferring ownership, or going on leave (paternity, parental, vacation, sabbatical).
+description: Build a project hand-off doc from git, PRs, memory, vault, Asana, and infra; publishes to Notion.
 ---
 
 # Project Handoff

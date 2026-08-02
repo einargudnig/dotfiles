@@ -1,6 +1,6 @@
 ---
 name: backfill-daily-notes
-description: Create missing Obsidian periodic notes (daily, weekly, monthly) for all past dates and link them together — yesterday/tomorrow chain for dailies, day links in weeklies, week links in monthlies. Use when the user asks to backfill daily/weekly/monthly notes, fill gaps in the planner, or fix broken periodic-note links in the second-brain vault.
+description: Create and link missing Obsidian periodic notes (daily/weekly/monthly) for past dates.
 ---
 
 # Backfill Periodic Notes

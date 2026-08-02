@@ -1,6 +1,6 @@
 ---
 name: maintain-newproj
-description: Maintain and update the `newproj` project scaffolder (dotfiles/scripts/newproj.ts) — bump toolchain and framework versions to current, adapt to new TypeScript 7 / oxc / framework behaviors, verify every preset still scaffolds and builds green, and record lessons to a journal so each run is smarter than the last. Invoke with /maintain-newproj.
+description: Maintain the newproj scaffolder — bump toolchain/framework versions, verify presets build green.
 ---
 
 # Maintain newproj — self-improving scaffolder maintenance

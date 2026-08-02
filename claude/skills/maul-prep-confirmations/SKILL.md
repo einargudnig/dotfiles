@@ -1,6 +1,6 @@
 ---
 name: maul-prep-confirmations
-description: Use this skill to check which restaurants have confirmed their food prep for today. It scans the maul@maul.is Google Groups inbox via the browser, finds all prep confirmation emails ("er að undirbúa") sent by "Maul restaurant", and extracts a clean list of restaurant names. Use this skill whenever someone asks about prep confirmations, which restaurants are prepping, who has confirmed, restaurant prep status, or anything related to today's food preparation overview — even if they don't mention "prep" or "undirbúa" by name. Also use when comparing confirmed restaurants against a menu or order list.
+description: Check which Maul restaurants confirmed food prep today, from the maul@maul.is inbox ('er að undirbúa').
 ---
 
 ## Purpose

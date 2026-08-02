@@ -1,6 +1,6 @@
 ---
 name: knowledge-system
-description: Operate, tune, troubleshoot, or extend Einar's personal knowledge system — breadcrumb capture, per-prompt qmd recall, the concierge agent, and memory sync. Use when any part of that pipeline misbehaves (recall too quiet/noisy, index stale, a hook didn't fire, concierge returns nothing) or when adding/changing a piece of it. NOT for answering "what do I know about X" — that's the concierge agent.
+description: Operate or fix Einar's knowledge pipeline — breadcrumbs, qmd recall, concierge, memory sync. Not for lookups.
 ---
 
 # Knowledge system — operations runbook
