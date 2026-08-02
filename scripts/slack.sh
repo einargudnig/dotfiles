@@ -1,11 +1,16 @@
 #!/bin/bash
+# Slack helpers (DND/snooze, status) driven by a user token.
+#
+# Requires SLACKPCUSERKEY -- a Slack user OAuth token, exported outside this
+# repo (never commit it).
+#
+# TODO: support multiple workspaces by selecting a different key per target.
 
-# todo:
-# - diff keys depending on which slack you want to target
-
-if [[ "$SLACKPCUSERKEY" == "" ]]; then
-	echo "Missing $(SLACKPCUSERKEY) environment variable."
-
+# Note: `$(SLACKPCUSERKEY)` here would be *command substitution* -- bash would
+# try to run SLACKPCUSERKEY as a command and print "command not found", losing
+# the variable name from the message. Braces are what interpolate the name.
+if [[ -z "${SLACKPCUSERKEY}" ]]; then
+	echo "Missing SLACKPCUSERKEY environment variable." >&2
 	exit 1
 fi
 

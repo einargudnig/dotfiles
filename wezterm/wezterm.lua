@@ -7,13 +7,16 @@
 --  ╚══╝╚══╝ ╚══════╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝
 -- A GPU-accelerated cross-platform terminal emulator
 -- https://wezfurlong.org/wezterm/
-
--- Add the directory containing your config files to the package path
-package.path = package.path .. ";/Users/einargudjonsson/.wezterm/?.lua"
+--
+-- SECONDARY terminal. Ghostty is the daily driver (see ghostty/config); this is
+-- kept as a fallback. Keybindings here are deliberately minimal -- the tmux
+-- prefix bindings live in Ghostty's config, not here.
+--
+-- The old `keys.lua` helper module was removed: it was never required (the
+-- require line had been commented out for a long time) and had gone stale,
+-- hardcoding the tmux prefix as CTRL-b when tmux.conf sets it to CTRL-s.
 
 local wezterm = require("wezterm")
--- local k = require("keys")
--- local act = wezterm.action
 
 return {
 	-- color_scheme = 'termnial.sexy',
@@ -47,8 +50,12 @@ return {
 	},
 
 	keys = {
-		-- Send "CTRL-A" to the terminal when pressing CTRL-A, CTRL-A
-		{ key = "a", mods = "CTRL|CTRL", action = wezterm.action({ SendString = "\x01" }) },
+		-- Shift+Enter sends Esc+CR, which lets TUIs distinguish it from a plain
+		-- Enter (used for multi-line input in Claude Code and similar).
+		--
+		-- Removed: { key = "a", mods = "CTRL|CTRL", ... } -- "CTRL|CTRL" is a
+		-- duplicated modifier that parses as plain CTRL, so the binding sent
+		-- \x01 on Ctrl-A, which is exactly what Ctrl-A already does. A no-op.
 		{ key = "Enter", mods = "SHIFT", action = wezterm.action({ SendString = "\x1b\r" }) },
 	},
 }

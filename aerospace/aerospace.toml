@@ -115,6 +115,13 @@ alt-shift-minus = 'resize smart -50'
 alt-shift-equal = 'resize smart +50'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
+#
+# Letter workspaces are mnemonic, and the [[on-window-detected]] rules at the
+# bottom of this file auto-place apps into them. Keep the two in sync:
+#   E  Email      (Spark)            N  Notes     (Obsidian)
+#   G  Gigover    (IntelliJ, Insomnia)  S  Spotify
+#   M  Messages   (Asana, Front)     T  Todo      (Things)
+# I/O/P/R/U/V/W are bound but unassigned -- free for ad-hoc use.
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'

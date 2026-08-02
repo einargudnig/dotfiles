@@ -7,7 +7,13 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
--- Organize imports and remove unused imports on save (TypeScript/TSX)
+-- Organize imports and remove unused imports on save (TypeScript/TSX).
+--
+-- Cost note: this fires two separate LSP code_action round-trips on every
+-- .ts/.tsx write, on top of conform's oxfmt pass. It is the most expensive
+-- thing on the save path -- if saving large files ever feels sluggish, this is
+-- the first place to look, not the formatter. The vtsls guard below keeps it
+-- from firing when no TS server is attached.
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = vim.api.nvim_create_augroup("ts_imports", { clear = true }),
   pattern = { "*.tsx", "*.ts" },
