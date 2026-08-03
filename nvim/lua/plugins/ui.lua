@@ -3,7 +3,9 @@ return {
   {
     "folke/noice.nvim",
     opts = function(_, opts)
-      -- Disable cmdline takeover (fixes crash on Neovim 0.11.5)
+      -- cmdline + messages takeover stay ON; only the popupmenu is handed back
+      -- to Neovim. (An older comment here claimed cmdline was disabled to work
+      -- around a 0.11.5 crash -- it was re-enabled and the comment went stale.)
       opts.cmdline = { enabled = true }
       opts.messages = { enabled = true }
       opts.popupmenu = { enabled = false }
@@ -123,7 +125,9 @@ return {
   -- improved icons
   {
     "mskelton/termicons.nvim",
-    requires = { "nvim-tree/nvim-web-devicons" },
+    -- `dependencies`, not packer's `requires` -- lazy.nvim ignores the latter,
+    -- so this dependency was never actually declared.
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     build = false,
   },
 

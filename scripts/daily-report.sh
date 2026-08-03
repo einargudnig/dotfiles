@@ -10,7 +10,8 @@
 #
 # Environment variables (all optional):
 #   WORK_REPOS_DIR   - path to repos directory (default: ~/work)
-#   WORK_REPOS       - space-separated repo names (default: maul-backend foodie-web kitchen-web dashboard)
+#   WORK_REPOS       - space-separated repo names; overrides the default list
+#                      defined below (9 maul-* repos). Missing repos are skipped.
 #   WORK_GIT_AUTHOR  - git author email (default: einargudnig@gmail.com)
 
 REPOS_DIR="${WORK_REPOS_DIR:-$HOME/work}"

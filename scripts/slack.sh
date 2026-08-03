@@ -79,15 +79,18 @@ slack_dnd() {
 	fi
 }
 
-case $1 in
+# Args MUST stay quoted here. Unquoted "$2" word-splits, so the documented
+# example `./slack.sh status "Out surfing" ":man-surfing:" "180"` used to arrive
+# as TEXT="Out", EMOJI="surfing", EXP=":man-surfing:".
+case "$1" in
 "afk")
-	slack_afk $2
+	slack_afk "$2"
 	;;
 "dnd")
-	slack_dnd $2 $3
+	slack_dnd "$2" "$3"
 	;;
 "status")
-	slack_status $2 $3 $4
+	slack_status "$2" "$3" "$4"
 	;;
 *)
 	cat <<EOF
