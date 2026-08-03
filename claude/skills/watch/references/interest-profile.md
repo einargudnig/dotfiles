@@ -36,21 +36,34 @@ query per video. Edit this file freely; it is the tuning knob for the whole skil
 Sort by *what it changes for him*, not by where it fell in the video.
 A single highlight that overturns a prior decision outranks five good facts.
 
-## Tuning — YOUR CALL
+## Tuning
 
-<!-- TODO(einar): this section shapes every report the skill produces.
-     A few things worth deciding, replacing this comment with your answers:
+**Cap: 5-7 highlights.** Hard limit. If a video has more than 7 things worth
+saying, that itself is the headline — say so and still pick the best 7. Fewer
+than 5 is fine and often correct. Never pad to reach the cap.
 
-     1. How many highlights? A hard cap (5-7) forces real ranking. No cap
-        drifts back into summarization. Or scale it to video length?
+**Verdict first.** Every report opens with a one-line call: watch in full /
+skim these bits / skip. Commit to one; a hedged verdict is no verdict.
 
-     2. When a video says something that contradicts a vault note — lead with
-        it as its own callout section, or just tag it inline in the list?
+**Conflicts get their own section, and it must link both ways** — name the
+video timestamp *and* the `[[vault-note]]` it collides with, plus a one-line
+statement of what you decided there. A conflict with no link back is just an
+opinion. (Bidirectional linking is manual for now — flag it, don't write it.)
 
-     3. What does "watch this later / skip it" look like? Should the report
-        open with a one-line verdict (worth it / skim / skip), or is that
-        presumptuous?
+**Always surface, regardless of the other rules:**
 
-     4. Anything in "Noise" above that you actually DO want, or any topic
-        that should always be surfaced regardless of the other rules?
--->
+- Anything touching **Icelandic language, locale, collation, or currency
+  handling** — rare enough that it's worth knowing about even in passing.
+- **Cloudflare Workers runtime limits and pricing changes** — the migration is
+  live, so these land on real decisions.
+- **Agentic coding workflow** — how people structure, review, or guardrail
+  AI-generated changes. Directly feeds the software-factory work.
+- **Anything that would invalidate a dependency choice** — deprecations,
+  maintainer changes, security advisories, a library going unmaintained.
+- **Nordic / EU regulatory** items touching food delivery, payments, or
+  gig-work classification.
+
+**Never surface, even if otherwise on-topic:**
+
+- Framework release-note recitals. If it matters, it'll show up as a conflict.
+- "AI will replace developers" discourse in any direction.

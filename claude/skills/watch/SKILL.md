@@ -43,14 +43,18 @@ if the video is clearly off-topic from anything he works on.
 Score every candidate against the profile. Cut anything that's merely true.
 Ask of each one: *does this change a decision, a plan, or a belief he holds?*
 
+**Cap at 5-7.** Fewer is fine. Never pad. If the video genuinely has more than
+7, say so in the verdict and still ship the best 7.
+
 Explicitly look for **conflicts** — the video asserting something his vault notes
-contradict. Those lead the report.
+contradict. Those get their own section, and each one must name both the
+timestamp and the `[[vault-note]]` it collides with.
 
 ## 4. Report
 
 ```
 {title} · {duration} · {uploader}
-Verdict: {one line — worth watching in full / skim these bits / skip}
+Verdict: {watch in full | skim these bits | skip} — {one clause of why}
 
 ## Highlights
 
@@ -65,6 +69,8 @@ Verdict: {one line — worth watching in full / skim these bits / skip}
 ## Worth chasing                     (omit if none)
 - {tool / paper / repo mentioned}, [08:31]
 ```
+
+Commit to one verdict. "Depends what you're after" is not a verdict.
 
 Timestamp links: YouTube supports `&t=NNNs` (or `?t=` on `youtu.be`). X/Twitter
 has no deep links — print bare `[MM:SS]` there.
