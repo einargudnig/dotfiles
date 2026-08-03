@@ -6,31 +6,16 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "antoinemadec/FixCursorHold.nvim",
-      -- adapters
-      "nvim-neotest/neotest-vim-test",
-      "nvim-neotest/neotest-jest", -- optional (Jest fallback)
       "marilari88/neotest-vitest",
     },
     config = function()
       local neotest = require("neotest")
 
       neotest.setup({
+        -- vitest only. The jest adapter was declared but its config had always
+        -- been commented out; add it back if a repo ever needs it.
         adapters = {
-          -- Vitest adapter
-          require("neotest-vitest")({
-            -- Optional: customize vitest command or cwd detection
-            -- vitestCommand = "vitest", -- or "pnpm vitest" / "yarn vitest" / "npx vitest"
-            -- filter_dir = function(name, rel_path, root) return true end,
-            -- is_test_file = function(file_path) return file_path:match(".*%.test%.[tj]sx?$") end,
-          }),
-
-          -- Optional: Jest as fallback for repos that use it
-          -- require("neotest-jest")({
-          --   jestCommand = "npm test --",
-          --   jestConfigFile = "jest.config.ts",
-          --   env = { CI = true },
-          --   cwd = function(path) return vim.fn.getcwd() end,
-          -- }),
+          require("neotest-vitest")({}),
         },
 
         -- General UI/options

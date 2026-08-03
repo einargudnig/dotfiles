@@ -16,23 +16,24 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   spec = {
-    -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    -- import/override with your plugins
-    { import = "lazyvim.plugins.extras.linting.eslint" },
-    { import = "lazyvim.plugins.extras.formatting.prettier" },
+
+    -- Language support. Deliberately narrow: this is a JS/TS editor.
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.json" },
-    { import = "lazyvim.plugins.extras.lang.markdown" },
-    { import = "lazyvim.plugins.extras.lang.rust" },
     { import = "lazyvim.plugins.extras.lang.tailwind" },
-    -- { import = "lazyvim.plugins.extras.coding.copilot" },
-    -- { import = "lazyvim.plugins.extras.vscode" },
     { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
     { import = "lazyvim.plugins.extras.test.core" },
-    -- { import = "lazyvim.plugins.extras.coding.yanky" },
-    -- { import = "lazyvim.plugins.extras.editor.mini-files" },
-    -- { import = "lazyvim.plugins.extras.util.project" },
+
+    -- Deliberately NOT imported:
+    --   linting.eslint      -- replaced by oxlint (see plugins/linting.lua)
+    --   formatting.prettier -- plugins/formatting.lua owns every mapping now;
+    --                          the extra also registered a none-ls prettier
+    --                          source at priority 200 that shadowed conform
+    --   lang.markdown       -- ships render-markdown.nvim, which fights
+    --                          markview.nvim for the same buffer
+    --   lang.rust           -- no Rust projects on this machine
+
     { import = "plugins" },
   },
   defaults = {
