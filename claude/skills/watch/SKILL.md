@@ -2,7 +2,7 @@
 name: watch
 description: Invoke when given a YouTube or X/Twitter video link (or asked to "watch this"). Pulls the transcript, then reports highlights ranked by what Einar personally finds interesting, with timestamps. Not for reading articles or PDFs — use /read.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Watch: personalized video highlights
@@ -68,6 +68,9 @@ Verdict: {watch in full | skim these bits | skip} — {one clause of why}
 
 ## Worth chasing                     (omit if none)
 - {tool / paper / repo mentioned}, [08:31]
+
+## Cut as noise                      (omit if the video was wall-to-wall signal)
+{one short paragraph naming the bulk of the video that didn't make the cut}
 ```
 
 Commit to one verdict. "Depends what you're after" is not a verdict.
@@ -75,8 +78,55 @@ Commit to one verdict. "Depends what you're after" is not a verdict.
 Timestamp links: YouTube supports `&t=NNNs` (or `?t=` on `youtu.be`). X/Twitter
 has no deep links — print bare `[MM:SS]` there.
 
+**"Cut as noise" is not optional padding — it's what makes a short report
+legible.** Four highlights from a 90-minute video reads as thin coverage until
+you name the 86 minutes you deliberately dropped.
+
 Keep it tight. If nothing clears the bar, say the video had nothing for him —
 that's a valid and useful result.
+
+## 5. Save
+
+Save every report by default to:
+
+```
+~/personal/obsidian/second-brain/40 reference/videos/{lowercase video title}.md
+```
+
+Match the folder's existing naming — lowercase, spaces not dashes, no date
+prefix (`goodbye useEffect.md`, `conductor framework.md`). Append ` - {channel}`
+when the title alone is ambiguous.
+
+Skip only if he says "don't save" or "just show me". Tell him the path.
+
+Frontmatter follows `template1` (the folder's older notes predate it; new ones
+still use it):
+
+```yaml
+---
+Type: #type/work
+Area: #area/{project if the video maps to one, else general}
+Keywords: #keyword/{topic} #keyword/{topic}
+Status: #status/active
+Date Created: {YYYY-MM-DD}
+---
+```
+
+Below the H1, before the verdict, record provenance:
+
+```
+source: {url}
+{duration} · {uploader} · published {YYYY-MM-DD} · watched via `/watch`
+```
+
+**Link both ways.** Add a `## Related` section linking the vault notes the
+concierge query surfaced — especially any note named in Conflicts. If this
+session also produced a breadcrumb, link it there *and* add a line back to the
+video note from the breadcrumb's `## Related`. A video note that links nothing
+is a dead leaf.
+
+If a real idea emerged that has no vault home, say so and offer `/memento` —
+don't write a slip-box atom unasked.
 
 ## Notes
 
