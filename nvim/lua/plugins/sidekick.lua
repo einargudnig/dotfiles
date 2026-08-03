@@ -1,6 +1,5 @@
 return {
   "folke/sidekick.nvim",
-  enabled = false, -- TEMP: disabled for debugging
   opts = {
     -- add any options here
     cli = {
@@ -14,13 +13,15 @@ return {
     {
       "<tab>",
       function()
-        -- if there is a next edit, jump to it, otherwise apply it if any
+        -- If there is a next edit, jump to it (or apply it). Otherwise fall
+        -- through to :tabnext -- this key is also bound in config/keymaps.lua
+        -- and sidekick's spec would otherwise silently shadow tab-switching.
         if not require("sidekick").nes_jump_or_apply() then
-          return "<Tab>" -- fallback to normal tab
+          return "<Cmd>tabnext<CR>"
         end
       end,
       expr = true,
-      desc = "Goto/Apply Next Edit Suggestion",
+      desc = "Next Edit Suggestion, else next tab",
     },
     {
       "<c-.>",

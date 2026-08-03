@@ -8,11 +8,15 @@ local opts = { noremap = true, silent = true }
 -- select all
 keymap.set("n", "<C-a>", "gg<S-v>G")
 
--- delete word backwards
-keymap.set("n", "dw", "vb_d")
+-- Delete the word before the cursor. (Was `vb_d`, where the stray `_` jumped to
+-- the first non-blank of the line, so it deleted everything from there to the
+-- cursor rather than a single word.)
+keymap.set("n", "dw", "vbd")
 
 -- New tab
 keymap.set("n", "te", ":tabedit")
+-- <tab> is also claimed by sidekick.nvim, whose mapping falls through to
+-- :tabnext when there is no edit suggestion, so both behaviours survive.
 keymap.set("n", "<tab>", ":tabnext<Return>", opts)
 keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
 -- Split window
@@ -34,7 +38,3 @@ keymap.set("i", "jk", "<ESC>", { silent = true })
 
 -- oil
 vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
-
--- dooing
--- vim.keymap.set("n", "<leader>dd", "<CMD>Dooing<CR>", { desc = "Open dooing" })
--- vim.keymap.set("n", "<leader>ds", "<CMD>Dooing<CR>", { desc = "Open dooing" })
