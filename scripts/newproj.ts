@@ -22,15 +22,26 @@ const PRESET_LABELS: Record<Preset, string> = {
 
 const TOOLING = {
   typescript: "^7.0.0",
-  oxlint: "^1.73.0",
-  oxfmt: "^0.58.0",
+  oxlint: "^1.77.0",
+  oxfmt: "^0.62.0",
+  // Type-aware linting. oxlint shells out to this for rules that need real type
+  // information (no-floating-promises, await-thenable, no-misused-promises, ...).
+  // As a devDependency oxlint resolves it from node_modules/.bin, so `--type-aware`
+  // works in CI with no global install. NB: the bare `tsgolint` package on npm is
+  // an unrelated placeholder — `oxlint-tsgolint` is the oxc-project one.
+  tsgolint: "^7.0.2001",
 } as const;
+
+// oxlint with type-aware rules enabled. The rules themselves come from the
+// `typescript` plugin + `categories.correctness` already in .oxlintrc.json --
+// the flag is what makes oxlint invoke tsgolint to resolve types.
+const LINT = "oxlint --type-aware";
 
 // Shared test-runner deps for the non-Bun presets (vite-react, next).
 const VITEST_DEPS = {
   "@testing-library/dom": "^10",
   "@testing-library/react": "^16",
-  jsdom: "^29",
+  jsdom: "^30",
   vitest: "^4",
 } as const;
 
@@ -123,11 +134,11 @@ const viteTsconfig =
 const pkg = (obj: Record<string, unknown>) => JSON.stringify(obj, null, 2) + "\n";
 
 const CHECK_DESC: Record<Preset, string> = {
-  "bun-lib": "oxlint + tsc --noEmit + bun test",
-  hono: "oxlint + tsc --noEmit + bun test",
-  "vite-react": "oxlint + tsc --noEmit + vitest",
-  "tanstack-start": "oxlint + tsc --noEmit + vitest",
-  astro: "oxlint + astro check",
+  "bun-lib": "oxlint --type-aware + tsc --noEmit + bun test",
+  hono: "oxlint --type-aware + tsc --noEmit + bun test",
+  "vite-react": "oxlint --type-aware + tsc --noEmit + vitest",
+  "tanstack-start": "oxlint --type-aware + tsc --noEmit + vitest",
+  astro: "oxlint --type-aware + astro check",
 };
 
 const TYPECHECK_DESC: Record<Preset, string> = {
@@ -150,7 +161,10 @@ bun run check   # ${CHECK_DESC[preset]}
 \`\`\`
 
 - **Type-check:** ${TYPECHECK_DESC[preset]}
-- **Lint:** oxlint (\`.oxlintrc.json\`)
+- **Lint:** oxlint with type-aware rules (\`.oxlintrc.json\`). \`--type-aware\` makes
+  oxlint shell out to \`tsgolint\` for rules needing real types — floating promises,
+  \`await\` on non-thenables, misused promises. Drop the flag for a faster,
+  syntax-only pass.
 - **Format:** oxfmt (\`bun run format\`)
 `;
 
@@ -166,17 +180,18 @@ const files = (name: string, preset: Preset): Record<string, string> => {
         scripts: {
           dev: "bun run --watch src/index.ts",
           start: "bun run src/index.ts",
-          lint: "oxlint",
+          lint: LINT,
           typecheck: "tsc --noEmit",
           test: "bun test",
           format: "oxfmt --write .",
           "format:check": "oxfmt --check .",
-          check: "oxlint && tsc --noEmit && bun test",
+          check: `${LINT} && tsc --noEmit && bun test`,
         },
         devDependencies: {
           "@types/bun": "latest",
           oxfmt: TOOLING.oxfmt,
           oxlint: TOOLING.oxlint,
+          "oxlint-tsgolint": TOOLING.tsgolint,
           typescript: TOOLING.typescript,
         },
       }),
@@ -209,18 +224,19 @@ test("greet", () => {
         scripts: {
           dev: "bun run --hot src/index.ts",
           start: "bun run src/index.ts",
-          lint: "oxlint",
+          lint: LINT,
           typecheck: "tsc --noEmit",
           test: "bun test",
           format: "oxfmt --write .",
           "format:check": "oxfmt --check .",
-          check: "oxlint && tsc --noEmit && bun test",
+          check: `${LINT} && tsc --noEmit && bun test`,
         },
         dependencies: { hono: "^4" },
         devDependencies: {
           "@types/bun": "latest",
           oxfmt: TOOLING.oxfmt,
           oxlint: TOOLING.oxlint,
+          "oxlint-tsgolint": TOOLING.tsgolint,
           typescript: TOOLING.typescript,
         },
       }),
@@ -259,18 +275,19 @@ test("GET /health", async () => {
           dev: "astro dev",
           build: "astro build",
           preview: "astro preview",
-          lint: "oxlint",
+          lint: LINT,
           // astro check embeds the TS API via Volar → typescript@5, not TS7
           typecheck: "astro check",
           format: "oxfmt --write .",
           "format:check": "oxfmt --check .",
-          check: "oxlint && astro check",
+          check: `${LINT} && astro check`,
         },
         dependencies: { astro: "^7" },
         devDependencies: {
-          "@astrojs/check": "^0.9.9",
+          "@astrojs/check": "^0.9.10",
           oxfmt: TOOLING.oxfmt,
           oxlint: TOOLING.oxlint,
+          "oxlint-tsgolint": TOOLING.tsgolint,
           typescript: "^5",
         },
       }),
@@ -323,12 +340,12 @@ const title = "${name}";
         dev: "vite",
         build: "tsc --noEmit && vite build",
         preview: "vite preview",
-        lint: "oxlint",
+        lint: LINT,
         typecheck: "tsc --noEmit",
         test: "vitest run",
         format: "oxfmt --write .",
         "format:check": "oxfmt --check .",
-        check: "oxlint && tsc --noEmit && vitest run",
+        check: `${LINT} && tsc --noEmit && vitest run`,
       },
       dependencies: { react: "^19", "react-dom": "^19" },
       devDependencies: {
@@ -338,6 +355,7 @@ const title = "${name}";
         "@vitejs/plugin-react": "^6",
         oxfmt: TOOLING.oxfmt,
         oxlint: TOOLING.oxlint,
+        "oxlint-tsgolint": TOOLING.tsgolint,
         typescript: TOOLING.typescript,
         vite: "^8",
         ...VITEST_DEPS,
@@ -512,15 +530,29 @@ const scaffoldTanstackStart = async (projName: string, projDir: string) => {
   p.devDependencies = p.devDependencies ?? {};
   p.devDependencies.typescript = "^7.0.0";
   p.devDependencies.oxlint = TOOLING.oxlint;
+  p.devDependencies["oxlint-tsgolint"] = TOOLING.tsgolint;
   p.devDependencies.oxfmt = TOOLING.oxfmt;
+  // The official CLI used to ship a `test: vitest run` script; as of 2026-08 it
+  // ships neither the script nor the dependency, so the overlay owns vitest.
+  // Without this, the smoke test written below fails to resolve `vitest` and the
+  // check gate dies on TS2307.
+  p.devDependencies.vitest = "^4";
   p.scripts = p.scripts ?? {};
-  p.scripts.lint = "oxlint";
+  p.scripts.lint = LINT;
   p.scripts.typecheck = "tsc --noEmit";
+  p.scripts.test = "vitest run";
   p.scripts.format = "oxfmt --write .";
   p.scripts["format:check"] = "oxfmt --check .";
-  p.scripts.check = "oxlint && tsc --noEmit && vitest run";
+  p.scripts.check = `${LINT} && tsc --noEmit && vitest run`;
   await Bun.write(pkgPath, JSON.stringify(p, null, 2) + "\n");
   await Bun.write(resolve(projDir, ".oxlintrc.json"), tssOxlintrc);
+  // routeTree.gen.ts is generated by TanStack Router but *committed*, so
+  // .gitignore (which oxfmt does honour) won't exclude it. Every build
+  // regenerates it unformatted, which would fail `format:check` forever.
+  await Bun.write(
+    resolve(projDir, ".oxfmtrc.json"),
+    JSON.stringify({ ignorePatterns: ["src/routeTree.gen.ts"] }, null, 2) + "\n",
+  );
   // A sample test so the scaffold's vitest (and `check`) has something to run.
   await Bun.write(
     resolve(projDir, "src/smoke.test.ts"),
