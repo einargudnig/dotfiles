@@ -66,9 +66,15 @@ re-check each maintenance run.
 - After install, the scaffolder runs `bun run format` (oxfmt) on the generated project,
   so a fresh scaffold is oxfmt-clean regardless of template-vs-formatter drift. Bumping
   oxfmt therefore never leaves the templates stale.
-- Run `format:check` on **source, before building** — oxfmt scans `dist/` build output
-  if present (it doesn't honor `.gitignore`), so a post-build `format:check` will flag
-  build artifacts. The verify recipe orders format:check before builds for this reason.
+- **oxfmt honours `.gitignore`** (and `.prettierignore`) as of 0.62 — verified: with a
+  populated `dist/` present it flagged 0 files there. This *supersedes* the older rule
+  that oxfmt scans `dist/` regardless; running `format:check` after a build is now safe
+  for normally-ignored artifacts. The verify recipe still orders format:check first,
+  which costs nothing.
+- **Committed generated files still need an explicit `.oxfmtrc.json`.** `.gitignore`
+  can't help when the file is meant to be committed — e.g. TanStack Router's
+  `src/routeTree.gen.ts`, which every build regenerates unformatted. The tanstack-start
+  overlay ships `.oxfmtrc.json` with `ignorePatterns: ["src/routeTree.gen.ts"]`.
 
 ## Durable gotchas (grow this list)
 
@@ -91,3 +97,14 @@ re-check each maintenance run.
 8. **next + vitest needs `@vitejs/plugin-react`.** Next has no Vite, so vitest can't
    transform JSX without the plugin; add it to devDeps + a standalone `vitest.config.ts`
    (`defineConfig` from `vitest/config`). The `test`/`check` still use `tsgo` for types.
+9. **Delegated presets drift silently.** `tanstack-start` is scaffolded by an upstream
+   CLI, so a dependency it *used to* ship can vanish between runs and only surfaces as
+   a check failure. In 2026-08 it stopped shipping `vitest` entirely, breaking the
+   overlay's smoke test with `TS2307`; the overlay now owns `vitest` + the `test`
+   script. Re-verify delegated presets every maintenance run — never assume.
+10. **Type-aware oxlint needs the flag, not extra rules.** `plugins: ["typescript"]` +
+   `categories.correctness` already selects the type-aware rules; `--type-aware` is
+   what makes oxlint invoke `tsgolint` to resolve types. Adding explicit rule entries
+   is redundant. The binary comes from **`oxlint-tsgolint`** (the bare `tsgolint` on
+   npm is an unrelated third-party placeholder), and as a devDependency oxlint finds
+   it in `node_modules/.bin`, so CI needs no global install.

@@ -59,6 +59,9 @@ link_one "$SRC_DIR/settings.json" "$DEST_DIR/settings.json"
 if [[ -d "$SRC_DIR/hooks" ]]; then
   for hook in "$SRC_DIR"/hooks/*; do
     [[ -e "$hook" ]] || continue            # empty dir guard
+    # Skip build artefacts -- this loop used to link __pycache__ into ~/.claude,
+    # which then dangled once the directory was removed from the repo.
+    case "$(basename "$hook")" in __pycache__|*.pyc) continue ;; esac
     link_one "$hook" "$DEST_DIR/hooks/$(basename "$hook")"
   done
 fi
