@@ -99,29 +99,6 @@ return {
   -- buffer line (disabled)
   { "akinsho/bufferline.nvim", enabled = false },
 
-  -- statusline
-  {
-    "nvim-lualine/lualine.nvim",
-    opts = function(_, opts)
-      table.insert(opts.sections.lualine_c, {
-        function()
-          return " "
-        end,
-        color = function()
-          local ok, sk = pcall(require, "sidekick.status")
-          local status = ok and sk.get() or nil
-          if status then
-            return status.kind == "Error" and "DiagnosticError" or status.busy and "DiagnosticWarn" or "Special"
-          end
-        end,
-        cond = function()
-          local ok, status = pcall(require, "sidekick.status")
-          return ok and status.get() ~= nil
-        end,
-      })
-    end,
-  },
-
   -- improved icons
   {
     "mskelton/termicons.nvim",

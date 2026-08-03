@@ -8,15 +8,17 @@ local opts = { noremap = true, silent = true }
 -- select all
 keymap.set("n", "<C-a>", "gg<S-v>G")
 
--- Delete the word before the cursor. (Was `vb_d`, where the stray `_` jumped to
--- the first non-blank of the line, so it deleted everything from there to the
--- cursor rather than a single word.)
-keymap.set("n", "dw", "vbd")
+-- Delete the word before the cursor.
+--
+-- `db` is a plain operator + motion: one keystroke pair, no mode changes, and
+-- the motion is *exclusive*, so it stops before the character under the cursor.
+-- The earlier `vb_d` / `vbd` forms detoured through visual mode, which is
+-- inclusive -- they ate one extra character and clobbered the '< '> marks.
+-- (`db` works natively too; this mapping only exists to keep `dw` as the key.)
+keymap.set("n", "dw", "db")
 
 -- New tab
 keymap.set("n", "te", ":tabedit")
--- <tab> is also claimed by sidekick.nvim, whose mapping falls through to
--- :tabnext when there is no edit suggestion, so both behaviours survive.
 keymap.set("n", "<tab>", ":tabnext<Return>", opts)
 keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
 -- Split window
