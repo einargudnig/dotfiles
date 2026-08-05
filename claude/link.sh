@@ -8,7 +8,10 @@
 #   ~/.claude/skills                     -> dotfiles/claude/skills        (dir)
 #   ~/.claude/agents                     -> dotfiles/claude/agents        (dir)
 #   ~/.claude/settings.json              -> dotfiles/claude/settings.json (file)
+#   ~/.claude/CLAUDE.md                  -> dotfiles/claude/CLAUDE.md     (file)
 #   ~/.claude/hooks/<each>.py|.sh        -> dotfiles/claude/hooks/<each>  (files)
+#
+# New hooks in dotfiles/claude/hooks/ are picked up automatically by the loop below.
 #
 # Individual hook files are linked one by one (not the whole hooks/ dir),
 # because ~/.claude/hooks also holds machine-local hooks that aren't tracked.
@@ -54,6 +57,7 @@ $DRY_RUN && echo "(dry run — no changes)"
 link_one "$SRC_DIR/skills"        "$DEST_DIR/skills"
 link_one "$SRC_DIR/agents"        "$DEST_DIR/agents"
 link_one "$SRC_DIR/settings.json" "$DEST_DIR/settings.json"
+link_one "$SRC_DIR/CLAUDE.md"     "$DEST_DIR/CLAUDE.md"
 
 # Every tracked hook becomes its own link (new hooks are picked up automatically)
 if [[ -d "$SRC_DIR/hooks" ]]; then

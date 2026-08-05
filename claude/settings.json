@@ -85,6 +85,18 @@
         "matcher": "AskUserQuestion"
       }
     ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "command": "python3 \"$HOME/.claude/hooks/papercut-detect.py\"",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
     "SessionEnd": [
       {
         "hooks": [
@@ -163,6 +175,11 @@
           }
         ]
       }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(papercut:*)"
     ]
   },
   "skipDangerousModePermissionPrompt": true,
