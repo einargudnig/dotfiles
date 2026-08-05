@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Rebuild the Velite content layer and confirm a new /interesting item landed.
+# Rebuild the Velite content layer and confirm a new /notes link landed.
 # Usage: verify.sh "<exact title>"
 set -euo pipefail
 
@@ -19,7 +19,7 @@ python3 - "$TITLE" <<'PY'
 import json, pathlib, sys
 
 title = sys.argv[1]
-items = json.loads(pathlib.Path(".velite/interesting.json").read_text())
+items = json.loads(pathlib.Path(".velite/links.json").read_text())
 match = next((i for i in items if i["title"] == title), None)
 
 if not match:
@@ -28,11 +28,16 @@ if not match:
           + ", ".join(repr(i["title"]) for i in items), file=sys.stderr)
     raise SystemExit(1)
 
-print(f"  ok — {len(items)} item(s) in /interesting")
+desc = match["description"]
+print(f"  ok — {len(items)} link(s) on /notes")
 print(f"     title: {match['title']}")
 print(f"     date:  {match['date'][:10]}")
-print(f"     url:   {match.get('url') or '(none)'}")
+print(f"     url:   {match['url']}")
+print(f"     desc:  {len(desc)}/300 chars")
 print(f"     tags:  {', '.join(match.get('tags') or []) or '(none)'}")
+
+if not match["url"].startswith(("http://", "https://")):
+    print(f"  WARNING: url is not http(s) — velite won't catch this", file=sys.stderr)
 
 newest = max(items, key=lambda i: i["date"])
 if newest["title"] != title:
