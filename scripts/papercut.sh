@@ -154,7 +154,8 @@ cmd_push() {
     id="$(cat "$GIST_ID_FILE")"
     gh gist edit "$id" -f papercuts.md "$LOG" >/dev/null
   else
-    id="$(gh gist create "$LOG" --secret --desc 'Agent papercuts — friction log' | sed 's#.*/##')"
+    # gh has no --secret: gists are secret unless --public is passed.
+    id="$(gh gist create "$LOG" --desc 'Agent papercuts — friction log' | sed 's#.*/##')"
     printf '%s\n' "$id" > "$GIST_ID_FILE"
   fi
   printf 'pushed → https://gist.github.com/%s\n' "$id"
