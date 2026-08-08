@@ -203,6 +203,16 @@ if command -v wt >/dev/null 2>&1; then
   fi
   [[ -s ~/.cache/wt-init.zsh ]] && source ~/.cache/wt-init.zsh
 fi
+
+# varlock completion (`varlock complete zsh` costs ~55ms uncached)
+if command -v varlock >/dev/null 2>&1; then
+  _stale=( ~/.cache/varlock-completion.zsh(N.md+14) )
+  if [[ ! -s ~/.cache/varlock-completion.zsh || -n $_stale ]]; then
+    mkdir -p ~/.cache
+    varlock complete zsh > ~/.cache/varlock-completion.zsh 2>/dev/null
+  fi
+  [[ -s ~/.cache/varlock-completion.zsh ]] && source ~/.cache/varlock-completion.zsh
+fi
 unset _stale
 ###-begin-npm-completion-###
 #
