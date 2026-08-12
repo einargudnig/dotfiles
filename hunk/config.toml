@@ -1,0 +1,14 @@
+# Hunk -- terminal diff viewer. Keys: https://www.hunk.dev/docs/reference/config/
+# Symlinked to ~/.config/hunk/config.toml; hunk's own state.json stays untracked
+# beside it, so this is a file symlink rather than a directory one.
+
+# Pinned, not "auto". Ghostty follows the macOS appearance and swaps to Latte in
+# light mode; diffs stay Mocha regardless.
+theme = "catppuccin-mocha"
+
+# Agent rationale is the reason to use Hunk over a plain pager -- show it up front.
+agent_notes = true
+
+# Distinguish moved code from added/removed. Matters most on agent changesets,
+# which relocate blocks far more than hand edits do.
+color_moved = true

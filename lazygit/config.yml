@@ -7,6 +7,16 @@ gui:
 git:
   diffRenderers:
     - command: diff-so-fancy
+customCommands:
+  # Full changeset in Hunk. Built-in <ctrl+t> (openDiffTool) already routes to
+  # Hunk via diff.tool, but Git invokes difftool once per file pair -- this gets
+  # the whole working tree in one session. Files context only: `V` is
+  # pasteCommits in the commits panel.
+  - key: "V"
+    context: "files"
+    description: "Review changeset in Hunk"
+    command: "hunk diff"
+    subprocess: true
 keybinding:
   universal:
     quit: "q"
