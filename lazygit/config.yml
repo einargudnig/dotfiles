@@ -16,7 +16,7 @@ customCommands:
     context: "files"
     description: "Review changeset in Hunk"
     command: "hunk diff"
-    subprocess: true
+    output: terminal
 keybinding:
   universal:
     quit: "q"
