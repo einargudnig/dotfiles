@@ -1,9 +1,15 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "agentPushNotifEnabled": true,
   "alwaysThinkingEnabled": true,
   "attribution": {
     "commit": "",
     "pr": ""
+  },
+  "dynamicContext": {
+    "relationshipContext": true,
+    "learningReadback": true,
+    "activeWorkSummary": true
   },
   "editorMode": "vim",
   "enabledPlugins": {
@@ -25,6 +31,11 @@
     "swift-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "vercel@claude-plugins-official": true
+  },
+  "env": {
+    "LIFEOS_DIR": "/Users/einargudjonsson/.claude/LIFEOS",
+    "LIFEOS_CONFIG_DIR": "/Users/einargudjonsson/.config/LIFEOS",
+    "PROJECTS_DIR": "/Users/einargudjonsson/Projects"
   },
   "extraKnownMarketplaces": {
     "fjarmalalaesi": {
@@ -181,6 +192,9 @@
     "allow": [
       "Bash(papercut:*)"
     ]
+  },
+  "preferences": {
+    "temperatureUnit": "celsius"
   },
   "skipDangerousModePermissionPrompt": true,
   "statusLine": {

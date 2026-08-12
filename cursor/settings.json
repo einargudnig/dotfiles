@@ -81,10 +81,7 @@
     "**/node_modules/*/**": true,
   },
   "tailwindCSS.files.exclude": ["**/.git/**", "**/.hg/**", "**/.svn/**"],
-  "workbench.settings.applyToAllProfiles": [
-    "editor.formatOnSave",
-    "editor.formatOnPaste",
-  ],
+  "workbench.settings.applyToAllProfiles": ["editor.formatOnSave", "editor.formatOnPaste"],
   "liveshare.launcherClient": "visualStudioCode",
   "codestats.apikey": "SFMyNTY.WldsdVlYSm5kV1J1YVE9PSMjTVRReU1URT0.I3Sg8E4hHi4XtLtOMqFIIqazVf1XN4lIb-K2YhNE3CY",
   "codestats.username": "einargudni",
@@ -208,7 +205,7 @@
   "explorer.confirmDelete": false,
   "amp.url": "https://ampcode.com/",
   "cursor.composer.shouldAllowCustomModes": true,
-  "update.releaseTrack": "prerelease",
+  "update.releaseTrack": "stable",
   "[dockercompose]": {
     "editor.insertSpaces": true,
     "editor.tabSize": 2,
@@ -265,6 +262,7 @@
     },
   ],
   "vim.disableExtension": true,
+  "js/ts.experimental.useTsgo": true,
   // This is experimental!!
   // "typescript.experimental.useTsgo": true
 }
