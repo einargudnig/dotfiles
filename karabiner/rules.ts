@@ -303,7 +303,7 @@ const rules: KarabinerRules[] = [
       c: open("raycast://extensions/thomas/color-picker/pick-color"),
       e: open("raycast://extensions/raycast/emoji-symbols/search-emoji-symbols"),
       p: open("raycast://extensions/raycast/raycast/confetti"),
-      a: open("raycast://extensions/raycast/raycast-ai/ai-chat"),
+      a: open("raycast://extensions/raycast/ai/ai-chat"),
       // s: open("raycast://extensions/peduarte/silent-mention/index"),
       h: open("raycast://extensions/raycast/clipboard-history/clipboard-history"),
       k: open("raycast://extensions/rolandleth/kill-process/index"),

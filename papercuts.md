@@ -81,3 +81,114 @@ LifeOS GenerateTelosSummary.ts hardcodes the author's own Context Filter ('human
 ## 2026-08-12 06:06 +0000 · tool · claude-opus-5 · gigover@master · claude-code
 node --test lib-test/ (directory arg) reported 'tests 1 / pass 0 fail' and exited 0 while discovering none of the 10 tests in it — a green build for zero tests
 **Worked instead:** pass an explicit glob: node --test "lib-test/**/*.test.js"
+
+## 2026-08-12 23:29 +0000 · tool · claude-opus-5 · sterkir-pabbar@master · claude-code
+vercel env add <name> preview --value X --yes returns status=action_required/git_branch_required, and the command it suggests for 'all Preview branches' is byte-identical to the one just run — infinite loop
+**Worked instead:** pass an explicit git branch as the third arg: vercel env add NAME preview master --value X --yes
+
+## 2026-08-12 23:38 +0000 · docs · claude-opus-5 · sterkir-pabbar@master · claude-code
+sanity hooks create is interactive-only (no --url/--filter flags), and the management API POST /v2021-10-04/hooks/projects/<id> has a top-level 'filter' field that rejects GROQ strings - the GROQ filter actually lives in rule.filter, undocumented in the error messages
+**Worked instead:** POST with type:document, apiVersion, and rule:{on:[...],filter:'_type == "x"',projection:'{_id}'}; probe with filter:{} to reveal the real response shape
+
+## 2026-08-13 08:36 +0000 · setup · claude-opus-5 · maul-admin@feat/admin-panel-asana-tasks · claude-code
+npm run sls:admin:deploy fails resolving ${env:REGLA_WEB_SERVICE_URL} for dailyBillingSnapshotCron; services/admin/.env predates the billing cron and has no REGLA_* keys. Blocks any full admin deploy, not just billing.
+**Worked instead:** sls deploy function --function getLocation deploys a modified existing handler without resolving the whole stack
+
+## 2026-08-13 08:36 +0000 · setup · claude-opus-5 · maul-admin@feat/admin-panel-asana-tasks · claude-code
+correction to previous: sls deploy function is ALSO blocked by the unresolvable REGLA_* vars — serverless resolves the entire serverless.yml before deploying any single function
+**Worked instead:** prefix dummy values on the command only: REGLA_WEB_SERVICE_URL=x REGLA_WEB_SERVICE_USERNAME=x REGLA_WEB_SERVICE_PASSWORD=x sls deploy function --function <fn>. Without --update-config only the named function's CODE is pushed, so the dummies never reach any lambda.
+
+## 2026-08-13 09:04 +0000 · setup · claude-opus-5 · gigover@master · claude-code
+cp to overwrite a file hit an interactive 'overwrite?' prompt in a non-interactive shell; cp is aliased to cp -i, so the copy silently didn't happen and exit 1
+**Worked instead:** use 'command cp' or /bin/cp to bypass the alias in scripts
+
+## 2026-08-13 11:01 +0000 · tool · claude-opus-5 · maul-backend@main · claude-code
+oxlint 1.77.0 --rules prints nothing (exit 0, zero lines) — expected the registered rule list
+
+## 2026-08-13 12:48 +0000 · tool · claude-opus-5 · maul-backend@main · claude-code
+oxlint: passing a quoted glob ('**/*.{js,ts}') lints 0 files and exits 1 with no 'no files matched' message — looked like a fast successful run
+**Worked instead:** pass directories, or let oxlint default to cwd and use ignorePatterns
+
+## 2026-08-13 12:53 +0000 · setup · claude-opus-5 · maul-backend@main · claude-code
+npm registry date cutoff (8/6/2026) blocked @oxlint/plugins@1.78.0 despite 'npm view' reporting 1.78.0 as latest
+**Worked instead:** pin oxlint + @oxlint/plugins to the newest version published before the cutoff
+
+## 2026-08-13 13:12 +0000 · setup · claude-opus-5 · maul-detrack-driverscreen@main · claude-code
+git push to origin succeeded but GitHub warned the repo moved: detrack-dashboard -> detrack-driverscreen; local remote URL is stale
+**Worked instead:** git remote set-url origin https://github.com/maul-is/detrack-driverscreen.git
+
+## 2026-08-13 13:12 +0000 · tool · claude-opus-5 · maul-backend@chore/migrate-eslint-to-oxlint · claude-code
+oxlint --type-aware silently no-ops when oxlint-tsgolint isn't installed: exit 0, same rule count, no warning that type-aware rules were skipped
+**Worked instead:** verify with --format json that number_of_rules increases, or check node_modules/oxlint-tsgolint exists
+
+## 2026-08-13 14:38 +0000 · flaky · claude-opus-5 · maul-backend@chore/migrate-eslint-to-oxlint · claude-code
+git push rejected with remote: Internal Server Error (GitHub 500) on an otherwise valid push; retry succeeded
+**Worked instead:** just retry the push
+
+## 2026-08-14 08:45 +0000 · setup · claude-opus-5 · first-stack · claude-code
+bun add -g alchemy produces a broken binary: optional peerDeps (@effect/platform-node, effect) aren't installed globally but lib/Cloudflare/Workers/WorkerBridge.js imports them statically, so 'alchemy --version' dies with ERR_MODULE_NOT_FOUND
+**Worked instead:** run it project-local via 'bunx alchemy ...' where the peer deps are real dependencies
+
+## 2026-08-14 13:07 +0000 · setup · claude-opus-5 · life-os@feat/edge-effect-workers · claude-code
+bun add alchemy@beta -> 'tag beta not found, but package exists'; alchemy 2.0.0-beta.72 publishes under latest/next, no beta tag
+**Worked instead:** bun add alchemy (latest already IS the beta), or pin 2.0.0-beta.72
+
+## 2026-08-14 13:09 +0000 · setup · claude-opus-5 · life-os@feat/edge-effect-workers · claude-code
+bunx alchemy --help crashes: 'Cannot find module @effect/platform-node/NodeServices' — required peer isn't installed by bun add alchemy and the error names an internal file, not the missing peer
+**Worked instead:** bun add @effect/platform-node@rc (must match the effect 4 rc line)
+
+## 2026-08-14 13:15 +0000 · tool · claude-opus-5 · life-os@feat/edge-effect-workers · claude-code
+alchemy deploy writes .alchemy/ (bundles, logs) into the repo root but adds no .gitignore entry; git add -A commits generated worker bundles and oxlint lints them
+**Worked instead:** add .alchemy/ to .gitignore and to oxlint ignorePatterns
+
+## 2026-08-14 13:53 +0000 · tool · claude-opus-5 · life-os@feat/edge-effect-workers · claude-code
+backgrounded 'alchemy tail' left running made a later 'alchemy deploy' in the same session hang until timeout (10m); deploy succeeded immediately after pkill -f 'alchemy tail'
+**Worked instead:** kill any alchemy tail before deploying; don't leave tail backgrounded
+
+## 2026-08-14 22:54 +0000 · flaky · claude-opus-5 · life-os@feat/edge-effect-workers · claude-code
+alchemy deploy returns the worker URL before the new version is consistently live; requests in the next ~10-30s hit the previous version (routes 404 / stale behaviour), which reads as a code bug
+**Worked instead:** sleep ~20s after deploy, or poll a known-new route until it stops 404ing, before testing
+
+## 2026-08-14 23:24 +0000 · tool · claude-opus-5 · life-os@feat/edge-effect-workers · claude-code
+vercel env add/ls respected the linked project (.vercel/project.json) but vercel redeploy used the global team context and failed with 'Deployment doesn't belong to current team maul'; the error suggests 'vc switch', which mutates global CLI state
+**Worked instead:** pass --scope <team> to the command instead of switching teams globally
+
+## 2026-08-15 09:40 +0000 · error · claude-opus-5 · sterkir-pabbar@master · claude-code
+vercel dns ls <domain> returned 'No records found' with an empty table for a domain that has no DNS zone at all; vercel dns add then failed with 'is not a DNS zone (400)'. Expected ls to report the missing zone.
+**Worked instead:** vercel domains inspect shows it: a domain with no zone lists 'Intended Nameservers -' instead of ns1/ns2.vercel-dns.com
+
+## 2026-08-15 09:56 +0000 · setup · claude-opus-5 · gigover@feat/assistant-jurisdiction-and-analysis · claude-code
+stack skill is listed and documents the local 'stack' CLI, but the binary isn't installed anywhere on PATH (~/.local/bin, ~/bin, brew, bun, npm -g all empty)
+**Worked instead:** did the stacked-PR flow by hand with gh pr create --base / gh pr edit --base
+
+## 2026-08-15 10:12 +0000 · setup · claude-opus-5 · life-os@test/edge-coverage · claude-code
+cp aliased to cp -i silently declined to overwrite during a non-interactive restore ('not overwritten'), leaving mutated files in place after I had removed the backups
+**Worked instead:** use 'command cp' / '\\cp', or git checkout for tracked files
+
+## 2026-08-19 13:19 +0000 · tool · claude-opus-5 · gigover@feat/tender-design-pass · claude-code
+rg prints matches with the matched text deleted (e.g. "from './OfferTable'" printed as "from './n'"); grep -n shows it correctly
+**Worked instead:** use grep -n instead of rg when the matched substring itself matters
+
+## 2026-08-20 14:24 +0000 · flaky · claude-opus-5 · maul-admin@feat/company-table-relations · claude-code
+npm run test:coverage exited 1 with no failing tests and coverage far above thresholds; identical rerun exited 0
+**Worked instead:** rerun before investigating; thresholds were not the cause
+
+## 2026-08-20 22:38 +0000 · other · claude-opus-5 · posture · claude-code
+Menu bar status item invisible on notched MacBook (1512x982, topInset 32) — macOS silently hides overflow behind the notch with no overflow menu or any indication the item exists
+**Worked instead:** Cmd-drag menu bar icons to reorder; set NSStatusItem.autosaveName so position persists across relaunches
+
+## 2026-08-21 01:11 +0000 · flaky · claude-opus-5 · gigover@fix/web-file-system-robustness · claude-code
+AccountMenu.browser.test.tsx 'opens beside the avatar' fails ~2 of 3 runs in isolation on master; rect.left+rect.top measured as -8 before floating-ui positions the menu
+**Worked instead:** re-run passes sometimes; needs a waitFor on the measured rect rather than an immediate read
+
+## 2026-08-21 08:05 +0000 · tool · claude-opus-5 · gigover@fix/web-api-error-contract · claude-code
+git stash -q push <file> failed with 'subcommand wasn't specified' because -q preceded the subcommand; the compound command continued and stash pop merged an UNRELATED stash into the tree, conflicting package.json
+**Worked instead:** put the subcommand first: git stash push -q <file>; never chain stash pop after a command that may fail
+
+## 2026-08-21 08:28 +0000 · tool · claude-opus-5 · chore+dependabot-drop-new-frontend@worktree-chore+dependabot-drop-new-frontend · claude-code
+worktree-isolated session refused a read-only 'gh pr view' loop because the command string was 'too complex to verify'; gh talks to the API, not the working tree
+**Worked instead:** split into one gh call per Bash invocation, or drop the shell loop
+
+## 2026-08-21 11:09 +0000 · tool · claude-opus-5 · maul-backend@refactor/api-event-body-schema · claude-code
+ran 'cd <dir> && ls -1 && echo MARK' in Bash — ls produced no output at all while the echo and later commands worked; happened twice
+**Worked instead:** used 'fd . <dir> -t f' instead, which listed the files correctly

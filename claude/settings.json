@@ -1,17 +1,148 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "agentPushNotifEnabled": true,
-  "alwaysThinkingEnabled": true,
+  "env": {
+    "LIFEOS_DIR": "/Users/einargudjonsson/.claude/LIFEOS",
+    "LIFEOS_CONFIG_DIR": "/Users/einargudjonsson/.config/LIFEOS",
+    "PROJECTS_DIR": "/Users/einargudjonsson/Projects"
+  },
   "attribution": {
     "commit": "",
     "pr": ""
   },
-  "dynamicContext": {
-    "relationshipContext": true,
-    "learningReadback": true,
-    "activeWorkSummary": true
+  "permissions": {
+    "allow": [
+      "Bash(papercut:*)"
+    ]
   },
-  "editorMode": "vim",
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\-\\-force|\\-f'; then if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\bmain\\b|\\bmaster\\b'; then echo 'BLOCKED: force-push to main/master is not allowed' && exit 1; fi; fi",
+            "if": "Bash(git push *)"
+          }
+        ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/papercut-detect.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/breadcrumb-capture.py\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/memory-autocommit.sh\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/qmd-refresh.sh\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/breadcrumb-briefing.py\"",
+            "timeout": 10,
+            "statusMessage": "Recalling project breadcrumbs..."
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh idle"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/typecheck.sh\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh working"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/qmd-recall.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline.sh"
+  },
   "enabledPlugins": {
     "asana@claude-plugins-official": false,
     "code-review@claude-plugins-official": true,
@@ -32,174 +163,44 @@
     "typescript-lsp@claude-plugins-official": true,
     "vercel@claude-plugins-official": true
   },
-  "env": {
-    "LIFEOS_DIR": "/Users/einargudjonsson/.claude/LIFEOS",
-    "LIFEOS_CONFIG_DIR": "/Users/einargudjonsson/.config/LIFEOS",
-    "PROJECTS_DIR": "/Users/einargudjonsson/Projects"
-  },
   "extraKnownMarketplaces": {
     "fjarmalalaesi": {
       "source": {
-        "repo": "jokull/fjarmalalaesi",
-        "source": "github"
+        "source": "github",
+        "repo": "jokull/fjarmalalaesi"
       }
     },
     "last30days-skill": {
       "source": {
-        "repo": "mvanhorn/last30days-skill",
-        "source": "github"
+        "source": "github",
+        "repo": "mvanhorn/last30days-skill"
       }
     },
     "plannotator": {
       "source": {
-        "repo": "backnotprop/plannotator",
-        "source": "github"
+        "source": "github",
+        "repo": "backnotprop/plannotator"
       }
     },
     "superwhisper": {
       "source": {
-        "repo": "superultrainc/superwhisper-claude-code",
-        "source": "github"
+        "source": "github",
+        "repo": "superultrainc/superwhisper-claude-code"
       }
     }
   },
-  "hooks": {
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting",
-            "type": "command"
-          }
-        ],
-        "matcher": "permission_prompt"
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\-\\-force|\\-f'; then if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\bmain\\b|\\bmaster\\b'; then echo 'BLOCKED: force-push to main/master is not allowed' && exit 1; fi; fi",
-            "if": "Bash(git push *)",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash"
-      },
-      {
-        "hooks": [
-          {
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting",
-            "type": "command"
-          }
-        ],
-        "matcher": "AskUserQuestion"
-      }
-    ],
-    "PostToolUseFailure": [
-      {
-        "hooks": [
-          {
-            "command": "python3 \"$HOME/.claude/hooks/papercut-detect.py\"",
-            "timeout": 5,
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "command": "python3 \"$HOME/.claude/hooks/breadcrumb-capture.py\"",
-            "timeout": 15,
-            "type": "command"
-          },
-          {
-            "command": "bash \"$HOME/.claude/hooks/memory-autocommit.sh\"",
-            "timeout": 15,
-            "type": "command"
-          },
-          {
-            "command": "bash \"$HOME/.claude/hooks/qmd-refresh.sh\"",
-            "timeout": 15,
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "python3 \"$HOME/.claude/hooks/breadcrumb-briefing.py\"",
-            "statusMessage": "Recalling project breadcrumbs...",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "startup|resume|clear"
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash '/Users/einargudjonsson/.claude/hooks/herdr-agent-state.sh' session",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh idle",
-            "type": "command"
-          },
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.claude/hooks/typecheck.sh\""
-          }
-        ],
-        "matcher": ""
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh working",
-            "type": "command"
-          }
-        ],
-        "matcher": ""
-      },
-      {
-        "hooks": [
-          {
-            "command": "python3 \"$HOME/.claude/hooks/qmd-recall.py\"",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      }
-    ]
-  },
-  "permissions": {
-    "allow": [
-      "Bash(papercut:*)"
-    ]
+  "alwaysThinkingEnabled": true,
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
+  "editorMode": "vim",
+  "autoCompactEnabled": true,
+  "agentPushNotifEnabled": true,
+  "dynamicContext": {
+    "relationshipContext": true,
+    "learningReadback": true,
+    "activeWorkSummary": true
   },
   "preferences": {
     "temperatureUnit": "celsius"
-  },
-  "skipDangerousModePermissionPrompt": true,
-  "statusLine": {
-    "command": "bash ~/.claude/statusline.sh",
-    "type": "command"
-  },
-  "tui": "fullscreen"
+  }
 }

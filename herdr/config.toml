@@ -11,7 +11,7 @@ name = "catppuccin"
 # Follow the host terminal's light/dark appearance. Requires Ghostty to switch
 # too -- see ~/.config/ghostty/config: theme = light:...,dark:...
 # Without that, Ghostty stays pinned to Mocha and herdr never sees a light state.
-auto_switch = true
+auto_switch = false
 dark_name = "catppuccin"
 light_name = "catppuccin-latte"
 
@@ -98,8 +98,10 @@ hide_tab_bar_when_single_tab = true
 # delivery = "off" -- so nothing was being delivered despite 6 agent integrations
 # reporting state. "system" asks macOS directly, so alerts land even when the
 # outer terminal isn't focused.
+show_agent_labels_on_pane_borders = false
+status_indicators = "symbols"
 [ui.toast]
-delivery = "system"
+delivery = "herdr"
 delay_seconds = 1
 
 [ui.toast.herdr]
