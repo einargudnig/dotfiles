@@ -1,6 +1,8 @@
 # Vercel → Cloudflare feature mapping
 
-Difficulty is for the *migration*, not the feature. Numeric limits are
+Difficulty is for the *migration*, not the feature. **Assumes no project lands
+on Next.js** — Next projects are rewritten rather than lifted, which removes
+this file's hardest rows (see `README.md`, "This is two migrations, not one"). Numeric limits are
 deliberately absent — check `claude/skills/cloudflare/references/` and the
 Cloudflare docs, which is what that skill tells you to do anyway.
 
@@ -15,7 +17,7 @@ Cloudflare docs, which is what that skill tells you to do anyway.
 | TanStack Start | Nitro cloudflare preset | easy | Vite/Nitro-based, adapter swap |
 | Edge Functions / middleware | Worker | easy | Closest runtime match Vercel has to offer |
 | Serverless Functions (node) | Worker + `nodejs_compat` | medium | Compat covers a lot, not everything — no filesystem writes. Audit what the handler imports |
-| **Next.js (App Router)** | `@opennextjs/cloudflare` | **hard** | The one real migration. ISR, image optimization and bundle size all bite at once. If a project is Next, that dominates its estimate |
+| **Next.js (App Router)** | *rewrite — see `inventory.md`* | n/a | Not being lifted. No project ends up on Next, so OpenNext never enters the picture |
 
 ## Data
 
@@ -25,7 +27,7 @@ Cloudflare docs, which is what that skill tells you to do anyway.
 | Vercel Edge Config | Workers KV, or Flagship for flags | easy | |
 | Vercel Postgres (Neon) | Keep Neon, add Hyperdrive | easy | Hyperdrive pools connections and caches non-mutating reads. Needs `nodejs_compat`. Lower-risk than a D1 rewrite |
 | Vercel Postgres → D1 | D1 | hard | Only if the app is small and you *want* SQLite. Otherwise keep the existing Postgres |
-| Vercel KV (Upstash Redis) | Workers KV | **medium — semantics differ** | KV is eventually consistent with a read-cache TTL; Redis is not. Anything using it as a lock, counter, or rate limiter needs Durable Objects instead. Read this row twice |
+| Vercel KV (Upstash Redis) | Workers KV | **medium — semantics differ, and the one that survives the rewrite** | KV is eventually consistent with a read-cache TTL; Redis is not. Anything using it as a lock, counter, or rate limiter needs Durable Objects instead. Read this row twice |
 
 ## Runtime features
 
@@ -34,8 +36,8 @@ Cloudflare docs, which is what that skill tells you to do anyway.
 | Cron Jobs | Cron Triggers | easy | UTC only; ~15min propagation after deploy; at-least-once, so handlers must be idempotent |
 | `waitUntil` | `ctx.waitUntil` | trivial | Same idea |
 | Streaming / SSE | Supported | easy | Watch CPU-time limits on long streams |
-| Image Optimization (`next/image`) | Cloudflare Images transformations | medium | Works, but the pricing model is different — this is the line item most likely to change your bill. Alternative: pre-transform at build and serve from R2 |
-| ISR / on-demand revalidation | OpenNext incremental cache (R2/KV/D1), or Cache API by hand | **hard** | No native equivalent. Often the single biggest item in a Next migration |
+| Image Optimization (`next/image`) | Build-time transform → R2, or Cloudflare Images | easy → medium | Off Next there's no `/_vercel/image` to replicate. Pre-transform at build and serve static from R2 where you can; Cloudflare Images only where transforms must be dynamic (its pricing model is the line item most likely to change your bill) |
+| ISR / on-demand revalidation | Cache API, or KV for shared cache | medium | **The requirement survives the rewrite even though the feature doesn't.** A page that was ISR still has a freshness requirement — it just becomes an explicit caching decision instead of a framework default. Capture the requirement in the inventory |
 | Regions / function region pinning | Smart Placement | easy | Different model — you don't pick a region, Cloudflare places the worker relative to your backend |
 | Analytics / Speed Insights | Web Analytics | easy | Free, privacy-preserving, and measures different things. Don't expect the graphs to line up |
 | Vercel Firewall | Cloudflare WAF | easy | Strictly an upgrade |
@@ -54,14 +56,18 @@ Cloudflare docs, which is what that skill tells you to do anyway.
 
 Things that don't appear as a row in any table but cost an afternoon:
 
-- **Worker bundle size limit.** Compressed, and Next builds exceed it routinely.
-  Check early — it can invalidate a migration plan after the work is done.
+- **Worker bundle size limit.** Compressed. Much less of a threat off Next, but
+  still worth checking early on anything with heavy server-side dependencies.
 - **CPU time, not wall time.** Awaiting a slow API doesn't count against you;
   a heavy synchronous loop does. Different mental model from Vercel's timeouts.
 - **No filesystem writes.** Anything writing to `/tmp` needs R2 or a DO.
 - **`nodejs_compat` is broad but not total.** Check the actual import list.
 - **Alchemy state.** Local file state plus a CI deploy means orphaned resources
   and a manual reconcile. Use `Cloudflare.state()` from the first commit.
+- **Framework defaults you no longer get for free.** Next supplied caching,
+  image handling and route-level revalidation as defaults. On TanStack Start or
+  Astro each becomes a decision. That's a feature — it's also how requirements
+  go missing during a rewrite.
 
 ## Cutover sequence
 
