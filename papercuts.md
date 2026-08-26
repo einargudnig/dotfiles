@@ -240,3 +240,7 @@ gigpull stashed WIP, then git pull failed with Bitbucket 410 (app passwords depr
 ## 2026-08-25 20:14 +0000 · docs · claude-opus-5 · gigover-backend@master · claude-code
 Atlassian docs give https://bitbucket.org/account/settings/ssh-keys/ for adding personal SSH keys; URL returned 'Resource not found' in browser
 **Worked instead:** navigate via UI: avatar > Personal Bitbucket settings > Security > SSH keys; 404 usually means wrong/logged-out Atlassian session
+
+## 2026-08-26 13:59 +0000 · setup · claude-opus-5 · dotfiles@master · claude-code
+moved dotfiles trees into stow package layout; git add -A then staged 110k files because root .gitignore patterns are path-anchored (claude/skills/...) and no longer matched the new claude/.claude/skills/... paths
+**Worked instead:** patch the anchored gitignore paths in the same commit as any tree move, then re-check 'git status --porcelain | wc -l' before staging
