@@ -192,3 +192,51 @@ worktree-isolated session refused a read-only 'gh pr view' loop because the comm
 ## 2026-08-21 11:09 +0000 · tool · claude-opus-5 · maul-backend@refactor/api-event-body-schema · claude-code
 ran 'cd <dir> && ls -1 && echo MARK' in Bash — ls produced no output at all while the echo and later commands worked; happened twice
 **Worked instead:** used 'fd . <dir> -t f' instead, which listed the files correctly
+
+## 2026-08-21 13:51 +0000 · tool · claude-opus-5 · einar-os@master · claude-code
+ran `timeout 60 npx wrangler ...` on macOS; zsh: 'command not found: timeout' — GNU coreutils timeout isn't on macOS by default
+**Worked instead:** use `gtimeout` (coreutils) or drop the wrapper
+
+## 2026-08-21 14:08 +0000 · tool · claude-opus-5 · einar-os@migrate/astro · claude-code
+wrangler secret delete --force → 'Unknown argument: force', dumped full help; no --force flag exists
+**Worked instead:** run it with </dev/null; wrangler auto-answers yes in non-interactive contexts
+
+## 2026-08-21 14:34 +0000 · error · claude-opus-5 · maul-admin@main · claude-code
+curl to a nonexistent dev-api path (/admin/locations, plural) returns 'Invalid key=value pair (missing equal-sign) in Authorization header' — a misleading auth error for what is actually a wrong path
+**Worked instead:** check the real path in src/lib/*/api.ts first; it is /admin/location singular
+
+## 2026-08-21 14:42 +0000 · tool · claude-opus-5 · einar-os@migrate/astro · claude-code
+rg output substituted matched text with the literal 'n' — showed 'localStorage.getItem("n")' and 'import { BabyPage } from "./n"' where the files actually say "theme" and "./baby-page"
+**Worked instead:** read the file directly (Read/sed) when the matched text itself matters; don't trust rg's rendering here
+
+## 2026-08-23 09:51 +0000 · tool · claude-opus-5 · einar-os@migrate/astro · claude-code
+ls is aliased to eza with icons; `ls | rg '^2026-08'` matched nothing and `d=$(ls -d ~/work/$r)` produced an icon-prefixed path that broke `git -C`
+**Worked instead:** use fd, or `command ls`/`\ls` to bypass the alias in scripts
+
+## 2026-08-24 09:30 +0000 · tool · claude-opus-5 · einar-os@migrate/astro · claude-code
+vercel domains ls lists einargudni.com fine under the einargudni scope, but vercel dns ls einargudni.com on the same scope returns 'You don't have permission to list the domain record.' Expected both to work or fail together.
+**Worked instead:** Read the zone from the Vercel dashboard DNS panel instead; CLI is also 53.1.0 vs 59.5.0 latest, may be version-related.
+
+## 2026-08-24 12:07 +0000 · tool · claude-opus-5 · gigover@master · claude-code
+playwright-mcp browser_file_upload rejected an absolute path in the session scratchpad: 'outside allowed roots' (roots are the repo dir and .playwright-mcp)
+**Worked instead:** copy the fixture into <repo>/.playwright-mcp/ first, upload from there, delete after
+
+## 2026-08-24 14:01 +0000 · tool · claude-opus-5 · einar-os@migrate/astro · claude-code
+crt.sh subdomain enumeration returned 502 Bad Gateway; fell back to api.certspotter.com which only returned 2 of 6 known subdomains on the free tier
+**Worked instead:** For Vercel-hosted zones, 'vercel project ls' lists every project with its production URL — authoritative and complete, no CT log needed.
+
+## 2026-08-24 14:49 +0000 · tool · claude-opus-5 · posture@master · claude-code
+wrangler dev failed: config compatibility_date 2026-08-21 exceeds the workerd binary's max 2026-07-29 in wrangler 4.114.0; deploy --dry-run passed so the mismatch only surfaces at local dev
+**Worked instead:** pass --compatibility-date 2026-07-29 to wrangler dev, or upgrade wrangler (4.125.0)
+
+## 2026-08-25 13:19 +0000 · docs · claude-opus-5 · gigover@master · claude-code
+web/docs/backend-input-limits.md says to run 'mysql -h 127.0.0.1 -P 3307' but mysql is not on PATH — homebrew mysql-client is keg-only
+**Worked instead:** use /opt/homebrew/opt/mysql-client/bin/mysql
+
+## 2026-08-25 13:32 +0000 · tool · claude-opus-5 · gigover-backend@master · claude-code
+gigpull stashed WIP, then git pull failed with Bitbucket 410 (app passwords deprecated, CHANGE-3222) — stash pop never ran, leaving WIP stranded in stash@{0}
+**Worked instead:** git stash pop manually; guard gigpull with 'git stash && { git pull || true; } && git stash pop' or trap
+
+## 2026-08-25 20:14 +0000 · docs · claude-opus-5 · gigover-backend@master · claude-code
+Atlassian docs give https://bitbucket.org/account/settings/ssh-keys/ for adding personal SSH keys; URL returned 'Resource not found' in browser
+**Worked instead:** navigate via UI: avatar > Personal Bitbucket settings > Security > SSH keys; 404 usually means wrong/logged-out Atlassian session
