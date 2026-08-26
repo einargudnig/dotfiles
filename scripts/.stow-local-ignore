@@ -1,0 +1,9 @@
+# --- restated stow defaults (a local ignore file replaces the built-in list) ---
+\.git
+\.gitignore
+\.DS_Store
+.+~
+^/README.*
+^/LICENSE.*
+# --- run by absolute path from .zshrc aliases; only .local/bin/papercut is linked ---
+^/[^/]+\.(sh|ts|md)$

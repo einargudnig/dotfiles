@@ -1,0 +1,10 @@
+# --- restated stow defaults (a local ignore file replaces the built-in list) ---
+\.git
+\.gitignore
+\.DS_Store
+.+~
+^/README.*
+^/LICENSE.*
+# --- invoked by .tmux.conf via absolute path; must not be linked ---
+^/scripts$
+^/thyme\.zsh$

@@ -1,0 +1,9 @@
+# --- restated stow defaults (a local ignore file replaces the built-in list) ---
+\.git
+\.gitignore
+\.DS_Store
+.+~
+^/README.*
+^/LICENSE.*
+# --- sourced by .zshrc via absolute path; must not be linked into $HOME ---
+^/catppuccin_mocha-zsh-syntax-highlighting\.zsh$

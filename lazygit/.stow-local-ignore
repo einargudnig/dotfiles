@@ -1,0 +1,9 @@
+# --- restated stow defaults (a local ignore file replaces the built-in list) ---
+\.git
+\.gitignore
+\.DS_Store
+.+~
+^/README.*
+^/LICENSE.*
+# --- repo notes, not config ---
+^/install-critique\.md$

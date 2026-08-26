@@ -1,0 +1,32 @@
+# --- restated stow defaults (a local ignore file replaces the built-in list) ---
+\.git
+\.gitignore
+\.DS_Store
+.+~
+^/README.*
+^/LICENSE.*
+# --- stale Claude Code runtime state stranded in the repo ---
+^/cache$
+^/chrome$
+^/debug$
+^/downloads$
+^/file-history$
+^/history\.jsonl$
+^/ide$
+^/paste-cache$
+^/plans$
+^/plugins$
+^/projects$
+^/session-env$
+^/settings\.local\.json$
+^/shell-snapshots$
+^/stats-cache\.json$
+^/statsig$
+^/tasks$
+^/telemetry$
+^/todos$
+^/LIFEOS$
+# --- repo-local docs and the retired bootstrap script ---
+^/link\.sh$
+^/papercuts-protocol\.md$
+^/\.papercut-gist-id$
