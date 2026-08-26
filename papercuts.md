@@ -244,3 +244,7 @@ Atlassian docs give https://bitbucket.org/account/settings/ssh-keys/ for adding 
 ## 2026-08-26 13:59 +0000 · setup · claude-opus-5 · dotfiles@master · claude-code
 moved dotfiles trees into stow package layout; git add -A then staged 110k files because root .gitignore patterns are path-anchored (claude/skills/...) and no longer matched the new claude/.claude/skills/... paths
 **Worked instead:** patch the anchored gitignore paths in the same commit as any tree move, then re-check 'git status --porcelain | wc -l' before staging
+
+## 2026-08-26 16:07 +0000 · tool · claude-opus-5 · dotfiles@master · claude-code
+stow -R unlinks then relinks, so ~/.zshenv is briefly absent; shells spawned in that window start with no PATH and fail with 'command not found: rm/readlink'
+**Worked instead:** use absolute binary paths (/bin/rm, /usr/bin/readlink) in any script that runs during a restow, or stow the zsh package last
