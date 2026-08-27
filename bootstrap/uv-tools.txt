@@ -1,0 +1,4 @@
+bagels
+cloctui
+kimi-cli
+nano-pdf

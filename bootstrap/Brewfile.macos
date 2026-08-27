@@ -1,0 +1,41 @@
+# macOS only: GUI casks, Mac App Store apps, and mac-only formulae.
+# Homebrew on Linux has no cask support, so these live apart.
+# Regenerate with 'make dump'. Do not hand-edit.
+
+brew "mas"
+
+cask "1password-cli"
+cask "aerospace"
+cask "alt-tab"
+cask "ant"
+cask "battery"
+cask "mhaeuser/mhaeuser/battery-toolkit"
+cask "bluesnooze"
+cask "bruno"
+cask "executor"
+cask "font-monaspace"
+cask "font-symbols-only-nerd-font"
+cask "gcloud-cli"
+cask "keycastr"
+cask "ngrok"
+cask "opencode-desktop"
+cask "repobar"
+cask "sf-symbols"
+cask "visual-studio-code"
+cask "wezterm"
+
+mas "Developer", id: 640199958
+mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
+mas "Klack", id: 6446206067
+mas "Microsoft Excel", id: 462058435
+mas "Numbers", id: 361304891
+mas "Numbers", id: 409203825
+mas "OneDrive", id: 823766827
+mas "Pages", id: 409201541
+mas "Speedtest", id: 1153157709
+mas "TestFlight", id: 899247664
+mas "Things", id: 904280696
+mas "Toggl Track", id: 1291898086
+mas "Typist", id: 415166115
+mas "Xcode", id: 497799835

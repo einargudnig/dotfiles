@@ -1,0 +1,7 @@
+basalt-tui
+cloudflare-speed-cli
+hygg
+hzfind
+rustlings
+systemd-manager-tui
+tukai

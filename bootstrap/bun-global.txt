@@ -1,0 +1,13 @@
+@sanity/cli
+agentic-cli
+clawdhub
+critique
+dotenv
+dotenv-cli
+eas-cli
+executor
+openship
+qmd
+turbo
+vercel
+wrangler
