@@ -248,3 +248,15 @@ moved dotfiles trees into stow package layout; git add -A then staged 110k files
 ## 2026-08-26 16:07 +0000 · tool · claude-opus-5 · dotfiles@master · claude-code
 stow -R unlinks then relinks, so ~/.zshenv is briefly absent; shells spawned in that window start with no PATH and fail with 'command not found: rm/readlink'
 **Worked instead:** use absolute binary paths (/bin/rm, /usr/bin/readlink) in any script that runs during a restow, or stow the zsh package last
+
+## 2026-08-27 09:25 +0000 · docs · claude-opus-5 · einargudjonsson · claude-code
+executor desktop app bound port 4789 while docs state 4788; /mcp returned bare 401 with no hint a bearer token was needed
+**Worked instead:** real port + 36-char token are in ~/.executor/daemon-active-localhost-*.json (port, token keys); Connect card in the UI shows the filled-in command
+
+## 2026-08-27 09:26 +0000 · docs · claude-opus-5 · einargudjonsson · claude-code
+docs/local/cli.md says 'executor tools sources' but CLI 1.6.0 rejects it
+**Worked instead:** correct subcommand is 'executor tools integrations'
+
+## 2026-08-27 09:26 +0000 · docs · claude-opus-5 · einargudjonsson · claude-code
+docs/local/cli.md 'executor call executor openapi addSource' is stale; 1.6.0 exposes addSpec/previewSpec
+**Worked instead:** use 'executor call executor openapi addSpec'; previewSpec dry-runs a spec first
