@@ -15,6 +15,10 @@ lazygit/Library/Application Support/…       ->  ~/Library/Application Support/
 Because these are symlinks rather than copies, editing `~/.zshrc` *is* editing
 the repo. Nothing needs to be synced back.
 
+> `docs/index.html` is the same reference as a standalone page — open it in a
+> browser, or serve `docs/` with GitHub Pages. It follows the system colour
+> scheme.
+
 ## New machine
 
 ```bash

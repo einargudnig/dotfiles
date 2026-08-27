@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Reference for a stow-managed macOS and Linux dotfiles environment: the linking model, bootstrap, packages, and sharp edges.">
+<meta name="color-scheme" content="light dark">
+<title>dotfiles — stow-managed environment</title>
+<style>
+  /* ---- Catppuccin Latte (light) — complete palette on bare :root ---- */
+  :root {
+    --base:      #eff1f5;
+    --mantle:    #e6e9ef;
+    --crust:     #dce0e8;
+    --surface:   #ccd0da;
+    --surface-2: #bcc0cc;
+    --text:      #4c4f69;
+    --subtext:   #6c6f85;
+    --overlay:   #8c8fa1;
+    --accent:    #8839ef;  /* mauve */
+    --accent-dim:#8839ef26;
+    --teal:      #179299;
+    --peach:     #fe640b;
+    --green:     #40a02b;
+    --red:       #d20f39;
+    --shadow:    0 1px 2px #4c4f6912, 0 8px 24px #4c4f690a;
+
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "Monaspace Neon", ui-monospace, "SF Mono", Menlo, monospace;
+    --slab: "Monaspace Xenon", "Monaspace Neon", ui-monospace, Menlo, monospace;
+
+    --measure: 68ch;
+    --pad: clamp(1.25rem, 4vw, 3rem);
+  }
+  /* ---- Catppuccin Mocha (dark) — tokens only, both theme states ---- */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --base:      #1e1e2e;
+      --mantle:    #181825;
+      --crust:     #11111b;
+      --surface:   #313244;
+      --surface-2: #45475a;
+      --text:      #cdd6f4;
+      --subtext:   #a6adc8;
+      --overlay:   #7f849c;
+      --accent:    #cba6f7;
+      --accent-dim:#cba6f726;
+      --teal:      #94e2d5;
+      --peach:     #fab387;
+      --green:     #a6e3a1;
+      --red:       #f38ba8;
+      --shadow:    0 1px 2px #00000040, 0 8px 24px #00000030;
+    }
+  }
+  :root[data-theme="dark"] {
+    --base:      #1e1e2e;
+    --mantle:    #181825;
+    --crust:     #11111b;
+    --surface:   #313244;
+    --surface-2: #45475a;
+    --text:      #cdd6f4;
+    --subtext:   #a6adc8;
+    --overlay:   #7f849c;
+    --accent:    #cba6f7;
+    --accent-dim:#cba6f726;
+    --teal:      #94e2d5;
+    --peach:     #fab387;
+    --green:     #a6e3a1;
+    --red:       #f38ba8;
+    --shadow:    0 1px 2px #00000040, 0 8px 24px #00000030;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--base);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    margin: 0;
+    padding: 0 var(--pad) 6rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 78ch; margin: 0 auto; }
+  .prose { max-width: var(--measure); }
+
+  /* ---- masthead ---- */
+  header {
+    padding: clamp(3rem, 9vw, 6rem) 0 2.5rem;
+    border-bottom: 1px solid var(--surface);
+    display: flex; flex-direction: column; gap: 1.25rem;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .75rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--overlay);
+  }
+  h1 {
+    font-family: var(--slab);
+    font-size: clamp(2.4rem, 7vw, 3.75rem);
+    font-weight: 600;
+    letter-spacing: -.03em;
+    line-height: 1.05;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 .dot { color: var(--accent); }
+  .standfirst {
+    font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+    color: var(--subtext);
+    max-width: var(--measure);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* ---- sections ---- */
+  section { padding-top: 3.5rem; display: flex; flex-direction: column; gap: 1.1rem; }
+  h2 {
+    font-family: var(--slab);
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -.015em;
+    margin: 0;
+    text-wrap: balance;
+    display: flex; align-items: baseline; gap: .7rem;
+  }
+  h2::after {
+    content: ""; flex: 1; height: 1px;
+    background: var(--surface);
+  }
+  h3 {
+    font-family: var(--mono);
+    font-size: .8rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--overlay);
+    margin: .5rem 0 0;
+    font-weight: 500;
+  }
+  p { margin: 0; max-width: var(--measure); text-wrap: pretty; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: .875em;
+    background: var(--mantle);
+    border: 1px solid var(--surface);
+    padding: .1em .38em;
+    border-radius: 3px;
+  }
+
+  /* ---- the mapping device: repo path -> home path ---- */
+  .maps { display: flex; flex-direction: column; gap: 0; font-family: var(--mono); font-size: .875rem; }
+  .map {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: .9rem;
+    align-items: baseline;
+    padding: .68rem .9rem;
+    border-bottom: 1px solid var(--surface);
+  }
+  .map:first-child { border-top: 1px solid var(--surface); }
+  .map .from { color: var(--text); word-break: break-all; }
+  .map .arrow { color: var(--accent); font-weight: 600; }
+  .map .to { color: var(--teal); word-break: break-all; }
+  @media (max-width: 640px) {
+    .map { grid-template-columns: 1fr; gap: .1rem; padding: .6rem .7rem; }
+    .map .arrow { display: none; }
+    .map .to::before { content: "→ "; color: var(--accent); }
+  }
+
+  /* ---- the one-liner ---- */
+  .oneliner {
+    background: var(--crust);
+    border: 1px solid var(--surface);
+    border-radius: 6px;
+    padding: 1.1rem 1.2rem;
+    overflow-x: auto;
+    box-shadow: var(--shadow);
+  }
+  .oneliner pre {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: .82rem;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre;
+  }
+  .oneliner .sigil { color: var(--green); user-select: none; }
+  .oneliner .flag  { color: var(--peach); }
+  .oneliner .cmt   { color: var(--overlay); }
+
+  pre.block {
+    background: var(--mantle);
+    border: 1px solid var(--surface);
+    border-left: 2px solid var(--accent);
+    border-radius: 4px;
+    padding: .95rem 1.1rem;
+    overflow-x: auto;
+    margin: 0;
+    font-family: var(--mono);
+    font-size: .82rem;
+    line-height: 1.7;
+  }
+  pre.block .cmt { color: var(--overlay); }
+  pre.block .sigil { color: var(--green); }
+
+  /* ---- tables ---- */
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--surface); vertical-align: top; }
+  thead th {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--overlay);
+    font-weight: 500;
+    border-bottom-color: var(--surface-2);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.pkg, td.path { font-family: var(--mono); font-size: .82rem; white-space: nowrap; }
+  td.pkg { color: var(--accent); }
+  td.path { color: var(--subtext); }
+  td.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+
+  /* ---- chips ---- */
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: .66rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: .12em .5em;
+    border-radius: 3px;
+    border: 1px solid currentColor;
+    vertical-align: 1px;
+  }
+  .chip.mac  { color: var(--peach); }
+  .chip.fold { color: var(--teal); }
+  .chip.file { color: var(--accent); }
+
+  /* ---- two-up split ---- */
+  .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+  .panel {
+    border: 1px solid var(--surface);
+    border-radius: 6px;
+    padding: 1.1rem 1.2rem;
+    background: var(--mantle);
+    display: flex; flex-direction: column; gap: .55rem;
+  }
+  .panel h4 {
+    margin: 0; font-family: var(--slab); font-size: 1rem; font-weight: 600;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .panel p { font-size: .9rem; color: var(--subtext); }
+  .panel ul { margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: .2rem; }
+  .panel li { font-family: var(--mono); font-size: .78rem; color: var(--text); }
+
+  /* ---- callout ---- */
+  .note {
+    border-left: 2px solid var(--peach);
+    background: var(--mantle);
+    padding: .85rem 1.1rem;
+    border-radius: 0 4px 4px 0;
+    font-size: .92rem;
+    color: var(--subtext);
+    max-width: var(--measure);
+  }
+  .note strong { color: var(--text); }
+
+  footer {
+    margin-top: 4.5rem; padding-top: 1.5rem;
+    border-top: 1px solid var(--surface);
+    font-family: var(--mono); font-size: .75rem; color: var(--overlay);
+    display: flex; flex-wrap: wrap; gap: .5rem 1.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">einargudnig/dotfiles</div>
+    <h1>One repo, one command,<br>a working machine<span class="dot">.</span></h1>
+    <p class="standfirst">
+      A macOS and Linux environment managed with GNU Stow. Seventeen packages of
+      configuration, 153 Homebrew formulae, and six language managers — reproduced
+      on a bare box by a single curl.
+    </p>
+  </header>
+
+  <section>
+    <h2>The model</h2>
+    <p class="prose">
+      Every top-level directory is a <strong>stow package</strong> whose internal layout mirrors
+      the path of its files relative to <code>$HOME</code>. Stow reads that shape and links it in:
+    </p>
+    <div class="maps">
+      <div class="map"><span class="from">zsh/.zshrc</span><span class="arrow">→</span><span class="to">~/.zshrc</span></div>
+      <div class="map"><span class="from">nvim/.config/nvim/</span><span class="arrow">→</span><span class="to">~/.config/nvim</span></div>
+      <div class="map"><span class="from">claude/.claude/skills/</span><span class="arrow">→</span><span class="to">~/.claude/skills</span></div>
+      <div class="map"><span class="from">scripts/.local/bin/papercut</span><span class="arrow">→</span><span class="to">~/.local/bin/papercut</span></div>
+      <div class="map"><span class="from">lazygit/Library/Application&nbsp;Support/…</span><span class="arrow">→</span><span class="to">~/Library/Application&nbsp;Support/lazygit</span></div>
+    </div>
+    <p class="prose">
+      They are symlinks, not copies. Editing <code>~/.zshrc</code> <em>is</em> editing the repo —
+      there is no sync step, and nothing to forget. That property is the whole reason
+      stow beats a copy-based manager here: agents and installers that write into
+      <code>~/.claude</code> land in version control for free.
+    </p>
+  </section>
+
+  <section>
+    <h2>Bare machine</h2>
+    <div class="oneliner">
+<pre><span class="sigil">$</span> curl -fsSL https://raw.githubusercontent.com/einargudnig/dotfiles/master/bootstrap.sh | bash</pre>
+    </div>
+    <p class="prose">
+      Xcode command line tools → Homebrew → clone → every recorded package → link.
+      Idempotent, so re-running it repairs a machine that has drifted rather than
+      starting over.
+    </p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Flag</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="pkg">--minimal</td><td>Skip GUI apps and language-manager packages</td></tr>
+          <tr><td class="pkg">--no-casks</td><td>Skip GUI apps — automatic on Linux</td></tr>
+          <tr><td class="pkg">--no-langs</td><td>Skip uv / cargo / go / bun / npm / node</td></tr>
+          <tr><td class="pkg">--no-stow</td><td>Install packages but don't link anything</td></tr>
+          <tr><td class="pkg">--defaults</td><td>Also apply macOS system settings</td></tr>
+          <tr><td class="pkg">--all-node</td><td>Install all 11 node versions, not just the default</td></tr>
+          <tr><td class="pkg">--dry-run</td><td>Print the plan, change nothing</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Running it</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Command</th><th>When</th></tr></thead>
+        <tbody>
+          <tr><td class="pkg">make restow</td><td><strong>The repair command.</strong> After renaming a file, or when an installer replace-writes a config and severs its symlink</td></tr>
+          <tr><td class="pkg">make dump</td><td><strong>The habit that keeps this alive.</strong> After installing something worth having on every machine — then commit the diff</td></tr>
+          <tr><td class="pkg">make check</td><td>Dry run. Prints the plan, touches nothing</td></tr>
+          <tr><td class="pkg">make install</td><td>Link every package into <code>$HOME</code></td></tr>
+          <tr><td class="pkg">make delete</td><td>Remove every link this repo owns</td></tr>
+          <tr><td class="pkg">make brew</td><td>Homebrew packages only</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where new files appear</h2>
+    <p class="prose">
+      Stow folds a directory into a single symlink only when nothing unmanaged already
+      lives at the target. That split decides whether a new file shows up on its own:
+    </p>
+    <div class="split">
+      <div class="panel">
+        <h4>Folded <span class="chip fold">instant</span></h4>
+        <p>The whole directory is one symlink. Drop a file in the repo and it is live.</p>
+        <ul>
+          <li>~/.config/nvim</li>
+          <li>~/.config/ghostty</li>
+          <li>~/.config/gh-dash</li>
+          <li>~/.config/karabiner</li>
+          <li>~/.claude/skills</li>
+          <li>~/.claude/agents</li>
+          <li>~/.claude/commands</li>
+          <li>~/.claude/get-shit-done</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h4>Per-file <span class="chip file">make restow</span></h4>
+        <p>Machine-local files live here too, so stow linked each file individually. A new one stays invisible until you restow.</p>
+        <ul>
+          <li>~/.config/yazi</li>
+          <li>~/.config/herdr</li>
+          <li>~/.config/hunk</li>
+          <li>~/.config/aerospace</li>
+          <li>~/.config/spotify-player</li>
+          <li>~/.claude/hooks</li>
+          <li>~/.local/bin</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Packages</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Package</th><th>Links into</th><th>What it is</th></tr></thead>
+        <tbody>
+          <tr><td class="pkg">aerospace <span class="chip mac">macOS</span></td><td class="path">~/.config/aerospace</td><td>Tiling window manager</td></tr>
+          <tr><td class="pkg">claude</td><td class="path">~/.claude</td><td>Claude Code: instructions, settings, skills, agents, hooks</td></tr>
+          <tr><td class="pkg">cursor <span class="chip mac">macOS</span></td><td class="path">~/Library/…/Cursor</td><td>Editor settings and keybindings</td></tr>
+          <tr><td class="pkg">gh-dash</td><td class="path">~/.config/gh-dash</td><td>GitHub PR and issue dashboard</td></tr>
+          <tr><td class="pkg">ghostty</td><td class="path">~/.config/ghostty</td><td>Terminal</td></tr>
+          <tr><td class="pkg">herdr</td><td class="path">~/.config/herdr</td><td>Terminal multiplexer for coding agents</td></tr>
+          <tr><td class="pkg">hunk</td><td class="path">~/.config/hunk</td><td>Terminal diff viewer</td></tr>
+          <tr><td class="pkg">karabiner <span class="chip mac">macOS</span></td><td class="path">~/.config/karabiner</td><td>Keyboard remapping</td></tr>
+          <tr><td class="pkg">lazygit <span class="chip mac">macOS</span></td><td class="path">~/Library/…/lazygit</td><td>Git TUI</td></tr>
+          <tr><td class="pkg">linters</td><td class="path">~/.prettierrc.yaml</td><td>Global formatter and linter config</td></tr>
+          <tr><td class="pkg">nvim</td><td class="path">~/.config/nvim</td><td>Neovim</td></tr>
+          <tr><td class="pkg">scripts</td><td class="path">~/.local/bin/papercut</td><td>Friction log CLI</td></tr>
+          <tr><td class="pkg">spotify-player</td><td class="path">~/.config/spotify-player</td><td>Spotify TUI</td></tr>
+          <tr><td class="pkg">tmux</td><td class="path">~/.tmux.conf</td><td>tmux and its session-prune agent</td></tr>
+          <tr><td class="pkg">wezterm</td><td class="path">~/.wezterm.lua</td><td>Terminal — superseded by Ghostty</td></tr>
+          <tr><td class="pkg">yazi</td><td class="path">~/.config/yazi</td><td>File manager</td></tr>
+          <tr><td class="pkg">zsh</td><td class="path">~/.zshrc</td><td>Shell</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prose">
+      The Makefile computes the package list from <code>uname</code>, so the four
+      <span class="chip mac">macOS</span> packages are simply absent on Linux — two are Mac apps,
+      and two install under <code>~/Library/Application Support</code>, which has no Linux equivalent.
+    </p>
+  </section>
+
+  <section>
+    <h2>What gets installed</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Manifest</th><th class="num">Count</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="pkg">Brewfile</td><td class="num">153 + 47 taps</td><td>Formulae — macOS <em>and</em> Linux</td></tr>
+          <tr><td class="pkg">Brewfile.macos</td><td class="num">19 + 15</td><td>Casks and Mac App Store apps</td></tr>
+          <tr><td class="pkg">vscode-extensions.txt</td><td class="num">60</td><td>Applied to whichever of <code>code</code> / <code>cursor</code> exists</td></tr>
+          <tr><td class="pkg">npm-global.txt</td><td class="num">22</td><td>Versions stripped deliberately</td></tr>
+          <tr><td class="pkg">bun-global.txt</td><td class="num">13</td><td>Versions stripped deliberately</td></tr>
+          <tr><td class="pkg">cargo-crates.txt</td><td class="num">7</td><td>Rust crates</td></tr>
+          <tr><td class="pkg">go-packages.txt</td><td class="num">5</td><td>Module paths read from the binaries</td></tr>
+          <tr><td class="pkg">uv-tools.txt</td><td class="num">4</td><td>Python tools</td></tr>
+          <tr><td class="pkg">node-versions.txt</td><td class="num">11</td><td>Only the default installs unless <code>--all-node</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prose">
+      Homebrew is split in two on purpose. It runs on Linux, but casks and Mac App Store
+      apps do not exist there — and a single Brewfile containing <code>cask</code> lines
+      hard-fails <code>brew bundle</code> on Linux.
+    </p>
+    <div class="note">
+      <strong>Versions are stripped from the npm and bun manifests.</strong> Pinning them makes a
+      fresh machine fail on a yanked release. These lists exist to say <em>have this tool</em>,
+      not to reproduce an exact build.
+    </div>
+  </section>
+
+  <section>
+    <h2>Sharp edges</h2>
+    <p class="prose">Things that cost real debugging, recorded so they only cost it once.</p>
+    <div class="split">
+      <div class="panel">
+        <h4>Ignore files replace, not extend</h4>
+        <p>Creating a <code>.stow-local-ignore</code> discards stow's built-in ignore list entirely.
+        Restate the defaults or <code>.git</code> starts getting linked.</p>
+      </div>
+      <div class="panel">
+        <h4>Stow links disk, not git</h4>
+        <p>Gitignored runtime state is still on disk and still gets linked. Without an ignore file,
+        <code>~/cache</code> and <code>~/history.jsonl</code> appear in your home directory.</p>
+      </div>
+      <div class="panel">
+        <h4>restow blinks the shell config</h4>
+        <p><code>stow -R</code> unlinks before it relinks, so <code>~/.zshenv</code> is briefly gone.
+        A shell starting in that window has no <code>PATH</code>. Use absolute paths in anything scripted around it.</p>
+      </div>
+      <div class="panel">
+        <h4>gitignore paths are anchored</h4>
+        <p>Moving a tree breaks every ignore pattern that named its old path. One restructure made
+        110,000 vendored files newly visible to git.</p>
+      </div>
+      <div class="panel">
+        <h4>Relative links shift with depth</h4>
+        <p>97 skill symlinks pointed at <code>../../../.agents</code>. Moving the tree one level down
+        invalidated all of them at once.</p>
+      </div>
+      <div class="panel">
+        <h4>bash 3.2 is the floor</h4>
+        <p>The bootstrap runs before Homebrew exists, so <code>/usr/bin/env bash</code> is macOS's
+        bash 3.2. No <code>mapfile</code>, no associative arrays.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>GNU Stow 2.4.1</span>
+    <span>Homebrew 6.0.19</span>
+    <span>17 packages · 41 links</span>
+    <span>Catppuccin Latte / Mocha</span>
+  </footer>
+
+</div>
+</body>
+</html>
