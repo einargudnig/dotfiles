@@ -260,3 +260,46 @@ docs/local/cli.md says 'executor tools sources' but CLI 1.6.0 rejects it
 ## 2026-08-27 09:26 +0000 · docs · claude-opus-5 · einargudjonsson · claude-code
 docs/local/cli.md 'executor call executor openapi addSource' is stale; 1.6.0 exposes addSpec/previewSpec
 **Worked instead:** use 'executor call executor openapi addSpec'; previewSpec dry-runs a spec first
+
+## 2026-08-27 09:32 +0000 · tool · claude-opus-5 · gigover@chore/procurement-contracts · claude-code
+cp in this zsh is aliased to cp -i; a scripted 'cp a b' over an existing file hung the Bash tool for the full 5m timeout waiting on a y/n prompt
+**Worked instead:** use 'command cp -f', 'install -m', or write the file with a heredoc instead
+
+## 2026-08-28 08:26 +0000 · tool · claude-opus-5 · tender-agent-smoke@worktree-tender-agent-smoke · claude-code
+gh issue view loop with for/head pipe rejected by worktree guard as 'too complex' though it touches no git state
+**Worked instead:** run gh issue view one issue per Bash call
+
+## 2026-08-28 09:17 +0000 · setup · claude-opus-5 · maul-admin@main · claude-code
+Maul MCP delivery-stats tools (getDailyStats/getDeliveryStats/getZoneStats/getCollectionStats) all fail with 'Missing CONVEX_DEPLOYMENT_URL or CONVEX_DEPLOY_KEY' — Convex-backed tools unusable in this session
+
+## 2026-08-28 10:31 +0000 · setup · claude-opus-5 · tender-agent-smoke@fix/resource-timer-follows-status · claude-code
+stack skill loaded but its CLI is absent: 'stack not found' on PATH and no install hint in the skill doc
+**Worked instead:** fell back to gh pr merge with a local squash dry-run first
+
+## 2026-08-28 14:05 +0000 · setup · claude-opus-5 · einargudjonsson · claude-code
+ollama CLI printed 'Warning: client version is 0.32.15' vs server 0.33.1 — stale background server after brew upgrade, commands still worked but version-skewed
+**Worked instead:** restart the ollama server: brew services restart ollama (or kill the app and relaunch)
+
+## 2026-08-29 11:47 +0000 · tool · claude-opus-5 · pdl@wheat-8 · claude-code
+cd node_modules/alchemy in Bash tool failed: zoxide shim intercepted cd and said 'no match found'
+**Worked instead:** use absolute paths in rg/sed instead of cd, or 'builtin cd'
+
+## 2026-08-29 12:05 +0000 · tool · claude-opus-5 · pdl@wheat-8 · claude-code
+alchemy@2.0.0-beta.74 'alchemy dev' fails: workerd cannot upgrade WS to ws://127.0.0.1:PORT/__vite_module_runner/init ('Expected 101 status code'), Vite child exits 1. Reproduces with a bare react()-only vite config, on vite 8.1.5 and 8.2.2, under both bun and node.
+**Worked instead:** alchemy plan/deploy and vite build all work; only 'alchemy dev' is affected. Fall back to plain 'vite' for UI work.
+
+## 2026-08-29 12:15 +0000 · tool · claude-opus-5 · pdl@wheat-8 · claude-code
+ls in Bash tool is aliased to an icon-prefixed lister; $(ls dist/assets/*.css) returns a filename with a nerd-font glyph so rg reports 'No such file'
+**Worked instead:** use fd instead: CSS=$(fd -e css . dist/assets)
+
+## 2026-08-31 15:14 +0000 · tool · claude-opus-5 · maul-backend@chore/migrate-eslint-to-oxlint · claude-code
+cp inside a bash script silently no-op'd with 'overwrite? (y/n [n]) not overwritten' — cp is aliased to 'cp -i' in the profile, so a scripted restore-from-backup loop left the file mutated across iterations
+**Worked instead:** use 'command cp' / 'cp -f', or restore with 'git checkout -- <file>' instead of a backup copy
+
+## 2026-08-31 15:22 +0000 · tool · claude-opus-5 · maul-backend@chore/migrate-eslint-to-oxlint · claude-code
+oxlint prints its 'Found N warnings/errors' summary inconsistently when stdout is piped — same command gave output via '| head -20' but nothing via '| tail -20' or '> file' in adjacent runs; exit code was the only reliable signal
+**Worked instead:** redirect to a file and cat it, or trust the exit code, rather than piping oxlint into head/tail
+
+## 2026-08-31 15:44 +0000 · tool · claude-opus-5 · einargudjonsson · claude-code
+ran fnm node-version's own npm binary directly to uninstall a global pkg; npm still resolved prefix -g to the ACTIVE fnm multishell version (v24.3.0), so uninstall was a silent 'up to date' no-op instead of removing from that version's tree
+**Worked instead:** pass --prefix explicitly: npm uninstall -g --prefix ~/.local/share/fnm/node-versions/vX/installation <pkg>
