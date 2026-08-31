@@ -66,6 +66,11 @@ alias cl='tmux-claude-picker'
 alias report='~/dotfiles/scripts/daily-report.sh'
 alias kill-port='~/dotfiles/scripts/kill-port.sh'
 
+# pi lives in its own prefix (~/.local/pi) with a brew-node shim, deliberately
+# outside fnm. Update via this, never a bare `npm i -g` -- that reinstalls it
+# into the active fnm node version and the version roulette starts again.
+alias pi-update='~/dotfiles/scripts/pi-update.sh'
+
 # --- Aliases: navigation & safety --------------------------------------------
 alias ..='cd ..'
 alias ...='cd ../..'
