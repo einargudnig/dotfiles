@@ -153,7 +153,6 @@
     "github@claude-plugins-official": true,
     "last30days@last30days-skill": true,
     "learning-output-style@claude-plugins-official": true,
-    "plannotator@plannotator": true,
     "playwright@claude-plugins-official": true,
     "posthog@claude-plugins-official": false,
     "rust-analyzer-lsp@claude-plugins-official": true,
@@ -174,12 +173,6 @@
       "source": {
         "source": "github",
         "repo": "mvanhorn/last30days-skill"
-      }
-    },
-    "plannotator": {
-      "source": {
-        "source": "github",
-        "repo": "backnotprop/plannotator"
       }
     },
     "superwhisper": {
