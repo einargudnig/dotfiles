@@ -1,0 +1,17 @@
+{
+	"theme": "catppuccin",
+	"themeMode": "system",
+	"darkTheme": "catppuccin",
+	"lightTheme": "catppuccin-latte",
+	"systemThemeAutoReload": true,
+	"showScrollbars": false,
+	"editorCommand": "cd {{repoPath}} && gh pr checkout {{number}} && nvim -c \":DiffviewOpen {{baseRef}}...{{headRef}}\"",
+	"repoPaths": {
+		"einargudnig/dotfiles": "~/dotfiles",
+		"einargudnig/crafting": "~/personal/craft",
+		"einargudnig/gigover": "~/work/gigover",
+		"einargudnig/*": "~/personal/*",
+		"Lightsnap/*": "~/work/*",
+		"maul-is/*": "~/work/*"
+	}
+}

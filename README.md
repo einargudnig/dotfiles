@@ -105,6 +105,7 @@ go in that package's `.stow-local-ignore`, one anchored regex per line:
 | `cursor` † | `~/Library/Application Support/Cursor/User` | Cursor editor settings and keybindings |
 | `gh-dash` | `~/.config/gh-dash` | GitHub PR/issue dashboard |
 | `ghostty` | `~/.config/ghostty` | Terminal |
+| `ghui` | `~/.config/ghui` | GitHub PR TUI |
 | `herdr` | `~/.config/herdr` | Terminal multiplexer for coding agents |
 | `hunk` | `~/.config/hunk` | Terminal diff viewer |
 | `karabiner` † | `~/.config/karabiner` | Keyboard remapping |

@@ -199,6 +199,7 @@ brew "0xjuanma/tap/golazo", trusted: true
 brew "514-labs/tap/dnsglobe", trusted: true
 brew "ashuttl/linecast/linecast", trusted: true
 brew "dmno-dev/tap/varlock", trusted: true
+brew "kitlangton/tap/ghui", trusted: true
 brew "largemodgames/spotatui/spotatui", trusted: true
 brew "steipete/tap/bird"
 brew "steipete/tap/birdclaw", trusted: true
