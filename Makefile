@@ -4,7 +4,7 @@ TARGET := $(HOME)
 UNAME  := $(shell uname -s)
 
 # Packages whose target paths exist on any Unix.
-PACKAGES_COMMON := claude gh-dash ghostty ghui herdr hunk linters nvim scripts \
+PACKAGES_COMMON := claude gh-dash ghostty ghui herdr hunk linters nvim pi scripts \
                    spotify-player tmux wezterm yazi zsh
 
 # macOS-only: aerospace and karabiner are mac apps; cursor and lazygit install

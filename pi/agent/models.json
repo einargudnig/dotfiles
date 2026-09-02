@@ -1,0 +1,7 @@
+{
+  "providers": {
+    "opencode-go": {
+      "apiKey": "!jq -r '.\"opencode-go\".key' /Users/einargudjonsson/.local/share/opencode/auth.json"
+    }
+  }
+}

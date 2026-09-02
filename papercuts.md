@@ -303,3 +303,27 @@ oxlint prints its 'Found N warnings/errors' summary inconsistently when stdout i
 ## 2026-08-31 15:44 +0000 · tool · claude-opus-5 · einargudjonsson · claude-code
 ran fnm node-version's own npm binary directly to uninstall a global pkg; npm still resolved prefix -g to the ACTIVE fnm multishell version (v24.3.0), so uninstall was a silent 'up to date' no-op instead of removing from that version's tree
 **Worked instead:** pass --prefix explicitly: npm uninstall -g --prefix ~/.local/share/fnm/node-versions/vX/installation <pkg>
+
+## 2026-09-01 12:20 +0000 · setup · claude-opus-5 · maul-admin@fix/agent-skill-links · claude-code
+CI check-skill-symlinks.mjs says 'Commit the skill's content under .agents/' but .agents/ is listed in .git/info/exclude, so git add refuses and the instruction is unfollowable as written
+**Worked instead:** git check-ignore -v <path> located the rule in .git/info/exclude (not .gitignore); had to decide between un-excluding .agents or dropping the dangling .claude/skills link
+
+## 2026-09-01 13:10 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
+bash: `ls /Users/einargudjonsson/.local/pi/lib/node_modules/@earendil-works/pi-coding-agent/examples/extens` failed — (no output)  Command exited with code 1
+
+## 2026-09-01 13:26 +0000 · flaky · claude-opus-5 · maul-backend@main · claude-code
+maul-admin: src/routes/_index.test.tsx failed once on 'scheduled to order today' getByText('2') then passed on the next two identical runs — flaky, unrelated to the diff
+
+## 2026-09-02 10:20 +0000 · setup · claude-fable-5-1 · maul-admin@main · claude-code
+.git/info/exclude ignores .agents/ and .claude/skills/ locally, so a new repo skill never shows in git status; check:skills also passes vacuously in CI because nothing under .agents is tracked
+**Worked instead:** git add -f the skill dir + both symlinks
+
+## 2026-09-02 10:26 +0000 · tool · claude-fable-5-1 · maul-admin@main · claude-code
+oxfmt/oxlint silently skip files under .agents/ because .git/info/exclude lists it; 'Finished on 1 files' with no per-file list hides that
+**Worked instead:** format a copy in scratchpad and copy back; oxlint has --no-ignore, oxfmt doesn't
+
+## 2026-09-02 12:59 +0000 · tool · claude-opus-5 · maul-admin@main · unknown
+bash: `cd /Users/einargudjonsson/work/maul-admin && npm run check:skills && npm run verify:help` failed —  > maul-admin@0.1.0 check:skills > node scripts/check-skill-symlinks.mjs  Agent-skill layout problems (1):    - .agents/skills/install-anti-slop is not linked into .claude/skills.     Run: ln -s ../..
+
+## 2026-09-02 15:01 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
+bash: `ls /Users/einargudjonsson/.local/pi/lib/node_modules/@earendil-works/pi-coding-agent/examples/extens` failed — /Users/einargudjonsson/.local/pi/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/bookmark.ts /Users/einargudjonsson/.local/pi/lib/node_modules/@earendil-works/pi-coding-agent/exam
