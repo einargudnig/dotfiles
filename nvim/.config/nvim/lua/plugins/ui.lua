@@ -46,14 +46,9 @@ return {
         },
       }
 
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = "markdown",
-        callback = function(event)
-          vim.schedule(function()
-            require("noice.text.markdown").keys(event.buf)
-          end)
-        end,
-      })
+      -- NOTE: The old `noice.text.markdown` FileType autocmd for markdown
+      -- has been removed. It shadowed `gx`/`K` in markdown buffers and
+      -- conflicted with markview.nvim's richer link handling.
 
       opts.presets.lsp_doc_border = true
     end,

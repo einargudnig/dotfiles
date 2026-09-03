@@ -40,3 +40,11 @@ keymap.set("i", "jk", "<ESC>", { silent = true })
 
 -- oil
 vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
+
+-- Markdown preview (markview.nvim)
+vim.keymap.set("n", "<leader>um", "<cmd>Markview toggle<cr>", { desc = "Toggle markdown preview", silent = true })
+vim.keymap.set("n", "<leader>uM", "<cmd>Markview splitToggle<cr>", { desc = "Toggle markdown split preview", silent = true })
+
+-- Markdown preview (browser)
+vim.keymap.set("n", "<leader>up", "<cmd>MarkdownPreview<cr>", { desc = "Open markdown preview in browser", silent = true })
+vim.keymap.set("n", "<leader>uP", "<cmd>MarkdownPreviewStop<cr>", { desc = "Stop markdown preview in browser", silent = true })
