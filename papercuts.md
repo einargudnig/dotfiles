@@ -330,3 +330,21 @@ bash: `ls /Users/einargudjonsson/.local/pi/lib/node_modules/@earendil-works/pi-c
 
 ## 2026-09-03 09:04 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
 edit: /Users/einargudjonsson/dotfiles/nvim/.config/nvim/lua/config/options.lua failed — Could not find the exact text in /Users/einargudjonsson/dotfiles/nvim/.config/nvim/lua/config/options.lua. The old text must match exactly including all whitespace and newlines.
+
+## 2026-09-03 10:23 +0000 · docs · claude-opus-5 · maul-admin@main · claude-code
+`fd` found nothing for a skill that exists: this repo's .git/info/exclude hides .agents/, and fd honours it, so I wrongly concluded /maintain-verification-skill was missing and overwrote its SKILL.md
+**Worked instead:** `git ls-files .agents/` or `fd --no-ignore` — never conclude a file is absent from an fd miss in a repo with a local exclude
+
+## 2026-09-03 14:13 +0000 · tool · claude-sonnet-5 · maul-admin@feat/restaurant-phone-number · claude-code
+verify-maul-admin control.mjs doctor always reports instance check ok:false right after a successful control start, even though dev-server/browser/bypass-auth/env/dev-api all pass
+**Worked instead:** ignore the instance check when every other doctor check passes; doctor exits 1 anyway so don't gate on exit code alone
+
+## 2026-09-04 14:22 +0000 · docs · claude-sonnet-5 · maul-admin@feat/dashboard-route-split · cursor
+future.v8_splitRouteModules fails on react-router 8.3: moved to top-level splitRouteModules (default true). Foodie-web is still on 7.18 so its future flags don't copy 1:1.
+**Worked instead:** Read @react-router/dev createConfigLoader errors instead of copying foodie-web's future block
+
+## 2026-09-05 10:50 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
+bash: `ls /Users/einargudjonsson/.local/share/nvim/lazy/LazyVim/lua/lazyvim/plugins/coding/` failed — ls: /Users/einargudjonsson/.local/share/nvim/lazy/LazyVim/lua/lazyvim/plugins/coding/: No such file or directory   Command exited with code 1
+
+## 2026-09-05 10:51 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
+bash: `make check` failed — stow -nv -d /Users/einargudjonsson/dotfiles -t /Users/einargudjonsson claude gh-dash ghostty ghui herdr hunk linters nvim pi scripts spotify-player tmux wezterm yazi zsh aerospace cursor karabiner laz
