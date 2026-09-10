@@ -9,7 +9,7 @@ PACKAGES_COMMON := claude gh-dash ghostty ghui herdr hunk linters nvim pi script
 
 # macOS-only: aerospace and karabiner are mac apps; cursor and lazygit install
 # under ~/Library/Application Support, which has no Linux equivalent.
-PACKAGES_MACOS  := aerospace cursor karabiner lazygit
+PACKAGES_MACOS  := aerospace cursor emeraldian karabiner lazygit
 
 ifeq ($(UNAME),Darwin)
 PACKAGES := $(PACKAGES_COMMON) $(PACKAGES_MACOS)

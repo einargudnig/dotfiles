@@ -103,6 +103,7 @@ go in that package's `.stow-local-ignore`, one anchored regex per line:
 | `aerospace` † | `~/.config/aerospace` | Tiling window manager |
 | `claude` | `~/.claude` | Claude Code: instructions, settings, skills, agents, hooks |
 | `cursor` † | `~/Library/Application Support/Cursor/User` | Cursor editor settings and keybindings |
+| `emeraldian` † | `~/Library/Application Support/emeraldian` | Terminal UI for Obsidian vaults |
 | `gh-dash` | `~/.config/gh-dash` | GitHub PR/issue dashboard |
 | `ghostty` | `~/.config/ghostty` | Terminal |
 | `ghui` | `~/.config/ghui` | GitHub PR TUI |
@@ -155,7 +156,7 @@ them makes a fresh machine fail on a yanked release, and the lists exist to say
 - `make restow` unlinks and relinks, so `~/.zshenv` is absent for a split
   second. A shell that starts in that window comes up with no `PATH`. Harmless
   and self-healing, but use absolute paths in anything scripted around it.
-- On Linux, `cursor` and `lazygit` want `~/.config/…` rather than
+- On Linux, `cursor`, `emeraldian` and `lazygit` want `~/.config/…` rather than
   `~/Library/Application Support/…`. Not yet handled — they're simply skipped.
 - `papercuts.md` is a log of environment friction, appended by the `papercut`
   CLI. Not configuration.

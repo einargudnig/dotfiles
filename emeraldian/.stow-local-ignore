@@ -1,0 +1,11 @@
+# --- restated stow defaults (a local ignore file replaces the built-in list) ---
+\.git
+\.gitignore
+\.DS_Store
+.+~
+^/README.*
+^/LICENSE.*
+# --- runtime state written by emeraldian beside config.toml ---
+^/Library/Application Support/emeraldian/state\.json$
+^/Library/Application Support/emeraldian/auth\.json$
+^/Library/Application Support/emeraldian/themes/.*$
