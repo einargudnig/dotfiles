@@ -1,0 +1,175 @@
+#!/usr/bin/env python3
+"""Create an Obsidian note from a template and open it in emeraldian.
+
+Emeraldian itself creates blank notes. This script fills in a template first,
+then hands off to emeraldian. It understands a small set of placeholders,
+including the Templater syntax used in the second-brain vault templates.
+
+Placeholders:
+  {{title}}      note title (file name without .md)
+  {{date}}       today's date as YYYY-MM-DD
+  {{yesterday}}  yesterday's date as YYYY-MM-DD
+  {{tomorrow}}   tomorrow's date as YYYY-MM-DD
+  <% tp.date.yesterday("YYYY-MM-DD") %>
+  <% tp.date.tomorrow("YYYY-MM-DD") %>
+  <% tp.date.today("YYYY-MM-DD") %>
+  <% tp.date.now("YYYY-MM-DD") %>
+"""
+
+import argparse
+import re
+import subprocess
+import sys
+from datetime import datetime, timedelta
+from pathlib import Path
+
+DEFAULT_VAULT = Path.home() / "personal/obsidian/second-brain"
+DEFAULT_TEMPLATE_DIR = "50 resources/templates"
+
+
+def read_emeraldian_config():
+    """Read editor.daily_folder and editor.daily_format from emeraldian config."""
+    paths = [
+        Path.home() / "Library/Application Support/emeraldian/config.toml",
+        Path.home() / ".config/emeraldian/config.toml",
+    ]
+    cfg = {"daily_folder": "30 planner", "daily_format": "%Y-%m-%d"}
+    for p in paths:
+        if p.exists():
+            try:
+                import tomllib
+
+                with open(p, "rb") as f:
+                    data = tomllib.load(f)
+                editor = data.get("editor", {})
+                cfg["daily_folder"] = editor.get("daily_folder", cfg["daily_folder"])
+                cfg["daily_format"] = editor.get("daily_format", cfg["daily_format"])
+            except Exception:
+                pass
+            break
+    return cfg
+
+
+def substitute(text, title):
+    today = datetime.now()
+    yesterday = today - timedelta(days=1)
+    tomorrow = today + timedelta(days=1)
+
+    text = text.replace("{{title}}", title)
+    text = text.replace("{{date}}", today.strftime("%Y-%m-%d"))
+    text = text.replace("{{yesterday}}", yesterday.strftime("%Y-%m-%d"))
+    text = text.replace("{{tomorrow}}", tomorrow.strftime("%Y-%m-%d"))
+
+    # Templater-style date calls used in the existing vault templates.
+    text = re.sub(
+        r'<%\s*tp\.date\.yesterday\("YYYY-MM-DD"\)\s*%>',
+        yesterday.strftime("%Y-%m-%d"),
+        text,
+    )
+    text = re.sub(
+        r'<%\s*tp\.date\.tomorrow\("YYYY-MM-DD"\)\s*%>',
+        tomorrow.strftime("%Y-%m-%d"),
+        text,
+    )
+    text = re.sub(
+        r'<%\s*tp\.date\.today\("YYYY-MM-DD"\)\s*%>',
+        today.strftime("%Y-%m-%d"),
+        text,
+    )
+    text = re.sub(
+        r'<%\s*tp\.date\.now\("YYYY-MM-DD"\)\s*%>',
+        today.strftime("%Y-%m-%d"),
+        text,
+    )
+    return text
+
+
+def template_path(vault, name):
+    return vault / DEFAULT_TEMPLATE_DIR / f"{name}.md"
+
+
+def create_from_template(template, dest, title):
+    if not template.exists():
+        print(f"Template not found: {template}", file=sys.stderr)
+        sys.exit(1)
+
+    if dest.exists():
+        return dest
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    text = template.read_text()
+    dest.write_text(substitute(text, title))
+    return dest
+
+
+def open_in_emeraldian(vault, note_path=None):
+    cmd = ["emeraldian", str(vault)]
+    if note_path:
+        rel = note_path.relative_to(vault)
+        cmd.extend(["--note", str(rel.with_suffix(""))])
+    subprocess.run(cmd)
+
+
+def slugify(title):
+    """Turn a title into a file-name-friendly slug."""
+    return re.sub(r"[^a-zA-Z0-9_-]+", "-", title).strip("-").lower() or "note"
+
+
+def cmd_daily(args):
+    cfg = read_emeraldian_config()
+    today = datetime.now()
+    name = today.strftime(cfg["daily_format"])
+    folder = cfg["daily_folder"].strip("/")
+    dest = args.vault / folder / f"{name}.md"
+    create_from_template(template_path(args.vault, "daily notes"), dest, name)
+    open_in_emeraldian(args.vault, dest)
+
+
+def cmd_new(args):
+    title = args.title
+    slug = slugify(title)
+    folder = args.folder.strip("/") if args.folder else ""
+    if folder:
+        dest = args.vault / folder / f"{slug}.md"
+    else:
+        dest = args.vault / f"{slug}.md"
+    create_from_template(template_path(args.vault, args.template), dest, title)
+    open_in_emeraldian(args.vault, dest)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Create Obsidian notes from templates and open them in emeraldian."
+    )
+    parser.add_argument(
+        "--vault",
+        type=Path,
+        default=DEFAULT_VAULT,
+        help="Path to the Obsidian vault (default: ~/personal/obsidian/second-brain)",
+    )
+
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    daily = sub.add_parser("daily", help="Open today's daily note, creating it from template if needed")
+    daily.set_defaults(func=cmd_daily)
+
+    new = sub.add_parser("new", help="Create a new note from a template")
+    new.add_argument("title", help="Note title")
+    new.add_argument(
+        "--template",
+        default="template1",
+        help="Template name (default: template1)",
+    )
+    new.add_argument(
+        "--folder",
+        default="",
+        help="Vault-relative folder for the new note (default: vault root)",
+    )
+    new.set_defaults(func=cmd_new)
+
+    args = parser.parse_args()
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()

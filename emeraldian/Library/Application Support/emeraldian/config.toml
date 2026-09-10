@@ -30,7 +30,7 @@ wrap = true
 vim = true
 auto_save = true
 new_note_folder = ""
-daily_folder = "Daily"
+daily_folder = "30 planner"
 daily_format = "%Y-%m-%d"
 
 [graph]

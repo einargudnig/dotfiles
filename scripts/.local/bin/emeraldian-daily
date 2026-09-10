@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Open today's daily note in emeraldian, creating it from the vault template if needed.
+exec emeraldian-template daily "$@"

@@ -17,8 +17,22 @@ Current choices:
 ## Templates
 
 Emeraldian does **not** read Obsidian's Templates plugin configuration. New
-notes created in the TUI start blank. Templates are still managed inside the
-vault by Obsidian.
+notes created in the TUI start blank. To work around that, three helper scripts
+live in `~/.local/bin` and use the vault's own template files:
+
+- `emeraldian-daily` — open today's daily note, creating it from
+  `50 resources/templates/daily notes.md` if it doesn't exist yet.
+- `emeraldian-new "Note Title"` — create a new note from
+  `50 resources/templates/template1.md` and open it.
+- `emeraldian-template` — lower-level command; supports `--vault`, custom
+  `--template` names and `--folder`.
+
+Supported placeholders:
+
+- `{{title}}`, `{{date}}`, `{{yesterday}}`, `{{tomorrow}}`
+- Templater-style dates from the existing vault templates:
+  `<% tp.date.yesterday("YYYY-MM-DD") %>`,
+  `<% tp.date.tomorrow("YYYY-MM-DD") %>`, etc.
 
 This machine's vault uses:
 
@@ -26,7 +40,8 @@ This machine's vault uses:
 - Templates folder: `50 resources/templates`
 - Obsidian templates config: `.obsidian/templates.json`
 
-If emeraldian adds template support later, configure it here.
+If emeraldian adds native template support later, configure it here and retire
+the helpers.
 
 ## Runtime files (ignored by stow)
 

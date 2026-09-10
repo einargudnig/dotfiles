@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Create a new note from the default template and open it in emeraldian.
+exec emeraldian-template new "$@"
