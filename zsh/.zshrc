@@ -65,6 +65,9 @@ alias csd='claude --dangerously-skip-permissions'
 alias cl='tmux-claude-picker'
 alias report='~/dotfiles/scripts/daily-report.sh'
 alias kill-port='~/dotfiles/scripts/kill-port.sh'
+alias model='model-router'
+alias ed='emeraldian-daily'   # shadows /bin/ed; use \ed or /bin/ed for the editor
+alias en='emeraldian-new'
 
 # pi lives in its own prefix (~/.local/pi) with a brew-node shim, deliberately
 # outside fnm. Update via this, never a bare `npm i -g` -- that reinstalls it
