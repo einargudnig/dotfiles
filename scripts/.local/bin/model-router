@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+# model-router -- pick the best open code model for the current moment.
+#
+# This is a curated, human-maintained router. Update the mappings below when
+# new models or prices shift the value equation. The companion doc is at:
+#   ~/dotfiles/docs/open-code-models-value-key.md
+
+set -euo pipefail
+
+KEY_FILE="${HOME}/dotfiles/docs/open-code-models-value-key.md"
+LAST_UPDATED="2025-09-07"
+
+usage() {
+  cat <<'EOF'
+Usage: model-router [task]
+
+Tasks:
+  code          default coding assistant (best quality/price)
+  cheap         lowest cost that is still useful
+  fast          low-latency tasks like autocomplete
+  complex       hard reasoning, large edits, agentic workflows
+  local         running on your own hardware
+  commercial    permissive license for shipped products
+  opencode-go   best models for OpenCode Go's $10/month plan
+  list          print all current recommendations
+  doc           open the full value key
+
+With no task, prints the default recommendation.
+EOF
+}
+
+recommend() {
+  local task="$1"
+  local primary="$2"
+  local fallback="$3"
+  local note="$4"
+
+  printf '\033[1;32m%-10s\033[0m %s\n' "[$task]" "$primary"
+  printf '\033[0;34m%-10s\033[0m %s\n' "fallback" "$fallback"
+  printf '\033[0;90m%-10s\033[0m %s\n' "note" "$note"
+  echo
+}
+
+show_default() {
+  recommend \
+    "code" \
+    "Qwen2.5-Coder-32B-Instruct" \
+    "DeepSeek-V3" \
+    "Best open-weights quality per dollar for most coding tasks."
+}
+
+show_all() {
+  show_default
+  recommend \
+    "cheap" \
+    "Qwen2.5-Coder-14B-Instruct" \
+    "DeepSeek-Coder-V2" \
+    "Excellent capability for the price; great for bulk jobs."
+  recommend \
+    "fast" \
+    "Qwen2.5-Coder-7B-Instruct" \
+    "Qwen2.5-Coder-14B-Instruct" \
+    "Small, low-latency, perfect for autocomplete/FIM."
+  recommend \
+    "complex" \
+    "DeepSeek-V3" \
+    "Qwen2.5-Coder-32B-Instruct" \
+    "Best reasoning and long-context agentic coding."
+  recommend \
+    "local" \
+    "Qwen2.5-Coder-7B / 14B (laptop) or 32B (desktop GPU)" \
+    "Gemma 2 9B" \
+    "Pick size by available VRAM."
+  recommend \
+    "commercial" \
+    "Llama 3.3 70B Instruct" \
+    "Qwen2.5-Coder-32B-Instruct" \
+    "Widest provider availability with a permissive license."
+  printf '\033[0;90mlast updated: %s\033[0m\n' "$LAST_UPDATED"
+  printf 'see also: %s\n' "$KEY_FILE"
+}
+
+task="${1:-code}"
+
+case "$task" in
+  -h|--help|help)
+    usage
+    ;;
+  code)
+    show_default
+    ;;
+  cheap)
+    recommend \
+      "cheap" \
+      "Qwen2.5-Coder-14B-Instruct" \
+      "DeepSeek-Coder-V2" \
+      "Excellent capability for the price; great for bulk jobs."
+    ;;
+  fast)
+    recommend \
+      "fast" \
+      "Qwen2.5-Coder-7B-Instruct" \
+      "Qwen2.5-Coder-14B-Instruct" \
+      "Small, low-latency, perfect for autocomplete/FIM."
+    ;;
+  complex)
+    recommend \
+      "complex" \
+      "DeepSeek-V3" \
+      "Qwen2.5-Coder-32B-Instruct" \
+      "Best reasoning and long-context agentic coding."
+    ;;
+  local)
+    recommend \
+      "local" \
+      "Qwen2.5-Coder-7B / 14B (laptop) or 32B (desktop GPU)" \
+      "Gemma 2 9B" \
+      "Pick size by available VRAM."
+    ;;
+  commercial)
+    recommend \
+      "commercial" \
+      "Llama 3.3 70B Instruct" \
+      "Qwen2.5-Coder-32B-Instruct" \
+      "Widest provider availability with a permissive license."
+    ;;
+  opencode-go|go)
+    recommend \
+      "opencode-go" \
+      "MiMo-V2.5" \
+      "LongCat-2.0" \
+      "Best value on OpenCode Go's \$10/mo plan: huge request allowance, no region limits."
+    ;;
+  list|all)
+    show_all
+    ;;
+  doc|docs|key)
+    if command -v bat >/dev/null 2>&1; then
+      bat "$KEY_FILE"
+    else
+      cat "$KEY_FILE"
+    fi
+    ;;
+  *)
+    echo "Unknown task: $task" >&2
+    usage >&2
+    exit 1
+    ;;
+esac

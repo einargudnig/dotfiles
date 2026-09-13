@@ -125,6 +125,16 @@ def cmd_daily(args):
     open_in_emeraldian(args.vault, dest)
 
 
+def cmd_weekly(args):
+    cfg = read_emeraldian_config()
+    today = datetime.now()
+    name = today.strftime("%G-W%V")
+    folder = cfg["daily_folder"].strip("/")
+    dest = args.vault / folder / f"{name}.md"
+    create_from_template(template_path(args.vault, "weekly template"), dest, name)
+    open_in_emeraldian(args.vault, dest)
+
+
 def cmd_new(args):
     title = args.title
     slug = slugify(title)
@@ -152,6 +162,9 @@ def main():
 
     daily = sub.add_parser("daily", help="Open today's daily note, creating it from template if needed")
     daily.set_defaults(func=cmd_daily)
+
+    weekly = sub.add_parser("weekly", help="Open this week's weekly note, creating it from template if needed")
+    weekly.set_defaults(func=cmd_weekly)
 
     new = sub.add_parser("new", help="Create a new note from a template")
     new.add_argument("title", help="Note title")

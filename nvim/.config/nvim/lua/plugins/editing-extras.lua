@@ -68,15 +68,73 @@ return {
       },
     },
     keys = {
-      { "<leader>Cv", function() require("chainsaw").variableLog() end, mode = { "n", "x" }, desc = "Chainsaw: log variable" },
-      { "<leader>Co", function() require("chainsaw").objectLog() end, mode = { "n", "x" }, desc = "Chainsaw: log object" },
-      { "<leader>Ct", function() require("chainsaw").typeLog() end, mode = { "n", "x" }, desc = "Chainsaw: log type" },
-      { "<leader>Cm", function() require("chainsaw").messageLog() end, desc = "Chainsaw: log message" },
-      { "<leader>Ce", function() require("chainsaw").emojiLog() end, desc = "Chainsaw: emoji log" },
-      { "<leader>CT", function() require("chainsaw").timeLog() end, desc = "Chainsaw: time log" },
-      { "<leader>Cd", function() require("chainsaw").debugLog() end, desc = "Chainsaw: debugger" },
-      { "<leader>Cs", function() require("chainsaw").stacktraceLog() end, desc = "Chainsaw: stacktrace" },
-      { "<leader>Cr", function() require("chainsaw").removeLogs() end, mode = { "n", "x" }, desc = "Chainsaw: remove logs" },
+      {
+        "<leader>Cv",
+        function()
+          require("chainsaw").variableLog()
+        end,
+        mode = { "n", "x" },
+        desc = "Chainsaw: log variable",
+      },
+      {
+        "<leader>Co",
+        function()
+          require("chainsaw").objectLog()
+        end,
+        mode = { "n", "x" },
+        desc = "Chainsaw: log object",
+      },
+      {
+        "<leader>Ct",
+        function()
+          require("chainsaw").typeLog()
+        end,
+        mode = { "n", "x" },
+        desc = "Chainsaw: log type",
+      },
+      {
+        "<leader>Cm",
+        function()
+          require("chainsaw").messageLog()
+        end,
+        desc = "Chainsaw: log message",
+      },
+      {
+        "<leader>Ce",
+        function()
+          require("chainsaw").emojiLog()
+        end,
+        desc = "Chainsaw: emoji log",
+      },
+      {
+        "<leader>CT",
+        function()
+          require("chainsaw").timeLog()
+        end,
+        desc = "Chainsaw: time log",
+      },
+      {
+        "<leader>Cd",
+        function()
+          require("chainsaw").debugLog()
+        end,
+        desc = "Chainsaw: debugger",
+      },
+      {
+        "<leader>Cs",
+        function()
+          require("chainsaw").stacktraceLog()
+        end,
+        desc = "Chainsaw: stacktrace",
+      },
+      {
+        "<leader>Cr",
+        function()
+          require("chainsaw").removeLogs()
+        end,
+        mode = { "n", "x" },
+        desc = "Chainsaw: remove logs",
+      },
       {
         "<leader>fL",
         function()
@@ -129,13 +187,5 @@ return {
         enable_close_on_slash = true,
       },
     },
-  },
-
-  -- Rainbow parentheses / brackets / tags via treesitter.
-  {
-    "HiPhish/rainbow-delimiters.nvim",
-    event = "LazyFile",
-    main = "rainbow-delimiters.setup",
-    opts = {},
   },
 }

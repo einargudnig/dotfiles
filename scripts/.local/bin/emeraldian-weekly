@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Open this week's weekly note in emeraldian, creating it from the vault template if needed.
+exec emeraldian-template weekly "$@"

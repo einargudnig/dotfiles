@@ -348,3 +348,123 @@ bash: `ls /Users/einargudjonsson/.local/share/nvim/lazy/LazyVim/lua/lazyvim/plug
 
 ## 2026-09-05 10:51 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
 bash: `make check` failed — stow -nv -d /Users/einargudjonsson/dotfiles -t /Users/einargudjonsson claude gh-dash ghostty ghui herdr hunk linters nvim pi scripts spotify-player tmux wezterm yazi zsh aerospace cursor karabiner laz
+
+## 2026-09-07 11:04 +0000 · tool · claude-opus-5 · maul-admin@feat/versioning-and-changelog · claude-code
+CLAUDE.md says run /maintain-verification-skill after adding a route, but the Skill tool refuses it (disable-model-invocation) — check:map --ci fails until the user runs it by hand
+**Worked instead:** finish the code, then ask the user to run /maintain-verification-skill before merging
+
+## 2026-09-07 11:04 +0000 · tool · claude-opus-5 · maul-admin@feat/versioning-and-changelog · claude-code
+Bash tool rejected a heredoc containing literal \x1f/\x1e separators: 'command contains control characters that would be hidden in the approval dialog'
+**Worked instead:** write the file with the Write tool, or use \\u001f escapes in the source
+
+## 2026-09-07 14:34 +0000 · tool · claude-opus-5 · maul-admin@main · claude-code
+control cleanup killed the tracked devPid but orphaned its react-router child, which kept port 5174; the next control start reported ok and served a stale app built from an older commit
+**Worked instead:** lsof -nP -iTCP:5174 -sTCP:LISTEN, kill the orphan pid, then control start
+
+## 2026-09-07 17:13 +0000 · tool · claude-opus-5 · maul-admin@main · claude-code
+rg printed matched text mangled: lines containing 'reverse: true' rendered as 'n: true', and 'items.reverse()' as 'items.n()' — made me misread the dynamodb-toolbox API until I cat'd the file
+**Worked instead:** read the file directly with sed/cat to confirm any text rg matched
+
+## 2026-09-07 17:20 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
+bash: `cd /Users/einargudjonsson/dotfiles && make restow` failed — stow -Rv -d /Users/einargudjonsson/dotfiles -t /Users/einargudjonsson claude gh-dash ghostty ghui herdr hunk linters nvim pi scripts spotify-player tmux wezterm yazi zsh aerospace cursor karabiner laz
+
+## 2026-09-07 17:20 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
+bash: `ls -la ~/.local/bin/model-router && readlink ~/.local/bin/model-router` failed — ls: /Users/einargudjonsson/.local/bin/model-router: No such file or directory   Command exited with code 1
+
+## 2026-09-07 17:21 +0000 · setup · claude-opus-5 · dotfiles@master · unknown
+make restow failed because .claude/settings.json exists as a regular file, blocking stow
+**Worked instead:** restow only the changed package: stow -Rv -d ~/dotfiles -t ~ scripts
+
+## 2026-09-08 10:39 +0000 · docs · claude-opus-5 · maul-admin@fix/version-stamp-and-toast · claude-code
+verify-maul-admin shell.md says 'press g then press e as two calls within 1.2 s' drives a chord; two control.mjs invocations take longer than the 1200ms window (node boot + wait-settle), so the chord never fires and the page stays put
+**Worked instead:** verify chords through src/lib/shortcuts.test.ts instead; control press cannot span a two-key sequence
+
+## 2026-09-08 11:03 +0000 · tool · claude-opus-5 · maul-backend@main · claude-code
+Asana MCP: no tool adds a tag to a task — create_tasks/update_tasks have no tags field, save_task_changes_confirm is deprecated and lacks one too; had to leave the tag to be added by hand in the UI
+
+## 2026-09-08 14:51 +0000 · tool · claude-opus-5 · maul-admin@feat/company-members-csv · claude-code
+switched git branch while verify-maul-admin harness was running; new import pulled awesome-phonenumber into a route, Vite served 504 Outdated Optimize Dep and the page rendered 'Something went wrong'
+**Worked instead:** control cleanup && control start to re-run Vite's dep optimizer after any branch switch that changes a route's imports
+
+## 2026-09-08 14:53 +0000 · tool · claude-opus-5 · maul-admin@feat/company-members-csv · claude-code
+verify-maul-admin 'control start' reported ok:true while an orphaned react-router dev from an earlier session held port 5174; the new Vite died with 'Port 5174 is already in use' and the browser was served the stale pre-branch-switch module graph (504 Outdated Optimize Dep), page showed 'Something went wrong'
+**Worked instead:** lsof -ti tcp:5174, compare against devPid in .verify/instance.json, kill the orphan, then control start. start's readiness probe should check it owns the port, not just that something answers on it
+
+## 2026-09-09 07:25 +0000 · error · claude-opus-5 · einar-os@migrate/tanstack · claude-code
+TanStack Start prerender failed with only 'Failed to fetch /: Internal Server Error'; real cause was miniflare rejecting a 36MiB asset over Cloudflare's 25MiB limit, only visible via vite preview
+**Worked instead:** run 'vite preview' on the built output to surface the underlying miniflare error
+
+## 2026-09-09 07:54 +0000 · tool · claude-opus-5 · einar-os@migrate/tanstack · claude-code
+defining a shell function in Bash tool then calling it: 'mkdir: command not found' inside the function body, PATH appears empty in function scope
+**Worked instead:** write files via a python3 heredoc instead of shell functions
+
+## 2026-09-09 09:00 +0000 · tool · claude-opus-5 · maul-admin@fix/version-banner-every-deploy · claude-code
+playwright MCP browser_wait_for with time:75 failed at 5s — 'browserBackend.callTool: Timeout 5000ms exceeded'; the time arg is capped by a hard 5s backend timeout
+**Worked instead:** wait in a background Bash sleep, then browser_snapshot
+
+## 2026-09-09 09:27 +0000 · tool · claude-sonnet-5 · einargudjonsson · unknown
+edit: /Users/einargudjonsson/personal/raycast-extensions/toggl-focus/src/helpers/cache-helper.ts failed — Could not find the exact text in /Users/einargudjonsson/personal/raycast-extensions/toggl-focus/src/helpers/cache-helper.ts. The old text must match exactly including all whitespace and newlines.
+
+## 2026-09-09 09:29 +0000 · tool · claude-sonnet-5 · einargudjonsson · unknown
+edit: /Users/einargudjonsson/personal/raycast-extensions/toggl-focus/src/helpers/preferences.ts failed — Could not find the exact text in /Users/einargudjonsson/personal/raycast-extensions/toggl-focus/src/helpers/preferences.ts. The old text must match exactly including all whitespace and newlines.
+
+## 2026-09-09 09:51 +0000 · tool · claude-opus-5 · maul-admin@main · claude-code
+control start returned ok:true with h1:null after Vite re-optimized deps; every asset 504'd 'Outdated Optimize Dep' and the app stayed on 'Loading…' — start's self-reload didn't catch it
+**Worked instead:** control cleanup then control start again
+
+## 2026-09-09 09:53 +0000 · tool · claude-opus-5 · maul-admin@main · claude-code
+curl POST with a for-loop inline in the Bash tool died with zsh '(eval):2: failed to change group ID: operation not permitted' — same command in a heredoc script run with bash worked
+**Worked instead:** write the loop to a .sh in the scratchpad and run it with bash
+
+## 2026-09-09 10:19 +0000 · tool · claude-opus-5 · maul-admin@feat/company-edit-domains · claude-code
+control.mjs goto away from a dirty maul-admin form crashes: ProtocolError Page.handleJavaScriptDialog 'No dialog is showing' (beforeunload race)
+**Worked instead:** reload the target URL instead of goto, or reset the form state first
+
+## 2026-09-09 13:36 +0000 · tool · claude-opus-5 · maul-admin@feat/company-edit-domains · claude-code
+verify-maul-admin control doctor always FAILs its 'instance' check: recorded devPid is dead seconds after control start, though the dev server answers
+**Worked instead:** the dev server is fine; devPid records a wrapper process that exits
+
+## 2026-09-09 14:29 +0000 · flaky · claude-opus-5 · maul-admin@feat/global-top-bar · claude-code
+verify control start returned ok:true, but the first route navigation hit a Vite 504 Outdated Optimize Dep and rendered the error boundary; control reported h1 'Something went wrong' with exit 0
+**Worked instead:** re-run the same goto once — the second load succeeds after Vite finishes re-optimising
+
+## 2026-09-09 14:33 +0000 · tool · claude-opus-5 · maul-admin@feat/global-top-bar · claude-code
+root cause of the earlier 504 Outdated Optimize Dep: an orphaned vite process from a previous run still held :5174, so control start reported ok:true while the browser talked to the old server with a stale dep cache; control cleanup only kills pids it recorded
+**Worked instead:** lsof -ti :5174 -ti :8174 | xargs kill -9, then rm -rf node_modules/.vite and control start
+
+## 2026-09-09 14:54 +0000 · tool · claude-opus-5 · maul-admin@feat/global-top-bar · claude-code
+playwright MCP browser_navigate to a local file:// URL — blocked with 'Access to "file:" protocol is blocked'
+**Worked instead:** serve the dir over http with 'python3 -m http.server' and navigate to localhost
+
+## 2026-09-10 07:58 +0000 · tool · claude-sonnet-5 · einargudjonsson · unknown
+read: dotfiles/cursor/.stow-local-ignore failed — ENOENT: no such file or directory, access '/Users/einargudjonsson/dotfiles/cursor/.stow-local-ignore'
+
+## 2026-09-10 08:01 +0000 · tool · claude-sonnet-5 · einargudjonsson · unknown
+read: dotfiles/herdr/.stow-local-ignore failed — ENOENT: no such file or directory, access '/Users/einargudjonsson/dotfiles/herdr/.stow-local-ignore'
+
+## 2026-09-10 08:15 +0000 · tool · claude-sonnet-5 · einargudjonsson · unknown
+bash: `set -e
+TMP_VAULT=$(mktemp -d)
+mkdir -p "$TMP_VAULT/50 resources/templates"
+cat > "$TMP_VAULT/50 reso` failed — Traceback (most recent call last):   File "<stdin>", line 3, in <module> ModuleNotFoundError: No module named 'emeraldian_template'   Command exited with code 1
+
+## 2026-09-10 15:16 +0000 · tool · claude-opus-5 · maul-admin@main · claude-code
+control start returned ok:true but its Vite had died on 'Port 5174 already in use' (orphan from a prior run); page stuck on 'Loading…' with 504 Outdated Optimize Dep and no useful error from the harness
+**Worked instead:** control cleanup, then control start again — check .verify/dev.log when a page hangs on Loading
+
+## 2026-09-11 10:41 +0000 · setup · claude-opus-5 · support-history-week@feat/support-history-week · claude-code
+control start failed in fresh worktree: MODULE_NOT_FOUND for node_modules/@react-router/dev/bin.cjs; new worktree has no node_modules or .env.local, but npm run validate passed by resolving up to the parent repo node_modules
+**Worked instead:** npm install in the worktree and copy .env.local from the main checkout
+
+## 2026-09-11 12:40 +0000 · tool · claude-opus-5 · maul-backend@main · claude-code
+ran 'cd packages/clients/src && ...' twice in parallel Bash calls; second failed with 'zoxide: no match found' because cwd had already moved
+**Worked instead:** use absolute paths instead of cd in Bash calls
+
+## 2026-09-13 09:30 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
+bash: `ls -la ~/personal/obsidian/second-brain/30\ planner/ | grep -i weekly` failed — (no output)  Command exited with code 1
+
+## 2026-09-13 09:31 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
+bash: `make restow` failed — stow -Rv -d /Users/einargudjonsson/dotfiles -t /Users/einargudjonsson claude gh-dash ghostty ghui herdr hunk linters nvim pi scripts spotify-player tmux wezterm yazi zsh aerospace cursor emeraldian ka
+
+## 2026-09-13 09:31 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
+bash: `grep "emeraldian-weekly\|ew=" zsh/.zshrc && ls -la ~/.local/bin/emeraldian-weekly` failed — alias ew='emeraldian-weekly' ls: /Users/einargudjonsson/.local/bin/emeraldian-weekly: No such file or directory   Command exited with code 1
