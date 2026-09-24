@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""cc-cost — price-weighted token profile of Claude Code sessions, from ~/.claude/projects transcripts.
+
+usage: cc-cost [--days N] [--since YYYY-MM-DD] [--until YYYY-MM-DD] [--reprice MODEL] [--tools]
+
+Dedupes streamed entries by (message.id, requestId). Subagent transcripts are counted under their parent.
+--reprice prices every request as MODEL (e.g. opus-5-5) to compare periods across a model change.
+"""
+import argparse, collections as C, glob, json, os, time
+from datetime import datetime
+
+# $/MTok: input, output, cache_read, cache_write_5m, cache_write_1h
+PRICE = {
+    "opus-5-5": (4, 20, 0.20, 5, 8),
+    "opus-5": (5, 25, 0.50, 6.25, 10),
+    "opus-4": (5, 25, 0.50, 6.25, 10),
+    "fable": (10, 50, 0.25, 12.5, 20),
+    "sonnet": (2, 10, 0.20, 2.5, 4),
+    "haiku": (1, 5, 0.10, 1.25, 2),
+}
+STATIC = ("skill_listing", "deferred_tools_delta", "instructions", "agent_listing_delta", "mcp_instructions_delta")
+CTX_BUCKETS = (0, 50e3, 100e3, 200e3, 400e3, 700e3, 1e9)
+
+
+def price(model, reprice):
+    key = reprice or model
+    return next((p for k, p in PRICE.items() if k in key), None)
+
+
+def ts_of(d):
+    return datetime.fromisoformat(d["timestamp"].replace("Z", "+00:00")).timestamp()
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--days", type=int, default=30)
+    ap.add_argument("--since")
+    ap.add_argument("--until")
+    ap.add_argument("--reprice")
+    ap.add_argument("--tools", action="store_true", help="per-tool calls, session share, error rate")
+    a = ap.parse_args()
+    lo = datetime.fromisoformat(a.since).timestamp() if a.since else time.time() - a.days * 86400
+    hi = datetime.fromisoformat(a.until).timestamp() if a.until else time.time() + 1
+
+    root = os.path.expanduser("~/.claude/projects")
+    files = [f for f in glob.glob(f"{root}/**/*.jsonl", recursive=True) if os.path.getmtime(f) >= lo]
+
+    usd, tok, by_model = C.Counter(), C.Counter(), C.Counter()
+    ctx_usd, ctx_n = C.Counter(), C.Counter()
+    writes, writes_n = C.Counter(), C.Counter()
+    static_chars, static_n = C.Counter(), C.Counter()
+    calls, errs, tool_sessions, names = C.Counter(), C.Counter(), C.defaultdict(set), {}
+    sessions, requests, typed, compactions = set(), 0, 0, 0
+
+    for f in files:
+        sub = "/subagents/" in f
+        sid = f.split("/")[-3] if sub else os.path.basename(f)[:-6]
+        seen, last = set(), None
+        for line in open(f, errors="ignore"):
+            try:
+                d = json.loads(line)
+            except ValueError:
+                continue
+            if "timestamp" not in d or not lo <= ts_of(d) < hi:
+                continue
+            m, kind = d.get("message") or {}, d.get("type")
+            att = d.get("attachment") or {}
+            if att.get("type") in STATIC:
+                static_chars[att["type"]] += len(json.dumps(att)); static_n[att["type"]] += 1
+            if d.get("subtype") == "compact_boundary":
+                compactions += 1
+            if kind == "user":
+                content = m.get("content")
+                if isinstance(content, str) and not sub:
+                    typed += 1
+                for b in content if isinstance(content, list) else []:
+                    if b.get("type") == "tool_result" and b.get("is_error"):
+                        errs[names.get(b.get("tool_use_id"), "?")] += 1
+                continue
+            if kind != "assistant":
+                continue
+            for b in m.get("content") or []:
+                if b.get("type") == "tool_use":
+                    names[b["id"]] = b["name"]; calls[b["name"]] += 1; tool_sessions[b["name"]].add(sid)
+            key = (m.get("id"), d.get("requestId"))
+            u = m.get("usage")
+            if key in seen or not u:
+                continue
+            seen.add(key)
+            p = price(m.get("model", ""), a.reprice)
+            if not p:
+                continue
+            cc = u.get("cache_creation") or {}
+            w1h = cc.get("ephemeral_1h_input_tokens", 0)
+            w5m = cc.get("ephemeral_5m_input_tokens", 0) if cc else u.get("cache_creation_input_tokens", 0)
+            read, inp, out = u.get("cache_read_input_tokens", 0), u.get("input_tokens", 0), u.get("output_tokens", 0)
+            parts = {"cache_read": (read, p[2]), "write_1h": (w1h, p[4]), "write_5m": (w5m, p[3]),
+                     "output": (out, p[1]), "input": (inp, p[0])}
+            cost = 0
+            for k, (n, rate) in parts.items():
+                tok[k] += n; usd[k] += n * rate / 1e6; cost += n * rate / 1e6
+            by_model[m.get("model")] += cost
+            requests += 1; sessions.add(sid)
+            ctx = read + w1h + w5m + inp
+            b = next(i for i in range(len(CTX_BUCKETS) - 1) if ctx < CTX_BUCKETS[i + 1])
+            ctx_usd[b] += read * p[2] / 1e6; ctx_n[b] += 1
+            w, t = w1h + w5m, ts_of(d)
+            if w >= 20000 and read < 40000:
+                cause = "session start" if last is None else (
+                    "rewrite after >1h idle" if t - last > 3600 else "rewrite <1h (prefix changed)")
+                writes[cause] += w * (p[4] if w1h else p[3]) / 1e6; writes_n[cause] += 1
+            last = t
+
+    total = sum(usd.values()) or 1
+    label = f" (repriced as {a.reprice})" if a.reprice else ""
+    print(f"{len(sessions)} sessions, {requests:,} requests, {typed:,} typed prompts, {compactions} compactions — ${total:,.2f}{label}")
+    print(f"  requests/typed prompt {requests / max(typed, 1):.1f} · cost/session ${total / max(len(sessions), 1):.2f}")
+    hit = tok["cache_read"] / max(1, tok["cache_read"] + tok["write_1h"] + tok["write_5m"] + tok["input"])
+    print(f"\nbilling type{'':14s}$        share   tokens      (cache hit {hit:.1%})")
+    for k, v in usd.most_common():
+        print(f"  {k:22s} {v:9,.2f}  {v / total:6.1%}  {tok[k] / 1e6:9.1f}M")
+    print("\nmodel")
+    for k, v in by_model.most_common():
+        print(f"  {k:30s} {v:9,.2f}  {v / total:6.1%}")
+    rt = sum(ctx_usd.values()) or 1
+    print("\ncache-read $ by context size")
+    for i in range(len(CTX_BUCKETS) - 1):
+        hi_k = "∞" if CTX_BUCKETS[i + 1] >= 1e9 else f"{CTX_BUCKETS[i + 1] / 1e3:.0f}k"
+        print(f"  {CTX_BUCKETS[i] / 1e3:4.0f}k–{hi_k:5s} {ctx_n[i]:7,} req  {ctx_usd[i]:9,.2f}  {ctx_usd[i] / rt:6.1%}")
+    print("\nlarge cache writes (≥20k tokens, cache miss)")
+    for k, v in writes.most_common():
+        print(f"  {k:32s} {writes_n[k]:5} × {v / writes_n[k]:6.2f}  = {v:8,.2f}  {v / total:6.1%}")
+    print("\nstatic context per session (≈tokens = chars/4)")
+    for k in STATIC:
+        if static_n[k]:
+            print(f"  {k:24s} ~{static_chars[k] / static_n[k] / 4:7,.0f} tok  (seen {static_n[k]}×)")
+    if a.tools:
+        n = max(len(sessions), 1)
+        print("\ntool                                              calls  sessions  errors")
+        for k, c in calls.most_common(40):
+            print(f"  {k[:46]:46s} {c:7,}  {len(tool_sessions[k]) / n:7.1%}  {errs[k] / c:6.1%}")
+
+
+if __name__ == "__main__":
+    main()
