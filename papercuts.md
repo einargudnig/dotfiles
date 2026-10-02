@@ -468,3 +468,245 @@ bash: `make restow` failed — stow -Rv -d /Users/einargudjonsson/dotfiles -t /U
 
 ## 2026-09-13 09:31 +0000 · tool · claude-opus-5 · dotfiles@master · unknown
 bash: `grep "emeraldian-weekly\|ew=" zsh/.zshrc && ls -la ~/.local/bin/emeraldian-weekly` failed — alias ew='emeraldian-weekly' ls: /Users/einargudjonsson/.local/bin/emeraldian-weekly: No such file or directory   Command exited with code 1
+
+## 2026-09-13 09:56 +0000 · docs · claude-opus-5 · second-brain@main · claude-code
+weekly-review skill step 4 uses `find -newer "$(date -v-7d +%Y-%m-%d)"` — -newer takes a file, not a date string, so it errors or silently matches nothing
+**Worked instead:** use `find ... -newermt "$START_DATE"` on macOS/BSD find
+
+## 2026-09-14 07:26 +0000 · tool · claude-opus-5 · nido@main · claude-code
+cd /tmp/effcheck failed with 'zoxide: no match found' even though the dir exists; zoxide's cd shim shadows plain cd in this shell
+**Worked instead:** use absolute paths with tar -C / pushd, or 'builtin cd'
+
+## 2026-09-14 07:49 +0000 · tool · claude-opus-5 · nido@main · claude-code
+cp is aliased to 'cp -i' in this shell; a scripted 'cp a b' over an existing file hangs waiting for y/n with no visible prompt until timeout
+**Worked instead:** use 'command cp' or 'install -m' in non-interactive scripts
+
+## 2026-09-14 07:50 +0000 · tool · claude-opus-5 · nido@main · claude-code
+vercel env pull returns empty strings for all Sensitive-marked vars; the file looks valid but every secret is "", so downstream tooling fails confusingly instead of erroring
+**Worked instead:** sensitive vars are write-only in Vercel — re-enter them by hand or read NEXT_PUBLIC_ ones from the deployed bundle
+
+## 2026-09-14 12:14 +0000 · tool · claude-opus-5 · maul-admin@fix/prep-counts-failure · claude-code
+verify harness 'control start' reported ok:true but app hung on Loading… — Vite served 504 Outdated Optimize Dep after an npm install invalidated .vite/deps; doctor said 'sidebar not found' which points at bypass auth, not the real cause
+**Worked instead:** npm run verify:cleanup, rm -rf node_modules/.vite, then npm run verify again
+
+## 2026-09-14 14:53 +0000 · docs · claude-opus-5 · sterkir-pabbar@master · claude-code
+vercel marketplace skill documents 'vercel integration discover --category <slug>' but installed CLI 53.1.0 rejects it: 'unknown or unexpected option: --category'
+**Worked instead:** positional query works: 'vercel integration discover storage'
+
+## 2026-09-15 12:06 +0000 · flaky · claude-opus-5 · maul-admin@feat/neverthrow-menus · claude-code
+CI Test job failed on PR #127 in src/routes/dashboard/route.test.tsx 'renders a fast feed's tile while a slow one is still pending' — unrelated to the PR's diff (menus only), passes 3/3 locally; timing-dependent race between two mocked feeds
+**Worked instead:** gh run rerun --failed; not a real regression
+
+## 2026-09-15 15:24 +0000 · flaky · claude-opus-5 · maul-admin@fix/user-restaurants-validation · claude-code
+dashboard flake hit a 3rd PR (#132, Coverage gate). Traced two candidate causes: (1) test uses mockImplementationOnce so a re-run effect's 2nd call gets the default mock; (2) loadFocusEntities reports [] synchronously when scopes.companies is false, settling the panel into its empty state — matches the observed 'Capacent absent + empty-state present' failure exactly. Cannot reproduce locally, 12 runs incl. coverage
+**Worked instead:** gh run rerun --failed clears it; needs the dashboard owner to pick between the two causes
+
+## 2026-09-15 16:16 +0000 · tool · claude-opus-5 · maul-admin@main · claude-code
+ran ghui from brew: silent exit 137 (SIGKILL), no error text; homebrew relocation invalidates the ad-hoc signature on the 98MB binary
+**Worked instead:** codesign --force --sign - /opt/homebrew/Cellar/ghui/*/bin/ghui
+
+## 2026-09-15 16:32 +0000 · tool · claude-opus-5 · maul-admin@chore/shadcn-lint · claude-code
+oxlint -W/-D shadcn/no-arbitrary-values (a jsPlugins rule) silently does nothing — 0 findings, exit 0, no error; CLI rule flags only reach built-in rules
+**Worked instead:** enable JS plugin rules in a config file and point oxlint at it with -c
+
+## 2026-09-15 16:34 +0000 · flaky · claude-opus-5 · maul-admin@chore/shadcn-lint · claude-code
+dashboard/route.test.tsx 'No new companies starting' failed under npm run validate but passes standalone on a clean tree too — timing-dependent
+**Worked instead:** re-run; it is a load-sensitive assertion, not the change under test
+
+## 2026-09-15 23:21 +0000 · error · claude-opus-5 · sterkir-pabbar@master · claude-code
+WebFetch https://docs.kling.is failed with 'unable to verify the first certificate' (incomplete TLS chain on the host)
+**Worked instead:** curl -sI with system CA still fails; used kling.is/docs path instead
+
+## 2026-09-15 23:52 +0000 · tool · claude-opus-5 · sterkir-pabbar@master · claude-code
+shadcn init -y hung on the interactive 'Select a component library' prompt even though --yes defaults to true
+**Worked instead:** pass -b base (or radix/aria) explicitly: shadcn init -b base -t react-router --no-monorepo
+
+## 2026-09-15 23:55 +0000 · tool · claude-opus-5 · sterkir-pabbar@master · claude-code
+bun --cwd innri run typecheck silently listed scripts instead of running them; --cwd needs an absolute path and the space-separated form is misparsed
+**Worked instead:** use a subshell in the script: (cd innri && bun run typecheck)
+
+## 2026-09-16 07:54 +0000 · error · claude-opus-5 · sterkir-pabbar@master · claude-code
+@clerk/ui themes fail typecheck under exactOptionalPropertyTypes: cssLayerName?: string is not declared as string|undefined
+**Worked instead:** narrow documented assertion at the ClerkProvider appearance prop rather than dropping the compiler flag
+
+## 2026-09-16 08:20 +0000 · tool · claude-opus-5 · maul-admin@feat/design-system-props · claude-code
+cp over an existing file prompted 'overwrite?' mid-script (cp is aliased to -i), the script exited 1 and left smoke-test edits in the working tree
+**Worked instead:** /bin/cp -f to bypass the alias in non-interactive scripts
+
+## 2026-09-16 08:21 +0000 · setup · claude-opus-5 · sterkir-pabbar@master · claude-code
+bun add -g vercel@latest reported success but 'vercel --version' still showed 53.1.0 — an fnm-managed npm global shadows ~/.bun/bin on PATH
+**Worked instead:** check 'which -a vercel'; upgrade the install that resolves first, not just the preferred package manager's
+
+## 2026-09-16 08:24 +0000 · docs · claude-opus-5 · sterkir-pabbar@master · claude-code
+marketplace skill documents 'vercel integration add <name> --yes --no-claim' but CLI 59.19.0 rejects --yes on that subcommand
+**Worked instead:** use --non-interactive instead of --yes for 'vercel integration add'
+
+## 2026-09-16 09:45 +0000 · tool · claude-opus-5 · maul-backend@main · claude-code
+sourced services/mcp/.env with 'set -a; . .env'; CONVEX_DEPLOY_KEY came back empty (len=0) with no error because the value contains a literal | which the shell parsed as a pipe — curl then sent an empty auth header and Convex returned a misleading InvalidHeaderFailure
+**Worked instead:** read the value directly instead of sourcing: KEY=$(grep '^CONVEX_DEPLOY_KEY=' .env | cut -d= -f2-)
+
+## 2026-09-16 09:48 +0000 · tool · claude-opus-5 · maul-backend@main · claude-code
+aws CLI fails on this Mac: '(eval):2: bad CPU type in executable: aws' — x86_64 binary under arm64, no Rosetta; blocked checking deployed lambda env vars
+
+## 2026-09-16 11:13 +0000 · tool · claude-opus-5 · gigover@master · claude-code
+ran 'cp a b' inside a non-interactive bash tool script; cp is aliased to 'cp -i' so it blocked on 'overwrite? (y/n)' until the 600s timeout
+**Worked instead:** use 'command cp' or '/bin/cp' to bypass the alias in scripts
+
+## 2026-09-16 12:45 +0000 · error · claude-opus-5 · maul-backend@main · claude-code
+zsh: used 'for path in ...' in a loop; zsh ties $path to $PATH so this wiped PATH and every later command failed with 'command not found: curl'
+**Worked instead:** never use 'path' as a variable name in zsh — use 'p' or 'ep'
+
+## 2026-09-16 14:43 +0000 · setup · claude-opus-5 · maul-backend@main · claude-code
+root .env (from 1Password op://Dotenv/.env-maul-backend) has no CONVEX_* vars, but services/mcp/.env does; env:distribute regenerates service .env files from root, so a remote:env-pull would silently blank CONVEX_DEPLOYMENT_URL/CONVEX_DEPLOY_KEY and break every delivery-insights tool on next deploy
+**Worked instead:** checked root .env key list before running env:distribute; the 1Password item needs the CONVEX_* vars added
+
+## 2026-09-16 14:53 +0000 · tool · claude-opus-5 · maul-admin@feat/support-cancel-order · claude-code
+verify harness: control.mjs click/press denied by auto-mode classifier as [Modify Shared Resources] after a dev-api-write click; even read-only 'press Escape' and 'network --clear' got blocked afterwards, leaving the browser stuck on an open modal
+**Worked instead:** control.mjs writes/snapshot/screenshot still run; the driving commands need an explicit Bash permission rule or the user running them via ! prefix
+
+## 2026-09-16 15:46 +0000 · setup · claude-opus-5 · maul-backend@feat/mcp-temperature-tools · claude-code
+env:distribute regenerates services/*/.env from the tracked .env.template, so running it while a branch without a new var is checked out silently strips that var from .env; next sls deploy failed with 'Cannot resolve ${env:CONVEX_TEMPERATURE_URL}'
+**Worked instead:** re-run npm run env:distribute on the branch whose .env.template has the var
+
+## 2026-09-17 08:03 +0000 · setup · claude-opus-5 · gigover@feat/public-qr-fault-report · claude-code
+oxlint.config.ts ignorePatterns ['public'] matched src/public/ too — new source dir was silently unlinted, oxlint just said 'No files found to lint'
+**Worked instead:** renamed the dir to src/faultReport/; anchor the pattern to '/public' if a root-only ignore was meant
+
+## 2026-09-17 10:06 +0000 · error · claude-opus-5 · maul-temperature@main · claude-code
+npx convex codegen prints 'Uploading functions to Convex...' but new functions stay unregistered — app got 'Could not find public function for weightMeasurements:listToday'
+**Worked instead:** run 'npx convex dev --once' to actually deploy functions; codegen only regenerates types + validates schema
+
+## 2026-09-18 08:52 +0000 · flaky · claude-opus-5 · sterkir-pabbar@master · claude-code
+vercel deploy failed twice with 'Error: fetch failed' while api.vercel.com was briefly unreachable (curl 000); succeeded on retry a minute later
+**Worked instead:** retry after checking connectivity with curl to api.vercel.com
+
+## 2026-09-18 09:17 +0000 · tool · claude-opus-5 · maul-admin@main · claude-code
+playwright MCP browser_navigate to a file:// URL — blocked with 'Access to "file:" protocol is blocked'; expected local file preview to work
+**Worked instead:** serve the dir with 'python3 -m http.server' and navigate to http://localhost:PORT/ instead
+
+## 2026-09-18 13:41 +0000 · tool · claude-opus-5 · maul-admin@feat/support-incident-button · claude-code
+rg with a pattern starting with '[' (e.g. '\[[0-9]+px\]') silently printed --help instead of searching; exit 0, output looked like results
+**Worked instead:** pass the pattern with -e: rg -oh -e '\[[0-9]+px\]'
+
+## 2026-09-18 13:42 +0000 · other · claude-opus-5 · maul-admin@feat/support-incident-button · claude-code
+correction to previous entry: the rg '--help instead of results' was my own bad flag (-h = help, not no-filename), not a tool defect
+
+## 2026-09-18 13:44 +0000 · flaky · claude-opus-5 · maul-admin@feat/support-incident-button · claude-code
+control cleanup returned ok but left a vite process holding :5174; the next control start reported ok:true with h1:null and doctor said 'sidebar not found' — the browser was talking to the stale server
+**Worked instead:** lsof -ti :5174 -ti :8174 | xargs kill -9, then control start
+
+## 2026-09-18 13:49 +0000 · error · claude-opus-5 · maul-admin@feat/support-incident-button · claude-code
+gh pr checks showed all 4 CI jobs as 'fail' in 2s; gh run view --log-failed said 'log not found'. The real cause was in the run annotations: GitHub Actions jobs never started due to an org billing/spending-limit problem
+**Worked instead:** gh run view <id> (without --log-failed) surfaces the annotation text; --log-failed is useless when the job never started
+
+## 2026-09-18 14:07 +0000 · flaky · claude-opus-5 · maul-admin@feat/support-incident-button · claude-code
+vitest 'Unable to find an element with the text: 2 selected' failed once in npm run validate, passed on two clean re-runs; assertion lives in foodies/_index.test.tsx + billing/snapshots/route.test.tsx (findByText race under parallel load)
+**Worked instead:** re-run npx vitest run; not reproducible in isolation
+
+## 2026-09-18 14:37 +0000 · tool · claude-opus-5 · sterkir-pabbar@master · claude-code
+clerk api ls lists endpoints like '/users' and '/webhooks/svix' but 'clerk api GET /users' returns '404 page not found' for every path variant tried (/users, users, /v1/users)
+**Worked instead:** called the Clerk Backend API directly with curl and CLERK_SECRET_KEY instead
+
+## 2026-09-21 09:42 +0000 · docs · claude-opus-5 · einargudjonsson · claude-code
+weekly-review skill's uncommitted-changes snippet assigns to $status, which is read-only in zsh — script aborts with '(eval):3: read-only variable: status'
+**Worked instead:** renamed the variable to $st
+
+## 2026-09-21 10:48 +0000 · tool · claude-opus-5 · gigover@fix/public-callable-ip-budget · claude-code
+Claude Docs: batch+4 updates landed (rev 7) on doc 3cce24ad-...; minutes later the artifact watch reported 'not found' and Docs read returned reason=access. Artifact create returned id 8WVZj2zT2hZxB9CqEc2Pw6 but the connector frame returned a different id (3cce24ad-...), so the two never matched.
+
+## 2026-09-22 06:30 +0000 · tool · claude-opus-5 · maul-temperature@feat/weight-measurements · claude-code
+curl POST to https://<deployment>.convex.cloud/api/query returned bare 404 (empty body) for a known-good function; expected a JSON result or a JSON error
+**Worked instead:** verified the deploy from the Vercel build log line 'Deployed Convex functions' and 'npx convex function-spec --prod' instead
+
+## 2026-09-22 14:46 +0000 · tool · claude-opus-5 · maul-admin@feat/prune-skill · claude-code
+mv/cp of a scratch file over an existing repo file hung 120s waiting on an invisible 'overwrite? (y/n)' prompt; the tool call timed out with no output
+**Worked instead:** write with shell redirection instead: cat /tmp/new > target (mv and cp are interactive-aliased in this zsh)
+
+## 2026-09-23 15:49 +0000 · error · claude-opus-5-5 · fix-account-discount-rounding@chore/strict-design-system-lint · claude-code
+npm install @shadcn/lint@0.2.0 failed ETARGET 'doesn't exist' — actually the min-release-age guard (before-date 7d)
+**Worked instead:** check the debug log for 'with a date before'; wait or pin an older version
+
+## 2026-09-23 16:03 +0000 · tool · claude-opus-5-5 · fix-account-discount-rounding@chore/strict-design-system-lint · claude-code
+worktree-isolation guard rejects ordinary shell loops (while read, $((...)), for-with-var cmd) as 'too complex'
+**Worked instead:** write a script file (node/sh) in the job tmp dir and run it
+
+## 2026-09-23 16:21 +0000 · setup · claude-opus-5-5 · fix-account-discount-rounding@chore/strict-design-system-lint · claude-code
+codemod needed the TS compiler API but repo's typescript is 7.x (native, no JS API) — createSourceFile undefined
+**Worked instead:** require typescript from node_modules/react-doctor/node_modules (5.x)
+
+## 2026-09-24 10:58 +0000 · tool · claude-opus-5-5 · maul-admin@main · claude-code
+Bash call writing 3 heredoc files then plain 'ls' hung until the 120s timeout; files were written fine
+**Worked instead:** drop the trailing ls; use wc -l to confirm files
+
+## 2026-09-24 12:20 +0000 · flaky · claude-opus-5-5 · maul-admin@feat/jev-feedback-insights · claude-code
+verify control start returned h1:null + doctor 'sidebar not found' on first run despite its auto-reload
+**Worked instead:** control goto / then doctor again → all green
+
+## 2026-09-25 10:06 +0000 · flaky · claude-opus-5-5 · maul-admin@ci/local-hooks · claude-code
+billing/period.test.ts 'accepts exactly the Billing period start' takes ~1.1s alone but times out at 5s when two test:coverage runs share the machine
+**Worked instead:** rerun in isolation passes; consider a longer per-test timeout for that property test
+
+## 2026-09-28 09:24 +0000 · error · claude-opus-5-5 · maul-admin@chore/dependency-refresh · claude-code
+verify-maul-admin start after a playwright bump fails with 'Timed out waiting for browser CDP' and fix='Unexpected failure'; real cause (missing browser build) only in .verify/daemon.log
+**Worked instead:** npx playwright install chromium --only-shell
+
+## 2026-09-28 10:55 +0000 · tool · claude-opus-5-5 · fix-account-discount-rounding@wip/page-header · claude-code
+verify control start reported ok:true on :5174 while a main-checkout dev server already held the port; screenshots silently came from the wrong tree
+**Worked instead:** control start --port 5180 in worktrees; check lsof -iTCP:5174 first
+
+## 2026-09-28 12:49 +0000 · setup · claude-opus-5-5 · maul-temperature@main · claude-code
+vitest run failed: playwright chromium headless shell not installed
+**Worked instead:** npx playwright install chromium
+
+## 2026-09-28 13:34 +0000 · tool · claude-opus-5-5 · maul-temperature@feat/measurement-overview · claude-code
+playwright MCP screenshot to session scratchpad path denied: only repo and .playwright-mcp are allowed roots
+**Worked instead:** save screenshots under .playwright-mcp/ in the repo
+
+## 2026-09-28 13:35 +0000 · setup · claude-opus-5-5 · maul-temperature@feat/measurement-overview · claude-code
+guessed prod Convex URL as <name>.convex.cloud from 'convex dashboard --prod'; websocket silently looped on close code 1000
+**Worked instead:** deployment is regional: https://silent-puffin-102.eu-west-1.convex.cloud
+
+## 2026-09-28 16:09 +0000 · tool · claude-opus-5-5 · maul-admin@feat/apps-atvik · claude-code
+ls -t in zsh is aliased to eza, where -t means --time, so 'ls -t *.webm' errors
+**Worked instead:** use /bin/ls -t
+
+## 2026-09-28 16:21 +0000 · setup · claude-opus-5-5 · alchemy-sandbox@HEAD
+? · claude-code
+effect@rc (4.0.0-rc.118, published 2026-09-28) drops effect/unstable/http exports; alchemy@2.0.0-beta.79 imports them so docs' 'bun add effect@rc' breaks typecheck
+**Worked instead:** pin effect/@effect/platform-* to 4.0.0-rc.117
+
+## 2026-09-29 10:33 +0000 · setup · claude-opus-5-5 · alchemy-sandbox@HEAD
+? · claude-code
+aws CLI at /usr/local/bin/aws fails: 'bad CPU type in executable' (x86 binary, no Rosetta)
+**Worked instead:** used alchemy's @distilled.cloud/aws Effect SDK with ~/.aws/credentials instead
+
+## 2026-09-29 14:18 +0000 · setup · claude-opus-5-5 · maul-kitchen-web@feat/front-chat-widget · claude-code
+aws CLI fails with 'bad CPU type in executable' (x86 binary on arm64 Mac, no Rosetta); couldn't inspect Lambda env
+
+## 2026-09-29 15:10 +0000 · setup · claude-opus-5-5 · maul-kitchen-web@feat/front-chat-widget · claude-code
+kitchen-web pre-commit (validate) fails on guide.test.tsx: vitest runs in 'test' mode, needs undocumented, gitignored .env.test, so VITE_* env parse throws
+**Worked instead:** cp .env.development .env.test
+
+## 2026-09-30 09:50 +0000 · tool · claude-opus-5-5 · recommendation-dashboard@main · claude-code
+mv in Bash tool is aliased to interactive (-i); overwrite prompt got auto-answered 'n' and silently skipped the move
+**Worked instead:** use 'command mv -f'
+
+## 2026-09-30 13:07 +0000 · tool · claude-opus-5-5 · maul-measure-dashboard@main · claude-code
+vercel env pull writes sensitive env vars as the literal '[SENSITIVE]' placeholder with no warning, so testing basic auth with pulled creds silently failed
+**Worked instead:** compare length/hash of process.env on a --prod --skip-domain debug deploy; real values aren't retrievable via CLI
+
+## 2026-09-30 13:13 +0000 · tool · claude-opus-5-5 · maul-foodie-web@main · claude-code
+tree <path> ignored the path arg and listed cwd instead (likely aliased)
+**Worked instead:** ls -A <path> worked
+
+## 2026-09-30 13:50 +0000 · tool · claude-opus-5-5 · 2026-09-30T13-47-45-056Z · claude-code
+plugin eval traces in /private/tmp are gone after the run; aggregate-result.json has no final answer text
+**Worked instead:** read judge explanations in .graders[].explanation, or use --keep-temp
+
+## 2026-09-30 14:43 +0000 · tool · claude-opus-5-5 · maul-foodie-web@main · claude-code
+ls -td <glob> errored: ls is aliased to eza, -t expects a field
+**Worked instead:** use explicit path or /bin/ls
+
+## 2026-10-01 11:39 +0000 · flaky · claude-opus-5-5 · skills · claude-code
+notion-fetch of Retool asset row 212158338cf3485791f72a45323738f9 returned 500 'Cross-cell memcached access is not allowed'
+**Worked instead:** retry the fetch

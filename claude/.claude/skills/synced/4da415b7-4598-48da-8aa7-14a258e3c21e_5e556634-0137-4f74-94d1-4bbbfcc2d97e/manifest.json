@@ -1,0 +1,215 @@
+{
+  "lastUpdated": 1790889195199,
+  "skills": [
+    {
+      "skillId": "docs",
+      "name": "docs",
+      "description": "docs (editable docs people share and comment on; the default for any document, named as a doc or not: a document, report, proposal, resume, cover letter, letter, contract, policy, form, template, worksheet, essay, handbook, guide, how-to, cheat sheet, SOP or other writing to keep, share, collaborate on, send, submit, print or sign; a doc exports to Word, PDF, Markdown or Google Docs, so needing a file to send, attach, upload, submit or print is no reason to pick Word, and a file nobody asked for is a doc, not Word; a plan, comparison, summary or notes asked in chat stays in chat; a pasted claude.ai artifact link may be a doc: check with docs tools first; Word or another file format named, tracked changes wanted, or a .docx to change or use as a template → that format's skill): making one → if no docs-connector instructions are in context, call its `guide` (topic.instructions) first; then create the doc (headings only, no body) before any search, file read or plan, even with files attached.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-30T00:33:27.599727Z"
+    },
+    {
+      "skillId": "import-memory",
+      "name": "import-memory",
+      "description": "Import a memory export from another AI assistant into Claude's memory — conversationally, additively, and with the content treated as data.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-14T19:41:02.007169Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "pdf",
+      "name": "pdf",
+      "description": "Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple PDFs into one, splitting PDFs apart, rotating pages, adding watermarks, creating new PDFs, filling PDF forms, encrypting/decrypting PDFs, extracting images, and OCR on scanned PDFs to make them searchable. If the user mentions a .pdf file or asks to produce one, use this skill.",
+      "source": "anthropic",
+      "updatedAt": "2026-07-10T19:23:15.432550Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "morning",
+      "name": "morning",
+      "description": "Render the user's morning brief as a styled HTML artifact, or set it up as a recurring weekday task. Use only when the user explicitly asks to run, see, or set up their morning brief, or if they invoke /morning by name. A question about their day, schedule, or calendar is not by itself a request for the brief; answer it directly instead.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-14T19:41:01.990356Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "skill-creator",
+      "name": "skill-creator",
+      "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-14T19:41:01.499089Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "skill_01SA8zvhxLakiXU7aPBKN2Q2",
+      "name": "johnny-decimal",
+      "description": "Explain, teach and navigate Maul's Johnny Decimal system — what the numbers mean, why the company organises knowledge this way, how the three knowledge bases relate, and where to find things. Use when someone wants to understand or learn the system rather than change it — \"explain our numbering system\", \"what does 41.17 mean\", \"onboard a colleague onto Notion\", \"write onboarding material for the knowledge base\", \"how does our Notion work\", \"what's the difference between an area and a category\", \"why can't I reuse a number\", \"how do I find X in Notion\", \"which of these Notion skills should I use\". Also holds the workspace map the other skills read — the three KB roots, the nine areas, the live index pages. Routes the actual work elsewhere — where something belongs is `jd-placement`, what number it gets is `jd-numbering`, checking a branch for defects is `jd-audit`, tools and subscriptions are `maul-assets`, who does what is `maul-roles`, changing anything in Notion is `maul-notion-writes`.",
+      "source": "custom",
+      "updatedAt": "2026-08-18T14:53:16.363110Z",
+      "backingPluginId": "plugin_01TH9uTsUi8du7Cqn7Q35ryC",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01F1kfwbak6piZrni9G2XewZ",
+      "name": "food-news-briefing",
+      "description": "Produce a food and lunch industry news briefing for Egill (CEO of Maul) covering Icelandic media, The Guardian, and The New York Times. Use whenever Egill asks for a 'daily briefing', 'food news', 'news roundup', 'matur fréttir', 'what's new in food', or any variation requesting a periodic news summary. Trigger this even when the request is terse (e.g. 'briefing', 'news please', 'today's food news').",
+      "source": "custom",
+      "updatedAt": "2026-08-28T20:14:46.062758Z",
+      "backingPluginId": "plugin_01CYfWiY9ZSrWPLYjJpSJedE",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01SuFwmR57wjBxxtT9aMTR3z",
+      "name": "restaurant-order-draft",
+      "description": "Draft a Front email (BCC from maul@maul.is, never sent) to everyone who ordered a given Maul restaurant on a day that week without cancelling (status Default/Claimed). Date defaults to today.",
+      "source": "custom",
+      "updatedAt": "2026-08-13T13:13:22.655556Z",
+      "backingPluginId": "plugin_013pFcknJfqSYmEHsQzC4CMS",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "xlsx",
+      "name": "xlsx",
+      "description": "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xlsx, .xlsm, .xltx, .csv, or .tsv file (e.g., adding columns, computing formulas, formatting, charting, cleaning messy data); create a new spreadsheet from scratch or from other data sources; or convert between tabular file formats. Trigger especially when the user references a spreadsheet file by name or path — even casually (like \"the xlsx in my downloads\") — and wants something done to it or produced from it. Also trigger for cleaning or restructuring messy tabular data files (malformed rows, misplaced headers, junk data) into proper spreadsheets. The deliverable must be a spreadsheet file. Do NOT trigger when the primary deliverable is a Word document, HTML report, standalone Python script, database pipeline, or Google Sheets API integration, even if tabular data is involved.",
+      "source": "anthropic",
+      "updatedAt": "2026-09-14T21:00:33.324012Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "pptx",
+      "name": "pptx",
+      "description": "Use this skill any time a .pptx or .potx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations as PowerPoint (.pptx) files; reading, parsing, or extracting text from any .pptx or .potx file (even if the extracted content will be used elsewhere, like in an email, summary, or creating a different type of slide deck); editing, modifying, or updating existing presentations; combining or splitting slide files; working with templates (.potx), layouts, speaker notes, or comments. Trigger whenever the user asks for a PowerPoint or .pptx file, or references a .pptx or .potx filename, regardless of what they plan to do with the content afterward. However, when the user asks for a deck, slides, a slide deck, or a presentation without naming a file format, default to using a dedicated slide-deck artifact type or a separate slides skill if this session offers one; otherwise, use this skill.",
+      "source": "anthropic",
+      "updatedAt": "2026-10-01T21:00:31.953956Z"
+    },
+    {
+      "skillId": "docx",
+      "name": "docx",
+      "description": "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx) or Word templates (.dotx). Triggers include: any mention of Microsoft Word Documents, such as 'Word doc', 'word document', '.docx', '.dotx', 'microsoft doc'. Also use when extracting or reorganizing content from .docx or .dotx files, inserting or replacing images in documents, find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a deliverable as a Word or .docx file (to download, email or print), use this skill. However, if they ask for a document, page, report, memo, or notes WITHOUT naming a file format and the session offers Claude's own dedicated document or page skill or connector, use that instead, even if they will email or print it. Do NOT use for PDFs, spreadsheets, Google Docs, or coding unrelated to document generation.",
+      "source": "anthropic",
+      "updatedAt": "2026-09-30T02:00:31.677168Z"
+    },
+    {
+      "skillId": "skill_01FTSiJKcywFZeat5pbMZChz",
+      "name": "maul-notion-writes",
+      "description": "Safely change things in Maul's Notion workspace — the approval pattern, the tool mechanics, and the closing summary. Use before creating, renaming, moving, merging or deleting any Notion page at Maul, and whenever a task will touch more than one page — bulk edits, reorganising, applying an audit's fixes, updating a database. The canonical home for this workspace's Notion API traps: alias blocks that read as empty, moves that don't update the parent's link list, `replace_content` deleting child pages, mentions that lose their titles, database versus data-source IDs. Other Maul skills point here rather than restating them. Read it before the first write, not after.",
+      "source": "plugin",
+      "updatedAt": "2026-09-24T13:56:54.113829Z",
+      "backingPluginId": "plugin_01FrXx24PocWzVrnAmXwdtxG",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_016LiutzjZiSLUJhA3AyqtEG",
+      "name": "maul-assets",
+      "description": "Work with Maul's asset register — the `93.01 Asset Database Global` in Notion, where every tool, system, subscription, licence, form and agency is recorded. Use for questions about the tools themselves rather than the work they support — \"what do we pay for monthly\", \"who owns Retool\", \"is this subscription still in use\", \"what breaks if we cancel Sling\", \"which tools have no owner\", \"is this tool in the register\", \"where do I document a new tool we started using\", \"what does this asset cost\", \"which assets are archived but still referenced\", \"register this new tool\", \"add Sling to the asset database\". When adding or updating a row, fills in its dependencies (Using / Used By, Part of / Contains) and infers the responsible role and owner from `13 Roles`. Also covers the boundary that keeps the workspace coherent — a numbered page describes a process, a register row describes a tool — and how a process page should point at the tools it depends on. Read-only by default; changes go through `maul-notion-writes`.",
+      "source": "plugin",
+      "updatedAt": "2026-09-24T13:56:28.877832Z",
+      "backingPluginId": "plugin_01EHTfE7MeinWDQQGCV5EaB3",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01XxamyHkE6xbK81DU4nPFSb",
+      "name": "maul-page-writing",
+      "description": "Write and improve the content of knowledge pages in Maul's Notion workspace, to the house standard on `0.01 Page Template & Writing Standard`. Use whenever a page's text is the deliverable — \"document this process in Notion\", \"write up how we do X\", \"fill in 44.02\", \"improve this page\", \"is this page any good\", \"add an owner\", \"link these pages\", \"split this page in two\" — and after `jd-placement` and `jd-numbering` have settled where a new page goes and what it's called. Covers the `0.04 Page Template` skeleton, the Owner and Workspace line, two-way Related links, the writing rules, the one-page-one-thing test, raising an existing page to standard without destroying what people rely on, and Icelandic and English headings. One page at a time; to survey a whole branch for defects use `jd-audit`.",
+      "source": "plugin",
+      "updatedAt": "2026-09-24T13:56:18.102764Z",
+      "backingPluginId": "plugin_01YbPN7GoooaZJFMCo9XpH7b",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01Ui2Tt2dnWgxcRtYaeYNg5R",
+      "name": "maul-dev-setup",
+      "description": "Check and repair a Maul developer's Claude Code setup on macOS — git, GitHub auth, repo access, commit identity, MCP servers and plugins. Use for \"set up Claude Code\", \"check my setup\", \"why can't I clone\", or when a new person's first session doesn't work.",
+      "source": "plugin",
+      "updatedAt": "2026-09-16T10:51:18.555038Z",
+      "backingPluginId": "plugin_01R6zRmd6NCPuz33Pm9nCTMH",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01EJWKG3YvLgVU2hbkmqMkNP",
+      "name": "maul-roles",
+      "description": "Answer questions about who does what at Maul using the org model in Notion — the `13 Roles`, `14 Responsibilities`, `Starfsmenn`, `93.01 Assets` and `47.01 Skipulag þrifa` databases. Use for \"what does a new driver need to read\", \"build an onboarding reading list for this role\", \"who owns 44.01\", \"who is responsible for this process\", \"which processes have no owner\", \"what does this person own\", \"X is leaving — what needs reassigning\", \"what are the responsibilities of the depot manager\", \"which roles have nobody assigned\". Walks from a role to its responsibilities to the numbered process pages they point at, and back again. Read-only by default; the databases hold plain-text personal data that must never be repeated in a report.",
+      "source": "plugin",
+      "updatedAt": "2026-09-24T13:56:42.490219Z",
+      "backingPluginId": "plugin_01GVaxWr7Q5nyCJcXYa9FzkV",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_015VJX8QTQ3UjPL4ry5QnMuz",
+      "name": "maul-front-tagging",
+      "description": "Add (or remove) tags on Front conversations at Maul — one thread or a whole batch. Resolves the tag name you used to the real tag in Front's 129-tag multilingual list, shows you exactly which conversations it matched, and waits for one yes before writing anything. Use whenever the ask is about labelling threads in Front — \"tag this as a complaint\", \"put Seinpöntun on that email\", \"tag everything from Icelandair this week as Leads\", \"find the threads about the late delivery and tag them\", \"remove the Invoice tag from these\", \"label the negative reviews in the shared inbox\" — or when another Maul skill needs conversations tagged and doesn't own the tagging itself. Also use when someone asks what tags exist, which tag is the right one for something, or why a thread carries the tag it does.",
+      "source": "plugin",
+      "updatedAt": "2026-08-24T15:01:04.214013Z",
+      "backingPluginId": "plugin_019XW7xnxnEJt7tt9kdmkcgG"
+    },
+    {
+      "skillId": "skill_015yAa3iRjNSFFUCcKTN4ViB",
+      "name": "jd-numbering",
+      "description": "Assign, retire and repair Johnny Decimal numbers in Maul's Notion workspace and the mirrored Google Drive tree. Use when the question is which number something gets — \"what number should this be\", \"what's the next free ID\", \"is 44.12 taken\", \"two pages both say 22.02\", \"can we renumber this\", \"should we split this category\", \"can I reuse a deleted number\" — and whenever a duplicate, a misfiled ID or a category that has outgrown itself needs resolving. Covers the never-reuse rule, next-free lookup, duplicate resolution, title format, cross-workspace parallelism, the cost of renumbering, and the `jd_lint.py` checker. Assumes the area and category are already settled; if the open question is *where* something belongs, use `jd-placement` instead.",
+      "source": "plugin",
+      "updatedAt": "2026-09-24T13:55:54.248524Z",
+      "backingPluginId": "plugin_01EfT1eCvTWeeCKb5dw782HF",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01CM9Puj3jWAYHnFVtYYFb4x",
+      "name": "jd-audit",
+      "description": "Audit a branch of Maul's Notion workspace and report what's wrong with it. Use when asked to audit, review, check or \"go through\" an area, category or workspace — \"what's wrong with the suppliers section\", \"is our numbering a mess\", \"check area 40-49\", \"find the duplicates\", \"which processes have no owner\", \"what needs fixing in Notion\" — or before a restructure, to establish what's actually there. Covers numbering defects, content defects, ownership and freshness, and produces a decision-ready report separating cheap fixes from calls the user has to make. Reports only; never changes anything without explicit approval. For rewriting one page's text use `maul-page-writing`; for a single number question use `jd-numbering`.",
+      "source": "plugin",
+      "updatedAt": "2026-09-24T13:56:03.362961Z",
+      "backingPluginId": "plugin_01K7oTuSrUgPbggg9dojC12p",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01XNLWtQrMJMBUHd8nBKD7hJ",
+      "name": "maul-billing",
+      "description": "Explain and navigate Maul's billing — snapshots, billrun, accounts, staggered periods, delivery discounts and the customer statement in app.maul.is. Use for \"why is this customer billed this way\", \"what period does X use\", \"what does Deluxe mean\", \"where do I change a delivery discount\", \"what does the customer actually see\", \"is this snapshot approved\". Read-only; never approves, declines, invoices or edits terms.",
+      "source": "plugin",
+      "updatedAt": "2026-09-03T14:05:19.755740Z",
+      "backingPluginId": "plugin_01TxL95fAVTHushfUpH2rGTp",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01QBbffQ1XS4Eo7jFQpcvU8P",
+      "name": "jd-placement",
+      "description": "Decide which Johnny Decimal area and category something belongs in, and explain why — or explain why an existing page sits where it does. Use whenever the question is about *where* something goes rather than what number it gets — \"which area does this belong in\", \"should this be under suppliers or customers\", \"why is this filed here\", \"does 45 or 47 own this\", \"where would I find X\", \"is this in the right place\", \"what's the difference between these two categories\". Also use when filing anything into Maul's Notion or the mirrored Google Drive tree, when a category feels like it has outgrown its name, or when someone is arguing about which of two categories owns a topic. Also use before creating a new page, to skim the candidate category's existing pages and catch content that already exists under a different title. Reads only — this skill never assigns numbers or edits anything.",
+      "source": "plugin",
+      "updatedAt": "2026-09-24T13:55:44.318552Z",
+      "backingPluginId": "plugin_01GdGGUsvsNrqhN8fiSPic9s",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01RPXSuSmZkoH47ULvoF5L2x",
+      "name": "maul-late-order-reply-drafts",
+      "description": "Writes the customer-facing reply for late-order emails in the shared maul@maul.is Front inbox, as a Front draft — never sent, always left for a human to review and send. Picks the right tone: plain confirmation, itemised readback when the customer named specific dishes, a needs-a-decision reply for anything not placed (cutoff passed, allergen conflict, no service, covers someone else, ambiguous sitting), or guidance for a customer who simply forgot to place their own order for the current (already-active) week. Applies Maul's ordering-window rule precisely — dinner same-day until 16:00, next-day lunch before 16:00 the day before, lunch never same-day — and appends an email/SMS notification reminder (https://app.maul.is/settings) whenever either is off. Use when staff want draft replies for late-order threads, most naturally right after maul-late-orders / late-order-scan-2 / late-orders-scanner, but also standalone on conversations tagged Seinpöntun.",
+      "source": "plugin",
+      "updatedAt": "2026-09-02T10:52:54.553725Z",
+      "backingPluginId": "plugin_01NxdELLZWdyrqsjbpthSXQV",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_012Sg8GpG4TBULivJ36cYAqq",
+      "name": "maul-late-orders",
+      "description": "Handles customers who email the shared maul@maul.is inbox asking Maul staff to place a food order for them. Confirms each sender against their Maul account, tags the thread \"Seinpöntun\", resolves every requested dish against that day's real menu and sitting, and flags what a person must decide — same-day lunch, allergen conflicts, orders covering more than the sender, no service that weekday, paused accounts, doubtful dates. Produces a numbered HTML review board; staff pick a fulfilment path once in chat and that answer alone authorises Claude to place the orders through the Maul MCP and comment the decisions internally in Front. Same-day dinner rides the batch; same-day lunch never does. Translation is delegated to maul-front-translation; the customer-facing reply to maul-late-order-reply-drafts — hand off to it after every run, since Maul notifies nobody when staff order for someone. Use for \"check the inbox for order requests\", \"build the late orders list\", or any request to run the daily order-inbox scan.",
+      "source": "plugin",
+      "updatedAt": "2026-09-15T16:22:47.866962Z",
+      "backingPluginId": "plugin_01KZw53UGMbhqtBtmUw6NG12"
+    },
+    {
+      "skillId": "skill_01A4iy24qPVBbq1bs2vCXwVc",
+      "name": "maul-front-translation",
+      "description": "Post an English translation of a customer's message into a Front conversation as an internal comment, labelled \"🤖 AI translation\" so nobody mistakes it for something a person wrote. Triggers on anything in the thread that a non-Icelandic-speaking teammate can't act on — a message in Icelandic, or an English message that names things (dishes, products, place names) in Icelandic. Use when asked to \"translate this thread\", \"add a translation comment\", \"what does this email say\", or when another Maul skill routes a conversation here before staff have to act on it. Never replies to the customer and never changes the conversation — it adds one internal comment.",
+      "source": "plugin",
+      "updatedAt": "2026-08-24T15:33:51.245714Z",
+      "backingPluginId": "plugin_01DoEBE6RMNEqWqaiqPfkfTL"
+    },
+    {
+      "skillId": "google-workspace",
+      "name": "google-workspace",
+      "description": "Read this before the first Google Drive, Docs, Sheets or Slides connector call whenever the task creates or changes a Google file. Use this skill whenever the user wants to create or change a Google Doc, Sheet or Slides file in their Google Drive. Triggers include: a request that names Google Docs, Sheets, Slides or Drive and asks to make, edit, format, copy or rename a file; a docs.google.com link with a request to change that file, even a one-line fix or suggested edits; and any follow-up change to a Google file from earlier in the chat, even \"change it\" or \"add a tab\". Includes helper scripts for document positions, cell ranges and slide layout. However, if the user asks for a doc, deck or spreadsheet without naming Google, or gives a Google file only as source material for something new, use Claude's own output type instead. Do NOT use for read-only questions about a Google file, or for Word, Excel, PowerPoint or PDF files.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-23T19:50:41.402985Z",
+      "creatorType": "anthropic"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 ---
 name: todo
 description: Manage tasks using Taskwarrior and the todo-sync CLI. Use when the user asks about tasks, todos, task management, syncing with Things 3 or Asana, or wants to interact with their task system. Triggers on "tasks", "todos", "taskwarrior", "things", "asana", "what should I work on", "show my tasks".
-argument-hint: <optional: taskwarrior filter or command>
+argument-hint: "<optional: taskwarrior filter or command>"
 ---
 
 # Todo — Personal Task Management

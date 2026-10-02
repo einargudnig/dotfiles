@@ -317,7 +317,7 @@ alias newproj='bun ~/dotfiles/scripts/newproj.ts'
 alias lifeos='bun ~/.claude/LIFEOS/TOOLS/lifeos.ts -s ~/.claude/LIFEOS/LIFEOS_SYSTEM_PROMPT.md'
 
 # Run the gigover Java backend locally (needs JDK 17; local-only, never pushed)
-gigback() { cd ~/work/gigover-backend && JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn jetty:run; }
+gigback() { cd ~/work/gigover-backend && JAVA_HOME=$(/usr/libexec/java_home -v 17 -a arm64) mvn jetty:run; }
 
 # Pull upstream backend changes from Bitbucket, preserving local edits (never pushes)
 gigpull() {
