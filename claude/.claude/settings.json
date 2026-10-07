@@ -3,7 +3,8 @@
   "env": {
     "LIFEOS_DIR": "/Users/einargudjonsson/.claude/LIFEOS",
     "LIFEOS_CONFIG_DIR": "/Users/einargudjonsson/.config/LIFEOS",
-    "PROJECTS_DIR": "/Users/einargudjonsson/Projects"
+    "PROJECTS_DIR": "/Users/einargudjonsson/Projects",
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/context-bar"
   },
   "attribution": {
     "commit": "",

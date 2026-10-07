@@ -1,0 +1,1 @@
+{ "name": "context-bar", "version": "0.1.0", "description": "A band above the prompt showing the context window as a coloured bar with a per-category legend", "types": "./types/index.d.ts" }
