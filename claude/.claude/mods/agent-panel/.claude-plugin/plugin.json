@@ -1,0 +1,1 @@
+{ "name": "agent-panel", "version": "0.1.0", "description": "/agent-panel opens a sidebar listing project and user agents, with live status and a run button", "types": "./types/index.d.ts" }
