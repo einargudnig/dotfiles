@@ -4,7 +4,7 @@
     "LIFEOS_DIR": "/Users/einargudjonsson/.claude/LIFEOS",
     "LIFEOS_CONFIG_DIR": "/Users/einargudjonsson/.config/LIFEOS",
     "PROJECTS_DIR": "/Users/einargudjonsson/Projects",
-    "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/context-bar:~/.claude/mods/pr-details:~/.claude/mods/agent-panel"
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/context-bar:~/.claude/mods/pr-details:~/.claude/mods/agent-panel:~/.claude/mods/maul-order"
   },
   "attribution": {
     "commit": "",
@@ -12,7 +12,9 @@
   },
   "permissions": {
     "allow": [
-      "Bash(papercut:*)"
+      "Bash(papercut:*)",
+      "mcp__bdbb0250-8353-4c1c-9217-755026f9bdcd__getUserByEmail",
+      "mcp__bdbb0250-8353-4c1c-9217-755026f9bdcd__listUserOrders"
     ]
   },
   "hooks": {

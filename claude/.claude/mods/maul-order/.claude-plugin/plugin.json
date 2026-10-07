@@ -1,0 +1,24 @@
+{
+  "name": "maul-order",
+  "version": "0.1.0",
+  "description": "/order toggles a pane with your Maul lunch for today and the rest of the week, via the Maul MCP connector",
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "email": {
+      "type": "string",
+      "title": "Maul email",
+      "description": "The Maul account whose orders to show (set in /config)",
+      "default": ""
+    },
+    "lang": {
+      "type": "string",
+      "title": "Language",
+      "description": "Language for dishes and labels",
+      "options": [
+        "is",
+        "en"
+      ],
+      "default": "is"
+    }
+  }
+}
