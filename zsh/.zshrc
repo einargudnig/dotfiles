@@ -313,10 +313,6 @@ alias life='bun run --cwd ~/personal/life-os life'
 # newproj <name> [--preset bun-lib|hono|vite-react] [--no-git] [--no-install]
 alias newproj='bun ~/dotfiles/scripts/newproj.ts'
 
-# --- LifeOS ------------------------------------------------------------------
-# Loads the LIFEOS_SYSTEM_PROMPT constitution; plain `claude` runs without it.
-alias lifeos='bun ~/.claude/LIFEOS/TOOLS/lifeos.ts -s ~/.claude/LIFEOS/LIFEOS_SYSTEM_PROMPT.md'
-
 # Run the gigover Java backend locally (needs JDK 17; local-only, never pushed)
 gigback() { cd ~/work/gigover-backend && JAVA_HOME=$(/usr/libexec/java_home -v 17 -a arm64) mvn jetty:run; }
 

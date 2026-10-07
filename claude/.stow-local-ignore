@@ -25,7 +25,6 @@
 ^/tasks$
 ^/telemetry$
 ^/todos$
-^/LIFEOS$
 # --- repo-local docs and the retired bootstrap script ---
 ^/link\.sh$
 ^/papercuts-protocol\.md$

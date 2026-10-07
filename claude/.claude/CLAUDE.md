@@ -25,19 +25,3 @@
 ## Shell
 - `fd` not find, `rg` not grep, `ast-grep`/`sg` for AST edits, `tree` for structure.
 - `fd` skips symlinks by default — add `-L` when a dir may contain symlinked entries.
-
-<!-- lifeos:begin -->
-## LifeOS
-
-Routing table: `~/.claude/LIFEOS/DOCUMENTATION/` (on-demand — see `ARCHITECTURE_SUMMARY.md`
-for the map, `CoreComponents.md` for the component list). Constitutional rules live in
-`~/.claude/LIFEOS/LIFEOS_SYSTEM_PROMPT.md` and load only via the `lifeos` launcher, not plain `claude`.
-
-@LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md
-# Identity imports — activated by ActivateImports.ts once the USER tree is populated.
-# @LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md
-# @LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md
-# @LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md
-# @LIFEOS/USER/PROJECTS.md
-# @LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md
-<!-- lifeos:end -->
