@@ -43,6 +43,6 @@ export type Info =
 
 declare module 'claude-code' {
   interface PluginState {
-    'pr-details': { info: Info | null; isLoading: boolean }
+    'pr-details': { info: Info | null; isLoading: boolean; isOpen: boolean }
   }
 }

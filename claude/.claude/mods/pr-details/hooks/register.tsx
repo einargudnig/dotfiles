@@ -8,6 +8,7 @@ import type { Run } from './gather'
 const PANE = 'pr-details'
 const info = atom({ plugin: 'pr-details', key: 'info' } as const, null)
 const isLoading = atom({ plugin: 'pr-details', key: 'isLoading' } as const, false)
+const isOpen = atom({ plugin: 'pr-details', key: 'isOpen' } as const, false)
 
 const MUTED = '#6b7089'
 const GREEN = '#9ece6a'
@@ -42,8 +43,6 @@ const CHECK: Record<Check['state'], { mark: string; color: string }> = {
   pending: { mark: '◌', color: AMBER },
 }
 
-let isOpen = false
-
 const runner =
   ($: EngineInterface): Run =>
   async argv => {
@@ -62,8 +61,8 @@ const refresh = async ($: EngineInterface) => {
 }
 
 const open = async ($: EngineInterface) => {
-  isOpen = true
   await $.ui.open({ id: PANE, title: 'PR' })
+  await update($, isOpen, () => true)
   void refresh($).catch(err => $.ui.toast(`pr-details: ${String(err)}`))
 }
 
@@ -71,23 +70,27 @@ const count = (checks: Check[], state: Check['state']) => checks.filter(c => c.s
 
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
-    await $.command.register({ name: 'pr', description: 'Show the current branch and its PR in a pane' })
+    await $.command.register({ name: 'pr', description: 'Toggle the branch and PR details pane' })
     return next(e)
   })
 
   on('command.run', { command: 'pr' }, async $ => {
+    if (await read($, isOpen)) {
+      await $.ui.close({ id: PANE })
+      return { text: 'PR details hidden.' }
+    }
     await open($)
     return { text: 'PR details opened.' }
   })
 
   on('ui.close', { id: PANE }, async ($, e, next) => {
-    isOpen = false
+    await update($, isOpen, () => false)
     return next(e)
   })
 
   on('turn.complete', async ($, e, next) => {
     const result = await next(e)
-    if (isOpen) void refresh($).catch(() => {})
+    if (await read($, isOpen)) void refresh($).catch(() => {})
     return result
   })
 
