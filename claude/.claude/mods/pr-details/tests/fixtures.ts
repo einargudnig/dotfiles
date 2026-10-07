@@ -1,0 +1,23 @@
+export const PR_JSON = JSON.stringify({
+  number: 42,
+  title: 'Add context bar',
+  url: 'https://github.com/o/r/pull/42',
+  state: 'OPEN',
+  isDraft: false,
+  author: { login: 'einar' },
+  baseRefName: 'master',
+  additions: 120,
+  deletions: 30,
+  changedFiles: 7,
+  reviewDecision: 'CHANGES_REQUESTED',
+  mergeable: 'MERGEABLE',
+  statusCheckRollup: [
+    { name: 'lint', status: 'COMPLETED', conclusion: 'FAILURE' },
+    { name: 'test', status: 'COMPLETED', conclusion: 'SUCCESS' },
+  ],
+  latestReviews: [{ author: { login: 'anna' }, state: 'CHANGES_REQUESTED' }],
+  reviewRequests: [{ login: 'bjorn' }],
+  labels: [{ name: 'ui' }],
+  comments: [{}, {}],
+  updatedAt: '2026-10-07T10:00:00Z',
+})

@@ -1,0 +1,1 @@
+{ "name": "pr-details", "version": "0.1.0", "description": "/pr opens a pane with the current branch and its GitHub PR: reviews, checks, commits", "types": "./types/index.d.ts" }
