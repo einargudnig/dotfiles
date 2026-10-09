@@ -15,6 +15,7 @@
 ## Stack
 - `~/work/` — **Maul**, food delivery. React Router v7, React, TS, Tailwind.
 - `~/personal/` — React/Next.js, TS, Node.
+- Cloudflare: use the `cf` CLI unless the project has a Wrangler config file (`wrangler.jsonc`/`wrangler.toml`).
 - Tasks: Taskwarrior + Things 3 via todo-sync (/todo). Notes: Obsidian (/done, /memento).
 
 ## Workflow

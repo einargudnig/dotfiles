@@ -47,8 +47,20 @@ alias gp='git push'
 alias gs='git status'
 alias gcmsg='git commit -m'
 alias gd='git diff'
-alias gl="git log --graph --abbrev-commit --decorate --all --format='format:%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'"
-alias gll="git log --graph --abbrev-commit --decorate --format='format:%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'"
+# Functions, not aliases: the subject width is computed from $COLUMNS at call time.
+# %<(N,trunc) cuts the subject with ".." so lines never wrap; less -S chops
+# anything still too long (e.g. many branch decorations).
+unalias gl gll 2>/dev/null
+function gl() {
+  local w=$(( COLUMNS > 70 ? COLUMNS - 50 : 20 ))
+  git -c core.pager='less -S' log --graph --abbrev-commit --decorate --all \
+    --format="format:%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%<($w,trunc)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)" "$@"
+}
+function gll() {
+  local w=$(( COLUMNS > 60 ? COLUMNS - 35 : 20 ))
+  git -c core.pager='less -S' log --graph --abbrev-commit --decorate \
+    --format="format:%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n          %C(white)%<($w,trunc)%s%C(reset) %C(dim white)- %an%C(reset)" "$@"
+}
 alias gco='git checkout'
 alias gpl='~/dotfiles/scripts/git-pull.sh'
 # lowercase: `Lazygit` only resolves because APFS is case-insensitive
@@ -229,6 +241,16 @@ if command -v varlock >/dev/null 2>&1; then
     varlock complete zsh > ~/.cache/varlock-completion.zsh 2>/dev/null
   fi
   [[ -s ~/.cache/varlock-completion.zsh ]] && source ~/.cache/varlock-completion.zsh
+fi
+
+# Cloudflare cf completion (node CLI, cached like varlock)
+if command -v cf >/dev/null 2>&1; then
+  _stale=( ~/.cache/cf-completion.zsh(N.md+14) )
+  if [[ ! -s ~/.cache/cf-completion.zsh || -n $_stale ]]; then
+    mkdir -p ~/.cache
+    cf complete zsh > ~/.cache/cf-completion.zsh 2>/dev/null
+  fi
+  [[ -s ~/.cache/cf-completion.zsh ]] && source ~/.cache/cf-completion.zsh
 fi
 unset _stale
 ###-begin-npm-completion-###

@@ -4,7 +4,7 @@
 set -euo pipefail
 
 TITLE="${1:?usage: verify.sh \"<exact title>\"}"
-REPO="${EINAR_OS:-$HOME/personal/einar-os}"
+REPO="${EINAR_OS:-$HOME/personal/einargudni.com}"
 cd "$REPO"
 
 echo "  building content layer…" >&2

@@ -1,0 +1,51 @@
+# Headless Mac mini: CLI only, no GUI apps. Installed by `make server`
+# INSTEAD of Brewfile + Brewfile.macos.
+# Hand-maintained -- `make dump` does not touch this file.
+
+# Shell + prompt (what zsh/ expects)
+brew "zsh"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+brew "powerlevel10k"
+brew "starship"
+brew "zoxide"
+brew "z"
+brew "fzf"
+brew "eza"
+brew "bat"
+brew "fd"
+brew "ripgrep"
+
+# Editor + git
+brew "neovim"
+brew "tree-sitter-cli"
+brew "git"
+brew "git-lfs"
+brew "gh"
+brew "lazygit"
+brew "stow"
+
+# Everyday CLI
+brew "jq"
+brew "yazi"
+brew "btop"
+brew "dust"
+brew "watch"
+
+# Runtimes
+brew "uv"
+brew "fnm"
+brew "nvm"
+brew "node"
+brew "pnpm"
+
+# Remote access + persistent sessions
+brew "tmux"
+brew "mosh"
+brew "tailscale"        # open-source daemon: runs at boot, before anyone logs in
+
+# Containers + Linux VMs
+cask "orbstack"
+
+# Secrets for the always-on agent (op read / op run)
+cask "1password-cli"

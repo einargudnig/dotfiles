@@ -7,7 +7,7 @@ metadata:
 
 # Notes: publish a link to einar-os/notes
 
-Repo: `~/personal/einar-os` · Page: `/notes` · Content: `content/links/*.mdx`
+Repo: `~/personal/einargudni.com` · Page: `/notes` · Content: `content/links/*.mdx`
 
 This is a **public** page. Anything added here goes live on the next deploy —
 the collection has no `draft` field. Private thoughts belong in the vault via

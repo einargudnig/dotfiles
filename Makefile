@@ -11,17 +11,21 @@ PACKAGES_COMMON := claude gh-dash ghostty ghui herdr hunk linters nvim pi script
 # under ~/Library/Application Support, which has no Linux equivalent.
 PACKAGES_MACOS  := aerospace cursor emeraldian karabiner lazygit
 
+# Headless Mac mini: shared configs + lazygit (its config lives under ~/Library)
+PACKAGES_SERVER := $(PACKAGES_COMMON) lazygit
+
 ifeq ($(UNAME),Darwin)
 PACKAGES := $(PACKAGES_COMMON) $(PACKAGES_MACOS)
 else
 PACKAGES := $(PACKAGES_COMMON)
 endif
 
-.PHONY: help bootstrap install restow delete check dump brew defaults list
+.PHONY: help bootstrap install restow delete check dump brew defaults list server
 
 help:
 	@echo 'Fresh machine:'
 	@echo '  make bootstrap   install everything, then link (see ./bootstrap.sh --help)'
+	@echo '  make server      headless Mac mini: CLI brew, link, always-on settings'
 	@echo
 	@echo 'Day to day:'
 	@echo '  make restow      re-link; fixes a config an installer clobbered'
@@ -70,6 +74,12 @@ endif
 ## macOS system settings
 defaults:
 	@bash bootstrap/macos-defaults.sh
+
+## headless Mac mini: CLI-only Brewfile, shared configs, always-on settings
+server:
+	brew bundle install --file=bootstrap/Brewfile.server
+	$(STOW) -v -d $(DIR) -t $(TARGET) $(PACKAGES_SERVER)
+	@bash bootstrap/server-setup.sh
 
 list:
 	@echo '$(UNAME): $(PACKAGES)'

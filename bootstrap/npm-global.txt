@@ -5,6 +5,7 @@
 @tcsenpai/ollama-code
 @typescript/native-preview
 @yaakapp/cli
+cf
 clawdbot
 envinfo
 executor

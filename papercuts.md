@@ -710,3 +710,66 @@ ls -td <glob> errored: ls is aliased to eza, -t expects a field
 ## 2026-10-01 11:39 +0000 · flaky · claude-opus-5-5 · skills · claude-code
 notion-fetch of Retool asset row 212158338cf3485791f72a45323738f9 returned 500 'Cross-cell memcached access is not allowed'
 **Worked instead:** retry the fetch
+
+## 2026-10-02 13:30 +0000 · tool · claude-opus-5-5 · fix-board-picker-duplicate-add@fix/board-picker-duplicate-add · claude-code
+cp is aliased to cp -i in the shell; non-interactive restore silently refused to overwrite
+**Worked instead:** command cp -f
+
+## 2026-10-05 13:33 +0000 · setup · claude-opus-5-5 · maul-admin-web@feat/feedback-all-period · claude-code
+aws CLI fails: 'bad CPU type in executable' (x86 binary, no Rosetta)
+**Worked instead:** query DynamoDB via @aws-sdk from maul-backend node_modules
+
+## 2026-10-05 14:55 +0000 · flaky · claude-opus-5-5 · life-os@main · claude-code
+tauri build DMG step failed (bundle_dmg.sh, no detail) and left rw.*.dmg mounted; .app was fine
+**Worked instead:** install the .app directly; hdiutil detach the leftover rw image
+
+## 2026-10-06 09:55 +0000 · setup · claude-opus-5-5 · life-os@feat/edge-live-endpoints · claude-code
+alchemy dev/deploy: 'No credentials configured for Cloudflare' for profile default and einargudnig@gmail.com — profile store migrated 2026-09-28 (~/.alchemy/.profiles-v0-*) and creds didn't carry over
+**Worked instead:** needs interactive: bunx alchemy login --profile <name>
+
+## 2026-10-06 10:32 +0000 · error · claude-opus-5-5 · maul-issues@main · claude-code
+Vercel MCP web_fetch_vercel_url on an app whose own middleware returns 401 reports deployment_authentication_required / share link rejected, misattributing app-level Basic auth to Vercel Deployment Protection
+**Worked instead:** Check runtime logs to confirm the 401 came from the app's middleware
+
+## 2026-10-06 11:14 +0000 · tool · unknown · gigover@chore/correct-repeat-mistakes · cursor
+cp in agent shell is aliased to interactive (-i): restore over an existing file silently did nothing
+**Worked instead:** use git checkout -- <file> or 'command cp -f'
+
+## 2026-10-06 11:24 +0000 · setup · claude-opus-5-5 · life-os@main · claude-code
+alchemy login hangs in Claude's ! shell (interactive menu) and profiles have no CF creds since 2026-09-28 migration
+**Worked instead:** CI=1 CLOUDFLARE_API_TOKEN=<wrangler oauth_token from ~/Library/Preferences/.wrangler/config/default.toml, refresh via 'bunx wrangler whoami'> CLOUDFLARE_ACCOUNT_ID=5a1863c1de0202c1270bd4d01160e024 bun run edge:deploy -- --stage prod --yes
+
+## 2026-10-06 14:07 +0000 · tool · claude-opus-5-5 · maul-detrack-driverscreen@feat/basic-auth-ip-allowlist · claude-code
+npm 11.5.2 'npm install -D vitest' fails: Cannot read properties of null (reading 'edgesOut') in arborist #loadPeerSet
+**Worked instead:** npx npm@latest install (npm 12) succeeds
+
+## 2026-10-07 10:31 +0000 · setup · claude-opus-5-5 · dotfiles@master · claude-code
+make install (stow) aborts entirely because ~/.claude/settings.json is a real file, not a link — Claude Code replace-writes it and severs the symlink
+**Worked instead:** linked the new dir by hand: ln -s ../dotfiles/claude/.claude/mods ~/.claude/mods
+
+## 2026-10-07 10:54 +0000 · setup · claude-opus-5-5 · dotfiles@master · claude-code
+cp in the agent's zsh is aliased to cp -i, so overwriting a file hung the Bash call on a y/n prompt until timeout
+**Worked instead:** use command cp -f
+
+## 2026-10-07 11:48 +0000 · setup · claude-opus-5-5 · maul-admin · claude-code
+aws CLI fails: 'bad CPU type in executable' (x86 binary on Apple Silicon)
+
+## 2026-10-07 13:13 +0000 · setup · claude-opus-5-5 · maul-backend@main · claude-code
+typecheck stop hook failed with TS2307 for @maul-backend/routing after fast-forwarding main: a new workspace package landed but node_modules wasn't relinked
+**Worked instead:** npm install links the new workspace package; typecheck then passes
+
+## 2026-10-07 15:55 +0000 · setup · claude-opus-5-5 · einargudjonsson · claude-code
+skills/CLAUDE.md mandates Skill(CreateSkill) for new skills, but CreateSkill is disabled for model invocation in skillOverrides
+**Worked instead:** wrote SKILL.md directly; user can run /CreateSkill to validate
+
+## 2026-10-07 16:12 +0000 · other · claude-opus-5 · dotfiles@master · claude-code
+trash of LifeOS 'Optimize' skill on case-insensitive APFS also removed tracked 'optimize' symlink (impeccable)
+**Worked instead:** git checkout -- the path; check case collisions before deleting by name on macOS
+
+## 2026-10-08 09:34 +0000 · error · claude-opus-5-5 · maul-admin-web@main · claude-code
+npx oxfmt plans/*.md errors 'Expected at least one target file' — markdown under plans/ is excluded by oxfmt ignore rules
+**Worked instead:** nothing to format; plans/ markdown isn't formatted by oxfmt
+
+## 2026-10-08 16:48 +0000 · setup · claude-opus-5-5 · maul-admin-web@feat/foodies-com-badge · claude-code
+verify-maul-admin control start failed: No Chromium for Playwright on this machine
+**Worked instead:** npx playwright install chromium
