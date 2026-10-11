@@ -11,7 +11,7 @@
 set -euo pipefail
 [ "$(uname -s)" = Darwin ] || { echo "macOS only"; exit 0; }
 
-NAME="${SERVER_HOSTNAME:-macmini}"
+NAME="${SERVER_HOSTNAME:-mac-mini}"
 
 echo "==> Hostname: $NAME"
 sudo scutil --set ComputerName  "$NAME"

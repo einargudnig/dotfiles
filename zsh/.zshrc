@@ -363,3 +363,12 @@ gigpull() {
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/dotfiles/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Hermes Agent command
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH" ;; esac
+
+# bun completions
+[ -s "/Users/einargudnigudjonsson/.bun/_bun" ] && source "/Users/einargudnigudjonsson/.bun/_bun"
+
+# opencode
+export PATH=/Users/einargudnigudjonsson/.opencode/bin:$PATH
