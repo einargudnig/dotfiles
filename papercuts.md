@@ -773,3 +773,62 @@ npx oxfmt plans/*.md errors 'Expected at least one target file' — markdown und
 ## 2026-10-08 16:48 +0000 · setup · claude-opus-5-5 · maul-admin-web@feat/foodies-com-badge · claude-code
 verify-maul-admin control start failed: No Chromium for Playwright on this machine
 **Worked instead:** npx playwright install chromium
+
+## 2026-10-11 11:45 +0000 · tool · claude-opus-5-5 · eggo@master · claude-code
+concierge agent returned fabricated vault notes (slip-box/eggo-solo-is-a-feature.md etc. don't exist); a second run contradicted it
+**Worked instead:** verify cited note paths with fd before relying on concierge output
+
+## 2026-10-11 11:45 +0000 · tool · claude-opus-5-5 · eggo@master · claude-code
+qmd search failed with slice-ansi/bun runtime error during concierge lookup
+**Worked instead:** concierge fell back to ripgrep
+
+## 2026-10-11 11:46 +0000 · setup · claude-opus-5-5 · eggo@master · claude-code
+eggo master typecheck failed: node_modules was left installed from migrate/cloudflare-workers branch (no @astrojs/vercel), and master bun.lock is out of sync with package.json
+**Worked instead:** bun install then git checkout bun.lock
+
+## 2026-10-11 12:18 +0000 · tool · claude-opus-5-5 · eggo@master · claude-code
+headless Chrome --window-size=390 renders at a ~500px minimum width, so phone screenshots were clipped
+**Worked instead:** load the page in a 390px-wide iframe inside a wider window
+
+## 2026-10-11 12:42 +0000 · setup · claude-opus-5-5 · eggo@master · claude-code
+playwright@1.55 in a fresh dir wanted chromium build 1187; only newer builds cached, so launch failed
+**Worked instead:** pass executablePath to ~/Library/Caches/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/chrome-headless-shell
+
+## 2026-10-11 13:22 +0000 · tool · claude-opus-5-5 · eggo@redesign · claude-code
+cp in agent shell is aliased to cp -i, so restoring a backup silently prompted and did nothing
+**Worked instead:** use 'command cp -f'
+
+## 2026-10-11 13:24 +0000 · tool · claude-opus-5-5 · eggo@redesign · claude-code
+oxlint RuleTester (oxlint/plugins-dev) throws 'not supported ... or other runtimes' under bun test
+**Worked instead:** run rule tests with node --test (Node >=22.18 strips TS)
+
+## 2026-10-11 14:48 +0000 · setup · claude-opus-5-5 · eggo@redesign · claude-code
+alchemy 2.0.0-beta.81 deploy fails: '@effect/platform-node' is declared an optional peer but WorkerBridge imports it unconditionally
+**Worked instead:** install @effect/platform-node alongside effect
+
+## 2026-10-12 12:57 +0000 · tool · claude-opus-5-5 · maul-rfid · claude-code
+playwright screenshot to session scratchpad path denied; only workspace and .playwright-mcp are allowed roots
+**Worked instead:** omit filename so it saves under .playwright-mcp
+
+## 2026-10-12 14:34 +0000 · setup · claude-opus-5-5 · maul-kitchen-web@main · claude-code
+typecheck hook failed: tsc --noEmit ran against stale .react-router/types (no /forbidden types)
+**Worked instead:** run npm run typecheck after npm run typegen, or make the typecheck script run typegen first
+
+## 2026-10-13 11:28 +0000 · setup · claude-opus-5-5 · maul-measure-dashboard@main · claude-code
+npm run test fails: vitest browser mode needs Playwright chromium-headless-shell, not installed
+**Worked instead:** npx playwright install chromium-headless-shell
+
+## 2026-10-14 08:56 +0000 · docs · claude-opus-5-5 · maul-measure-dashboard@main · claude-code
+AGENTS.md says token is under field SERVICE_TOKEN_DELIVERY_MEASUREMENTS in 1Password .env-maul-backend; item is a secure note with a dotenv blob, op read on that field fails
+**Worked instead:** op item get .env-maul-backend --vault Dotenv --format json, read notesPlain, grep the line
+
+## 2026-10-14 10:05 +0000 · setup · claude-opus-5-5 · maul-admin-web@main · claude-code
+maul-backend main: npm ci fails, lockfile missing @maul/rfid@0.0.1 (out of sync with package.json)
+**Worked instead:** symlink node_modules from the main checkout into the worktree
+
+## 2026-10-14 10:52 +0000 · setup · claude-opus-5-5 · maul-admin-web@feat/add-foodie · claude-code
+aws CLI fails: 'bad CPU type in executable: aws' (x86 binary on arm Mac, no Rosetta)
+
+## 2026-10-14 15:45 +0000 · tool · claude-opus-5-5 · maul-backend@main · cursor
+Grep tool returned no matches on a canvas file under ~/.cursor/projects/.../canvases while rg in Shell found 10
+**Worked instead:** use rg via Shell for files outside the workspace root

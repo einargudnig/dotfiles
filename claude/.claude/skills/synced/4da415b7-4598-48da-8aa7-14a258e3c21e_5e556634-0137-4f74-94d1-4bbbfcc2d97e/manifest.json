@@ -1,5 +1,5 @@
 {
-  "lastUpdated": 1791476927426,
+  "lastUpdated": 1791992862192,
   "skills": [
     {
       "skillId": "docs",
@@ -208,7 +208,7 @@
       "name": "google-workspace",
       "description": "Read this before the first Google Drive, Docs, Sheets or Slides connector call whenever the task creates or changes a Google file. Use this skill whenever the user wants to create or change a Google Doc, Sheet or Slides file in their Google Drive. Triggers include: a request that names Google Docs, Sheets, Slides or Drive and asks to make, edit, format, copy or rename a file; a docs.google.com link with a request to change that file, even a one-line fix or suggested edits; and any follow-up change to a Google file from earlier in the chat, even \"change it\" or \"add a tab\". Includes helper scripts for document positions, cell ranges and slide layout. However, if the user asks for a doc, deck or spreadsheet without naming Google, or gives a Google file only as source material for something new, use Claude's own output type instead. Do NOT use for read-only questions about a Google file, or for Word, Excel, PowerPoint or PDF files.",
       "source": "anthropic-example",
-      "updatedAt": "2026-10-06T23:31:35.618898Z"
+      "updatedAt": "2026-10-14T14:41:49.960676Z"
     },
     {
       "skillId": "skill_019UKJ7BZkRbXTArFSVT58ZV",
@@ -221,10 +221,70 @@
     {
       "skillId": "skill_01ELYV7LdXKtudCZ1TjVYpmM",
       "name": "maul-detrack-split-job-collection",
-      "description": "Assign Maul's restaurant collections (pickups) to drivers in the Detrack web dashboard, and add helper drivers to big collections without breaking the jobs or the portion count on the on-time dashboard. Use whenever ops asks to assign collections or pickups to drivers, plan the day's driver routes, \"duplicate\" or \"split\" a collection, add a helper for a large restaurant, check or verify that the day's collections and helper jobs are set up correctly, or anything like \"assign the collections, use each driver once, and double the ones over 70 portions\", even if Detrack or the dashboard is not named.",
+      "description": "Assign Maul's restaurant collections (pickups) to drivers in the Detrack web dashboard, and add helper drivers to big collections without breaking the jobs or the portion count on the on-time dashboard. Use whenever ops asks to assign collections or pickups to drivers, plan the day's driver routes, \"duplicate\" or \"split\" a collection, add a helper for a large restaurant, move a collection to another driver (e.g. \"Tokyo Sushi is now for Óskar\"), check or verify that the day's collections and helper jobs are set up correctly, or anything like \"assign the collections, use each driver once, and double the ones over 70 portions\", even if Detrack or the dashboard is not named.",
       "source": "plugin",
-      "updatedAt": "2026-10-06T11:45:50.044945Z",
+      "updatedAt": "2026-10-13T14:40:14.301006Z",
       "backingPluginId": "plugin_01UyzfNeXfZAoGAo6isT25p4"
+    },
+    {
+      "skillId": "computer-use",
+      "name": "computer-use",
+      "description": "Read this skill before the first step of any request to do something in an app on the person's own computer (Notes, Finder, System Settings, any desktop app), to look at their screen, or for \"computer use\". Computer use (desktop control) lets Claude take screenshots of the person's desktop and control it with clicks, typing and scrolling through the Claude desktop app; its tools are named mcp__computer-use__* when the session runs in the desktop app and mcp__remote-devices__computer_* when a cloud session is linked to the person's computer; before computer use is turned on for a conversation there may be no such tools, only an enable__mcp__remote-devices__computer tool, which turns it on. It covers turning it on, picking the right tool, the access flow, and the safety rules for tiered apps, links and financial actions. It is not for websites, which go through Claude in Chrome or the built-in browser and their own skills.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-10-08T17:34:24.164396Z"
+    },
+    {
+      "skillId": "chrome-browser",
+      "name": "chrome-browser",
+      "description": "Read this skill before the first step that uses Claude in Chrome, the browser extension whose tools are named mcp__claude-in-chrome__* (also called Chrome, the browser extension, or the external browser) and which acts in the person's real Chrome with their own sign-ins; before those tools are turned on there may be a single enable__mcp__claude-in-chrome tool instead. It covers loading the tools in one ToolSearch call, checking the person's open tabs and working in a new tab, site permissions, GIF recordings, console logs, dialogs to avoid, and when to stop and ask. It is not for the built-in browser (mcp__Claude_Browser__* or mcp__remote-devices__Claude_Browser__* tools), which has its own skill, and it does not decide which browser to use.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-18T21:09:50.227858Z"
+    },
+    {
+      "skillId": "deep-research",
+      "name": "deep-research",
+      "description": "Use this skill when the user's prompt requires (1) researching a topic across multiple sources, comparing options or alternatives, analyzing trends or history, understanding markets or industries, or reviewing literature or studies and (2) synthesizing that research into a comprehensive, narrative report. If you're planning to search the web or internal knowledge bases, consider using this skill. This skill coordinates research subagents, so use it only when you have a tool for spawning subagents (the Agent or Task tool); otherwise, research the question directly.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-14T19:41:02.015956Z"
+    },
+    {
+      "skillId": "built-in-browser",
+      "name": "built-in-browser",
+      "description": "Read this skill before the first step that uses the built-in browser, the browser pane inside the Claude desktop app (also called the in-app browser, the browser pane, Claude's browser, or \"your own browser\"), whose tools are named mcp__Claude_Browser__* when the session runs in the desktop app and mcp__remote-devices__Claude_Browser__* when a cloud session is linked to the person's computer; before those tools are turned on there may be a single enable__mcp__remote-devices__Claude_Browser tool instead. It covers the pane's persistent sign-ins, tabs and preview_start, reading pages as text, site approvals, what the pane cannot open, and what to do when it cannot be reached. It is not for Claude in Chrome (mcp__claude-in-chrome__* tools), which has its own skill, and it does not decide which browser to use.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-21T06:00:29.740604Z"
+    },
+    {
+      "skillId": "skill_01CSDDGLfiRNewZjrg1k23Nv",
+      "name": "maul-menu-reviewer",
+      "description": "Review and analyze weekly lunch menus for Maul catering service. Use when asked to check a week's menu, review restaurant variety, check for repetition, verify vegan options, or analyze áhætta (risk) warnings. Reads menu data from the Maul MCP (blueprint menus).",
+      "source": "plugin",
+      "updatedAt": "2026-10-14T15:40:13.555256Z",
+      "backingPluginId": "plugin_013w3PvGopcManb5zHE7qcMT"
+    },
+    {
+      "skillId": "skill_01AmSb3RbtRTsNYrw9uQHoFX",
+      "name": "maul-menu-gluten-free-finder",
+      "description": "Find every gluten-free dish available on a specific weekday for Maul's Icelandic lunch catering menus. Use whenever asked for gluten-free, glútenlaus, or gluten-free options for a given day (mánudagur/Monday, þriðjudagur/Tuesday, miðvikudagur/Wednesday, fimmtudagur/Thursday, föstudagur/Friday), or asked to check the gluten-free menu for the upcoming week. Reads menu data from the Maul MCP (blueprint menus + courses catalog) — do not guess dishes from memory or last week's menu.",
+      "source": "plugin",
+      "updatedAt": "2026-10-14T15:40:07.694081Z",
+      "backingPluginId": "plugin_01WPpCLbTJkLoHzZUGjmhwUB"
+    },
+    {
+      "skillId": "skill_01SVKt3R89YNMqNsieZTzN5c",
+      "name": "maul-menu-price-reviewer",
+      "description": "Cross-check a week's Maul lunch menus against the restaurant price/quality comparison sheet. Warns if a restaurant marked red (poor price/quality) is used too often on a menu, and if a restaurant marked green (good price/quality) is under-used across the week. Use when asked to check menu costs, review restaurant pricing, check if we're ordering too much from bad-value places, or verify we're using good-value restaurants enough.",
+      "source": "plugin",
+      "updatedAt": "2026-10-14T15:40:11.802970Z",
+      "backingPluginId": "plugin_01END1jteSsEmJYxdvupR4h2"
+    },
+    {
+      "skillId": "skill_01DGZres6BUX2wuAYKJDk9CV",
+      "name": "maul-menu-low-carb-finder",
+      "description": "Find every low-carb dish available on a specific weekday for Maul's Icelandic lunch catering menus. Use whenever asked for low-carb, lágkolvetna, or keto options for a given day (mánudagur/Monday, þriðjudagur/Tuesday, miðvikudagur/Wednesday, fimmtudagur/Thursday, föstudagur/Friday), or asked to check the low-carb menu for the upcoming week. Reads menu data from the Maul MCP (blueprint menus + courses catalog) — do not guess dishes from memory or last week's menu.",
+      "source": "plugin",
+      "updatedAt": "2026-10-14T15:40:09.663925Z",
+      "backingPluginId": "plugin_01A74zqgapNJsJMMsXhAZFeV"
     }
   ]
 }
