@@ -80,6 +80,12 @@ type = "plugin_action"
 command = "herdr-navigator.jump-back"
 description = "jump back to last workspace"
 
+[[keys.command]]
+key = "prefix+k"
+type = "plugin_action"
+command = "herdr-bar.open"
+description = "command bar"
+
 [ui]
 # tmux: set -g pane-active-border-style 'fg=magenta'
 accent = "magenta"
