@@ -87,6 +87,14 @@ command = "herdr-bar.open"
 description = "command bar"
 
 [ui]
+
+# >>> herdr-radar tab-bar block
+tab_bar_right_separator = " · "
+tab_bar_right = [
+  { type = 'command', command = 'cat "/Users/einargudjonsson/.local/state/herdr/plugins/hhdebb.herdr-radar/tabbar${HERDR_SESSION:+-$HERDR_SESSION}.txt"', interval_seconds = 6, timeout_seconds = 2 },
+]
+# <<< herdr-radar tab-bar block
+
 # tmux: set -g pane-active-border-style 'fg=magenta'
 accent = "magenta"
 
@@ -146,3 +154,8 @@ directory = "~/.herdr/worktrees"
 [advanced]
 # tmux: set -g history-limit 1000000
 scrollback_limit_bytes = 50_000_000
+
+# >>> herdr-radar theme block
+[theme.custom]
+active_row_bg = "#414868"
+# <<< herdr-radar theme block
