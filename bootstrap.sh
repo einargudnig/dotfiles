@@ -219,7 +219,19 @@ if [ "$DO_STOW" = 1 ]; then
   run make install
 fi
 
-# --- 7. macOS system defaults ----------------------------------------------
+# --- 7. tmux plugins --------------------------------------------------------
+# ~/.tmux is not stowed, so the `run '~/.tmux/plugins/tpm/tpm'` line at the
+# bottom of .tmux.conf points at nothing until TPM and its plugins exist.
+if [ "$DO_STOW" = 1 ] && command -v tmux >/dev/null; then
+  step "tmux plugins"
+  if [ "$DRY" = 1 ]; then
+    info "would install tpm and every plugin in .tmux.conf"
+  else
+    bash bootstrap/tmux-plugins.sh
+  fi
+fi
+
+# --- 8. macOS system defaults ----------------------------------------------
 if [ "$DO_DEFAULTS" = 1 ]; then
   if [ "$PLATFORM" = macos ]; then
     step "macOS defaults"

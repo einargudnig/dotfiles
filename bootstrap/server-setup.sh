@@ -40,6 +40,9 @@ if ! sudo launchctl print system/com.tailscale.tailscaled >/dev/null 2>&1; then
 fi
 tailscale status >/dev/null 2>&1 || echo "  run once: tailscale up"
 
+echo "==> tmux plugins (TPM + the plugins in .tmux.conf)"
+bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/tmux-plugins.sh"
+
 echo
 echo "==> Status"
 pmset -g | grep -E ' (sleep|autorestart|womp) '

@@ -1,3 +1,6 @@
+# rust / cargo (only where installed)
+[ -s "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
 # uv
 export PATH="$HOME/.local/bin:$PATH"
 

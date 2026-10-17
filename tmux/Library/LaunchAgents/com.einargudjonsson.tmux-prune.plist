@@ -5,11 +5,13 @@
     <key>Label</key>
     <string>com.einargudjonsson.tmux-prune</string>
 
+    <!-- $HOME is expanded by the shell, not launchd: keeps this plist portable
+         across machines whose account name differs. -->
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
         <string>-lc</string>
-        <string>/Users/einargudnigudjonsson/dotfiles/tmux/scripts/tmux-prune.sh</string>
+        <string>exec "$HOME/dotfiles/tmux/scripts/tmux-prune.sh" &gt;&gt;"$HOME/.cache/tmux-prune.launchd.log" 2&gt;&amp;1</string>
     </array>
 
     <key>EnvironmentVariables</key>
@@ -25,12 +27,6 @@
         <key>Minute</key>
         <integer>0</integer>
     </dict>
-
-    <key>StandardOutPath</key>
-    <string>/Users/einargudnigudjonsson/.cache/tmux-prune.launchd.log</string>
-
-    <key>StandardErrorPath</key>
-    <string>/Users/einargudnigudjonsson/.cache/tmux-prune.launchd.log</string>
 
     <key>RunAtLoad</key>
     <false/>

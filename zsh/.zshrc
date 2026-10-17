@@ -379,4 +379,4 @@ case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$P
 # bun completions are sourced in the bun block above
 
 # opencode
-export PATH=/Users/einargudnigudjonsson/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
