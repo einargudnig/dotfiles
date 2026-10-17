@@ -1,7 +1,5 @@
-. "$HOME/.cargo/env"
-
 # uv
-export PATH="/Users/einargudjonsson/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # GitHub MCP plugin reads this for its Authorization header
 # (cached -- `gh auth token` costs ~90ms and zshenv runs for EVERY zsh process;

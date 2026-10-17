@@ -9,7 +9,7 @@
     <array>
         <string>/bin/bash</string>
         <string>-lc</string>
-        <string>/Users/einargudjonsson/dotfiles/tmux/scripts/tmux-prune.sh</string>
+        <string>/Users/einargudnigudjonsson/dotfiles/tmux/scripts/tmux-prune.sh</string>
     </array>
 
     <key>EnvironmentVariables</key>
@@ -27,10 +27,10 @@
     </dict>
 
     <key>StandardOutPath</key>
-    <string>/Users/einargudjonsson/.cache/tmux-prune.launchd.log</string>
+    <string>/Users/einargudnigudjonsson/.cache/tmux-prune.launchd.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/einargudjonsson/.cache/tmux-prune.launchd.log</string>
+    <string>/Users/einargudnigudjonsson/.cache/tmux-prune.launchd.log</string>
 
     <key>RunAtLoad</key>
     <false/>

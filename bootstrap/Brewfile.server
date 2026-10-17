@@ -41,6 +41,9 @@ brew "pnpm"
 
 # Remote access + persistent sessions
 brew "tmux"
+brew "gum"              # tmux-palette + sesh pickers
+tap "joshmedeski/sesh"
+brew "sesh"             # session switcher (prefix T / prefix K)
 brew "mosh"
 brew "tailscale"        # open-source daemon: runs at boot, before anyone logs in
 

@@ -140,20 +140,23 @@ function y() {
 # --- Prompt & history search -------------------------------------------------
 eval "$(starship init zsh)"          # ~10ms; `starship timings` if it ever drags
 
-. "$HOME/.atuin/bin/env"
-eval "$(atuin init zsh)"             # rebinds Up/Ctrl-R to atuin's history
+# atuin (only where installed)
+if [[ -s "$HOME/.atuin/bin/env" ]]; then
+  . "$HOME/.atuin/bin/env"
+  eval "$(atuin init zsh)"           # rebinds Up/Ctrl-R to atuin's history
+fi
 
 # --- PATH --------------------------------------------------------------------
-PATH=~/.console-ninja/.bin:$PATH
+[[ -d ~/.console-ninja/.bin ]] && PATH=~/.console-ninja/.bin:$PATH
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-[ -s "/Users/einargudjonsson/.bun/_bun" ] && source "/Users/einargudjonsson/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 
 # pnpm
-export PNPM_HOME="/Users/einargudjonsson/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -161,6 +164,8 @@ esac
 # pnpm end
 
 # >>> conda initialize (lazy loaded for faster shell startup) >>>
+# Only defined where Anaconda is installed.
+if [[ -x /opt/anaconda3/bin/conda ]]; then
 conda() {
   unfunction conda
   __conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -176,6 +181,7 @@ conda() {
   unset __conda_setup
   conda "$@"
 }
+fi
 # <<< conda initialize <<<
 
 # fnm (Node version manager). NOT cacheable: `fnm env` mints a per-shell
@@ -186,6 +192,8 @@ export PATH=$PATH:$HOME/go/bin
 
 # try.rb shell integration (inlined -- `try.rb init` spawns ruby, ~100ms per shell)
 # This is the verbatim output of `~/.local/try.rb init`; re-run that if try.rb's init changes.
+# Only defined where try.rb is installed.
+if [[ -f "$HOME/.local/try.rb" ]]; then
 try() {
   script_path="$HOME/.local/try.rb"
   cmd=$(/usr/bin/env ruby "$script_path" cd --path "$HOME/src/tries" "$@" 2>/dev/tty)
@@ -199,6 +207,7 @@ try() {
     printf %s "$cmd"
   fi
 }
+fi
 
 
 # --- Cached tool integrations ------------------------------------------------
@@ -367,8 +376,7 @@ source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # Hermes Agent command
 case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH" ;; esac
 
-# bun completions
-[ -s "/Users/einargudnigudjonsson/.bun/_bun" ] && source "/Users/einargudnigudjonsson/.bun/_bun"
+# bun completions are sourced in the bun block above
 
 # opencode
 export PATH=/Users/einargudnigudjonsson/.opencode/bin:$PATH
