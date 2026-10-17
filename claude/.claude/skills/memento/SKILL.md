@@ -9,7 +9,7 @@ Capture the current session as a breadcrumb note in the second-brain vault.
 This is the *mid-session* sibling of `/done`: same note format, but it does
 **not** end the session — you keep working afterward.
 
-Vault: `/Users/einargudjonsson/personal/obsidian/second-brain/claude-breadcrumbs/`
+Vault: `~/personal/obsidian/second-brain/claude-breadcrumbs/`
 
 > Consolidated 2026-05-26. The old standalone `~/memento` vault (atomic
 > Zettelkasten notes, certainty scores, QMD recall) is retired. Capture is now

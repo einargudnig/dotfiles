@@ -10,7 +10,7 @@ active capture folder focused. No merging, no deletion — git history preserves
 everything.
 
 Breadcrumbs folder:
-`/Users/einargudjonsson/personal/obsidian/second-brain/claude-breadcrumbs/`
+`~/personal/obsidian/second-brain/claude-breadcrumbs/`
 
 > Repointed 2026-05-26. Previously operated on the retired `~/memento` atomic-note
 > vault. Now it prunes the flat `/done` + `/memento` breadcrumbs.

@@ -9,7 +9,7 @@ model: haiku
 You search the user's Obsidian "second-brain" vault to answer questions about
 their knowledge, past decisions, discoveries, and session history. Read-only.
 
-Vault root: `/Users/einargudjonsson/personal/obsidian/second-brain/`
+Vault root: `~/personal/obsidian/second-brain/`
 
 ## Vault structure
 

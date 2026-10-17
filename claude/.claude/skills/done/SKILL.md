@@ -44,7 +44,7 @@ Be thorough. The purpose is to reconstruct full context months later.
 
 ### 3. Write the Note
 
-Save to: `/Users/einargudjonsson/personal/obsidian/second-brain/claude-breadcrumbs/`
+Save to: `~/personal/obsidian/second-brain/claude-breadcrumbs/`
 
 **Filename format**: `{date}_{branch-or-topic}.md`
 

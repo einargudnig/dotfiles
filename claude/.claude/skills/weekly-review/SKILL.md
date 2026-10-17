@@ -132,7 +132,7 @@ Analyze all gathered data and produce the weekly review. Think about:
 
 ### 8. Write the Report to Obsidian
 
-Save to: `/Users/einargudjonsson/personal/obsidian/second-brain/weekly-reviews/`
+Save to: `~/personal/obsidian/second-brain/weekly-reviews/`
 
 **Filename format**: `{date}_weekly-review.md`
 

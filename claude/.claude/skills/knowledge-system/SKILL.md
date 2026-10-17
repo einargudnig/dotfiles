@@ -36,7 +36,7 @@ All leftover hooks from the retired `~/memento` vault (`memento-triage.py`,
 - **Vault:** `~/personal/obsidian/second-brain/` — `claude-breadcrumbs/` (session logs), `80 slip-box/` (Zettelkasten knowledge), `40 reference/` + `60 reference/`, `weekly-reviews/`, `30 planner/` (journal; **excluded** from recall).
 - **qmd index:** collection `second-brain` (the whole vault). Semantic search engine.
 - **memento.yml:** `~/.config/memento-vault/memento.yml` — `vault_path` → second-brain; capture thresholds (`exchange_threshold: 15`, `file_count_threshold: 3`, `notable_patterns`).
-- **Repos:** public `dotfiles` (config only) ; **private** `claude-memory` = `~/.claude/projects/-Users-einargudjonsson/memory/` (auto-memory; work/personal content). Never put work content in public dotfiles.
+- **Repos:** public `dotfiles` (config only) ; **private** `claude-memory` = `~/.claude/projects/<home-slug>/memory/` (auto-memory; work/personal content). Never put work content in public dotfiles.
 
 ## Invariants (decisions — don't silently break)
 

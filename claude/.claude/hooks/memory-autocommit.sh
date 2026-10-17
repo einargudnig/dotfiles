@@ -7,7 +7,9 @@
 # never blocks session exit; if a push is missed, the next run catches up
 # because it pushes whenever the local repo is ahead of origin.
 
-MEM="$HOME/.claude/projects/-Users-einargudjonsson/memory"
+# Claude names the memory project dir after the cwd with '/' -> '-' (the home
+# dir becomes -Users-you); derive it from $HOME so a different account name works.
+MEM="$HOME/.claude/projects/-$(printf '%s' "${HOME#/}" | tr '/' '-')/memory"
 [ -d "$MEM/.git" ] || exit 0
 cd "$MEM" || exit 0
 

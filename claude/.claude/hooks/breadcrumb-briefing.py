@@ -102,7 +102,7 @@ def main() -> None:
         payload = {}
     cwd = payload.get("cwd") or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
     project = project_from_cwd(cwd)
-    if not project or project in {"einargudjonsson", ""} or not BREADCRUMBS.is_dir():
+    if not project or project == Path.home().name or not BREADCRUMBS.is_dir():
         return  # at home / no project / no vault — nothing useful to surface
 
     matches = []

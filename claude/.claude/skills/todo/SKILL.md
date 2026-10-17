@@ -23,7 +23,7 @@ Things 3 (macOS)  ──→  Ollama filter  ──→  Taskwarrior  ←──  A
 - **Taskwarrior**: Source of truth for day-to-day task work
 - **Things 3**: Capture app (mobile + macOS), synced via SQLite
 - **Asana**: Team/project tasks, synced via API with PAT (includes subtasks and comments)
-- **todo-sync CLI**: TypeScript tool at `/Users/einargudjonsson/personal/todo-system/ts/`
+- **todo-sync CLI**: TypeScript tool at `~/personal/todo-system/ts/`
 
 ## Taskwarrior Quick Reference
 
@@ -120,13 +120,13 @@ These are set by todo-sync and used for duplicate detection and sync tracking:
 
 ## todo-sync CLI
 
-The CLI is located at `/Users/einargudjonsson/personal/todo-system/ts/`.
+The CLI is located at `~/personal/todo-system/ts/`.
 
 ### Running Commands
 
 ```bash
 # From the project directory
-cd /Users/einargudjonsson/personal/todo-system/ts
+cd ~/personal/todo-system/ts
 node dist/cli.js <command> [--dry-run]
 
 # Or if using the bash wrapper
@@ -227,7 +227,7 @@ task +asana list
 ### "Sync everything now"
 
 ```bash
-cd /Users/einargudjonsson/personal/todo-system/ts && node dist/cli.js sync
+cd ~/personal/todo-system/ts && node dist/cli.js sync
 ```
 
 ### "I finished a task in Taskwarrior, sync it back"
@@ -235,19 +235,19 @@ cd /Users/einargudjonsson/personal/todo-system/ts && node dist/cli.js sync
 ```bash
 # If the on-exit hook is installed, completions auto-sync to Things 3 AND Asana on `task done`
 # To manually push all completions:
-cd /Users/einargudjonsson/personal/todo-system/ts && node dist/cli.js push
+cd ~/personal/todo-system/ts && node dist/cli.js push
 ```
 
 ### Building After Code Changes
 
 ```bash
-cd /Users/einargudjonsson/personal/todo-system/ts && npm run build
+cd ~/personal/todo-system/ts && npm run build
 ```
 
 ### Running Tests
 
 ```bash
-cd /Users/einargudjonsson/personal/todo-system/ts && npm test
+cd ~/personal/todo-system/ts && npm test
 ```
 
 ## Project Source Code
