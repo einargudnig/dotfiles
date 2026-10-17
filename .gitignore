@@ -12,3 +12,6 @@ nvim.bak/
 *.log
 *.sock
 
+# lazygit records recent repos / last version here -- per-machine, not config
+lazygit/Library/Application Support/lazygit/state.yml
+
