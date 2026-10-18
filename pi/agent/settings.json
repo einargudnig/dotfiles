@@ -2,5 +2,5 @@
   "defaultProvider": "opencode-go",
   "defaultModel": "kimi-k2.7-code",
   "theme": "catppuccin-mocha",
-  "lastChangelogVersion": "1.0.3"
+  "lastChangelogVersion": "1.3.0"
 }

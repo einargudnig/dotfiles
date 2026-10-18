@@ -40,3 +40,21 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     })
   end,
 })
+
+-- Markdown is prose: wrapped list items hang under their text instead of
+-- column 0, and markdownlint findings stay as signs/underlines rather than
+-- end-of-line virtual text that splits wrapped paragraphs. `]d` / `<leader>cd`
+-- still show the message.
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("markdown_prose", { clear = true }),
+  pattern = { "markdown", "markdown.mdx" },
+  callback = function()
+    vim.opt_local.breakindent = true
+    vim.opt_local.breakindentopt = "list:-1"
+
+    local ok, lint = pcall(require, "lint")
+    if ok then
+      vim.diagnostic.config({ virtual_text = false }, lint.get_namespace("markdownlint-cli2"))
+    end
+  end,
+})
