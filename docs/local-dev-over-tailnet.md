@@ -14,6 +14,7 @@ tserve -s 3000       # https://mac-mini/      -> 127.0.0.1:3000   (TLS on 443)
 tserve -t 5432       # mac-mini:5432          -> 127.0.0.1:5432   (raw TCP: db, gRPC, ...)
 tserve -l            # what is currently exposed
 tserve -x            # remove everything
+tserve -f ...        # skip the safety checks (see the gotcha below)
 ```
 
 Then open `http://mac-mini:3000` on the MacBook (or any tailnet device,
@@ -24,6 +25,20 @@ including the iPhone).
 - **Tailnet-only** (your devices). This is `tailscale serve`, never
   `tailscale funnel` — funnel is the public internet.
 - Survives reboots; a fresh `tserve <port>` replaces the entry for that port.
+
+### Gotcha: same-port Serve only works with a `127.0.0.1` server
+
+Serve binds `0.0.0.0:<port>` locally in order to accept tailnet traffic. It
+therefore coexists only with a server bound to `127.0.0.1`. If the server binds
+**all interfaces** (`*:PORT` — Expo/Metro, `vite --host 0.0.0.0`, …) then:
+
+- it is **already reachable** at `http://mac-mini:<port>`, so you don't need
+  `tserve` at all, and
+- serving that same port would **steal the port from the server**, which then
+  binds something else (or nothing) while your URL only ever 502s.
+
+`tserve` now refuses both cases with a hint, and also refuses a port that
+nothing is listening on yet. `-f` overrides when you know better.
 
 ## 2. Bind the server to the tailnet
 
@@ -64,6 +79,8 @@ ssh -N -L 5432:localhost:5432 mac-mini    # Postgres, etc.
 
 ## Rule of thumb
 
-- Your own dev server, any port, want the cleanest URL → **`tserve <port>`**
-- Want zero Tailscale config and don't mind rebinding → **`--host 0.0.0.0`**
+- Server stays on `127.0.0.1` (Vite / Next default) → **`tserve <port>`**
+- Server binds all interfaces (`--host 0.0.0.0`, Expo/Metro) → **just open
+  `http://mac-mini:<port>`**; do *not* `tserve` that same port
+- Want tailnet-only and can't rebind → **`tserve -s <port>`** (HTTPS on 443)
 - One-off, or a non-HTTP protocol → **`ssh -L`**

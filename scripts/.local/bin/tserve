@@ -7,35 +7,76 @@
 #   tserve -t 5432     <node>:5432          ->  127.0.0.1:5432   raw TCP (db, gRPC, ...)
 #   tserve -l          show what is currently exposed
 #   tserve -x          remove ALL serve config
+#   tserve -f ...      skip the safety checks below
 #
 # Tailnet-only: only your own devices can reach it. That is `tailscale serve`,
 # never `tailscale funnel` (funnel is the public internet).
+#
+# Serve listens on 0.0.0.0:<port> so it only coexists with a server bound to
+# 127.0.0.1. A server on 0.0.0.0 (Expo/Metro, `--host 0.0.0.0`) is ALREADY
+# reachable at http://<node>:<port>, and serving the same port would steal the
+# port out from under it. Both cases are refused; use -f to override.
 set -euo pipefail
 
-usage() {
-  sed -n '3,12p' "$0" | sed 's/^# \{0,1\}//'
-}
-die() { printf 'tserve: %s\n' "$*" >&2; exit 1; }
+usage()  { sed -n '3,15p' "$0" | sed 's/^# \{0,1\}//'; }
+die()    { printf 'tserve: %s\n' "$*" >&2; exit 1; }
+
+[ "$#" -ge 1 ] || { usage; exit 0; }
+
+MODE=http
+FORCE=0
+ports=()
+for a in "$@"; do
+  case "$a" in
+    -h|--help)        usage; exit 0 ;;
+    -l|--list|status) exec tailscale serve status ;;
+    -x|--reset|clear) exec tailscale serve reset ;;
+    -s|--https)       MODE=https ;;
+    -t|--tcp)         MODE=tcp ;;
+    -f|--force)       FORCE=1 ;;
+    -*)               die "unknown flag: $a" ;;
+    *)                ports+=("$a") ;;
+  esac
+done
+[ "${#ports[@]}" -ge 1 ] || die "usage: tserve [-s|-t] <port> [port ...]"
 
 command -v tailscale >/dev/null || die "tailscale not found on PATH"
+NODE="$(tailscale status --json 2>/dev/null | jq -r '.Self.DNSName // empty' | sed 's/\.$//' || true)"
+[ -n "$NODE" ] || die "could not read this node's Tailscale DNS name (is tailscaled running?)"
 
-mode=http
-case "${1:-}" in
-  ""|-h|--help)       usage; exit 0 ;;
-  -l|--list|status)   exec tailscale serve status ;;
-  -x|--reset|clear)   exec tailscale serve reset ;;
-  -s|--https)         mode=https; shift ;;
-  -t|--tcp)           mode=tcp;   shift ;;
-esac
+# Addresses a port is listening on, e.g. "*:3000" or "127.0.0.1:3000".
+listeners() { { lsof -nP -iTCP:"$1" -sTCP:LISTEN 2>/dev/null || true; } | awk 'NR>1{print $9}' | sort -u; }
 
-[ "$#" -ge 1 ] || die "usage: tserve [-s|-t] <port> [port ...]"
+check_port() {
+  local port="$1" scope
+  scope="$(listeners "$port")"
 
-node="$(tailscale status --json 2>/dev/null | jq -r '.Self.DNSName // empty' | sed 's/\.$//')"
-[ -n "$node" ] || die "could not read this node's Tailscale DNS name (is tailscaled running?)"
+  if [ -z "$scope" ]; then
+    [ "$FORCE" = 1 ] || die "nothing is listening on port $port yet.
+       Start your server first, then tserve the port it prints. (Serving an
+       empty port hands out a URL that only ever 502s.) Re-run with -f to skip."
+    return 0
+  fi
+  printf '    listening: %s\n' "$(printf '%s' "$scope" | tr '\n' ' ')"
 
-for port in "$@"; do
+  # Only the same-port modes (http/tcp) can collide with the server's bind.
+  [ "$MODE" = https ] && return 0
+
+  if printf '%s\n' "$scope" | grep -qE '(\*|0\.0\.0\.0|\[::\]):'; then
+    [ "$FORCE" = 1 ] || die "port $port is bound on ALL interfaces, so this would not work:
+       - it is already reachable on the tailnet at  http://$NODE:$port
+       - Serve binds 0.0.0.0:$port itself, and would take the port from your server
+       Instead: open http://$NODE:$port directly | bind the server to 127.0.0.1 |
+       use 'tserve -s $port' (HTTPS on 443). Re-run with -f to override."
+  fi
+}
+
+echo "tserve: exposing on $NODE"
+for port in "${ports[@]}"; do
   case "$port" in ''|*[!0-9]*) die "not a port number: $port" ;; esac
-  case "$mode" in
+  printf '  %s\n' "$port"
+  check_port "$port"
+  case "$MODE" in
     http)  tailscale serve --bg --http="$port"  "http://127.0.0.1:$port" ;;
     https) tailscale serve --bg --https=443     "http://127.0.0.1:$port" ;;
     tcp)   tailscale serve --bg --tcp="$port"   "tcp://127.0.0.1:$port" ;;
@@ -43,11 +84,11 @@ for port in "$@"; do
 done
 
 printf '\nReachable on your tailnet:\n'
-for port in "$@"; do
-  case "$mode" in
-    http)  printf '  http://%s:%s\n' "$node" "$port" ;;
-    https) printf '  https://%s/\n'  "$node" ;;
-    tcp)   printf '  %s:%s   (raw TCP)\n' "$node" "$port" ;;
+for port in "${ports[@]}"; do
+  case "$MODE" in
+    http)  printf '  http://%s:%s\n' "$NODE" "$port" ;;
+    https) printf '  https://%s/\n'  "$NODE" ;;
+    tcp)   printf '  %s:%s   (raw TCP)\n' "$NODE" "$port" ;;
   esac
 done
 printf '\nList with: tserve -l     Remove all with: tserve -x\n'
