@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#
+# tserve -- expose a localhost port to your tailnet, via Tailscale Serve.
+#
+#   tserve 3000        http://<node>:3000   ->  127.0.0.1:3000   plain HTTP, SAME port
+#   tserve -s 3000     https://<node>/      ->  127.0.0.1:3000   TLS on 443
+#   tserve -t 5432     <node>:5432          ->  127.0.0.1:5432   raw TCP (db, gRPC, ...)
+#   tserve -l          show what is currently exposed
+#   tserve -x          remove ALL serve config
+#
+# Tailnet-only: only your own devices can reach it. That is `tailscale serve`,
+# never `tailscale funnel` (funnel is the public internet).
+set -euo pipefail
+
+usage() {
+  sed -n '3,12p' "$0" | sed 's/^# \{0,1\}//'
+}
+die() { printf 'tserve: %s\n' "$*" >&2; exit 1; }
+
+command -v tailscale >/dev/null || die "tailscale not found on PATH"
+
+mode=http
+case "${1:-}" in
+  ""|-h|--help)       usage; exit 0 ;;
+  -l|--list|status)   exec tailscale serve status ;;
+  -x|--reset|clear)   exec tailscale serve reset ;;
+  -s|--https)         mode=https; shift ;;
+  -t|--tcp)           mode=tcp;   shift ;;
+esac
+
+[ "$#" -ge 1 ] || die "usage: tserve [-s|-t] <port> [port ...]"
+
+node="$(tailscale status --json 2>/dev/null | jq -r '.Self.DNSName // empty' | sed 's/\.$//')"
+[ -n "$node" ] || die "could not read this node's Tailscale DNS name (is tailscaled running?)"
+
+for port in "$@"; do
+  case "$port" in ''|*[!0-9]*) die "not a port number: $port" ;; esac
+  case "$mode" in
+    http)  tailscale serve --bg --http="$port"  "http://127.0.0.1:$port" ;;
+    https) tailscale serve --bg --https=443     "http://127.0.0.1:$port" ;;
+    tcp)   tailscale serve --bg --tcp="$port"   "tcp://127.0.0.1:$port" ;;
+  esac
+done
+
+printf '\nReachable on your tailnet:\n'
+for port in "$@"; do
+  case "$mode" in
+    http)  printf '  http://%s:%s\n' "$node" "$port" ;;
+    https) printf '  https://%s/\n'  "$node" ;;
+    tcp)   printf '  %s:%s   (raw TCP)\n' "$node" "$port" ;;
+  esac
+done
+printf '\nList with: tserve -l     Remove all with: tserve -x\n'
