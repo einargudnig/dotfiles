@@ -864,3 +864,27 @@ courses route test 'dish detail modal > closes again' timed out (3.2s) under npm
 ## 2026-10-16 11:53 +0000 · flaky · claude-opus-5-5 · maul-foodie-web@chore/cloud-environment · claude-code
 pre-commit validate fails on clean main: vitest browser-mode 'error when mocking a module' unhandled rejection, many files run 0 tests
 **Worked instead:** confirmed pre-existing via git stash; committed config-only change with --no-verify
+
+## 2026-10-19 00:55 +0000 · setup · claude-opus-5-5 · dotfiles@master · claude-code
+cp in agent Bash is aliased to interactive cp -i; overwriting a file silently fails with 'not overwritten' and exit 1
+**Worked instead:** use 'command cp -f'
+
+## 2026-10-19 08:27 +0000 · flaky · claude-opus-5-5 · dotfiles@master · claude-code
+eggo e2e keyboard.spec.ts:43 (work order receipt focus) failed once in full suite, passed 6/6 in isolation
+**Worked instead:** rerun the single test with --repeat-each
+
+## 2026-10-19 09:12 +0000 · tool · claude-opus-5-5 · dotfiles@master · claude-code
+concierge: qmd crashed on every query with a Bun/slice-ansi error, fell back to ripgrep
+**Worked instead:** ripgrep over the vault works as fallback
+
+## 2026-10-19 09:28 +0000 · setup · claude-opus-5-5 · dotfiles@master · claude-code
+mv aliased to interactive (-i) in agent shell; 'mv tmp file' silently 'not overwritten'
+**Worked instead:** use 'command mv -f'
+
+## 2026-10-19 09:38 +0000 · setup · claude-opus-5-5 · dotfiles@master · claude-code
+launchctl bootstrap gui/<uid> over ssh on mac mini fails: 'Bootstrap failed: 125: Domain does not support specified action'
+**Worked instead:** use user/<uid> domain
+
+## 2026-10-19 12:12 +0000 · error · claude-opus-5-5 · maul-foodie-web@chore/cloud-environment · claude-code
+vitest browser: stale .env.test failing zod env parse at import surfaced as 'error when mocking a module' unhandled rejection; real cause only visible running one file alone
+**Worked instead:** run a 0-test file in isolation; re-pull env with vercel env pull --environment=test
