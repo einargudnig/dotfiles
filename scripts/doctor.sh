@@ -54,7 +54,7 @@ check_opt_dir "$HOME/.claude/projects/-$(printf '%s' "${HOME#/}" | tr '/' '-')/m
 
 # Hook commands must point at files that exist, or every session pays for it.
 say "== hooks =="
-python3 - "$HOME/.claude/settings.json" <<'PY'
+QUIET=$QUIET python3 - "$HOME/.claude/settings.json" <<'PY'
 import json, os, re, sys
 path = sys.argv[1]
 if not os.path.exists(path):
