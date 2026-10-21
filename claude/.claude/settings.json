@@ -15,17 +15,6 @@
     ]
   },
   "hooks": {
-    "Notification": [
-      {
-        "matcher": "permission_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -34,15 +23,6 @@
             "type": "command",
             "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\-\\-force|\\-f'; then if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\bmain\\b|\\bmaster\\b'; then echo 'BLOCKED: force-push to main/master is not allowed' && exit 1; fi; fi",
             "if": "Bash(git push *)"
-          }
-        ]
-      },
-      {
-        "matcher": "AskUserQuestion",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh waiting"
           }
         ]
       }
@@ -91,16 +71,6 @@
             "statusMessage": "Recalling project breadcrumbs..."
           }
         ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
-            "timeout": 10
-          }
-        ]
       }
     ],
     "Stop": [
@@ -109,25 +79,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh idle"
-          },
-          {
-            "type": "command",
             "command": "bash \"$HOME/.claude/hooks/typecheck.sh\""
           }
         ]
       }
     ],
     "UserPromptSubmit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.tmux/plugins/tmux-claude-session-manager/scripts/state.sh working"
-          }
-        ]
-      },
       {
         "hooks": [
           {

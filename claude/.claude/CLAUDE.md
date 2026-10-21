@@ -13,10 +13,17 @@
 - Don't create README/docs unless asked.
 
 ## Stack
-- `~/work/` — **Maul**, food delivery. React Router v7, React, TS, Tailwind.
+- `~/work/` — **Maul**, food delivery. React Router v7, React, TS, Tailwind. Work machine only.
 - `~/personal/` — React/Next.js, TS, Node.
-- Cloudflare: use the `cf` CLI unless the project has a Wrangler config file (`wrangler.jsonc`/`wrangler.toml`).
+- Cloudflare: use the project's `wrangler.jsonc` and its own wrangler; `cf` only where installed.
 - Tasks: Taskwarrior + Things 3 via todo-sync (/todo). Notes: Obsidian (/done, /memento).
+
+## Machine reality
+- Read `~/MACHINE.md` when present. It records what this host actually has, and what
+  is missing, so you don't plan around a checkout or vault that isn't there.
+- Before using a tool, checkout, vault, or CLI: verify it exists (`command -v`, `test -d`).
+  If it's missing, say so in one line and continue without it. Never simulate a save,
+  recall, sync, or deploy.
 
 ## Workflow
 - New feature/architecture → /think first. Bug → /hunt for root cause, don't guess-and-check.
