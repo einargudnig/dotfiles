@@ -1,0 +1,4 @@
+#!/bin/sh
+# Tailscale.app ships the CLI inside the bundle; run it in place so it can
+# resolve its own bundleIdentifier (a plain symlink makes it crash).
+exec "/Applications/Tailscale.app/Contents/MacOS/Tailscale" "$@"
