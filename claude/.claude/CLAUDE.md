@@ -24,6 +24,7 @@
 - Before using a tool, checkout, vault, or CLI: verify it exists (`command -v`, `test -d`).
   If it's missing, say so in one line and continue without it. Never simulate a save,
   recall, sync, or deploy.
+- On a new machine, run `~/dotfiles/scripts/doctor.sh` before trusting any of the above.
 
 ## Workflow
 - New feature/architecture → /think first. Bug → /hunt for root cause, don't guess-and-check.
