@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import urllib.error
+import urllib.request
 import os
 import re
 import subprocess
@@ -29,6 +31,11 @@ from pathlib import Path
 
 HOME = Path.home()
 VAULT = Path(os.environ.get("WEEKLY_SCAN_VAULT", HOME / "personal/obsidian/second-brain"))
+# Where the Lumen (life-os) hub credentials live. Deliberately a file and not env
+# vars: the scheduler does not inherit a shell, and a 600 file beats a token in a
+# launchd plist.
+HUB_ENV = Path(os.environ.get("WEEKLY_SCAN_HUB_ENV", HOME / ".config/life-os/hub.env"))
+HUB_TIMEOUT = 5
 OUT_DIR = VAULT / "weekly-reviews"
 
 # Repo roots to scan: one level, plus one level under personal/ and work/.
@@ -267,6 +274,66 @@ def ticker_age() -> str:
         return "no heartbeat file"
 
 
+def read_hub_config() -> dict[str, str]:
+    """LIFEOS_HUB_URL / LIFEOS_INGEST_TOKEN, or {} when not configured."""
+    if not HUB_ENV.exists():
+        return {}
+    config = {}
+    for line in HUB_ENV.read_text(errors="ignore").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        config[key.strip()] = value.strip().strip("\"'")
+    return config
+
+
+def post_to_hub(findings: list[str], report: str, now: date) -> str | None:
+    """Push the scan into Lumen's log hub. Returns a status line, or None if unconfigured.
+
+    Lumen's only generic write surface today is POST /v1/logs, so a scan lands as one
+    structured event (project `mac-mini`, event `weekly_scan`) and shows up in the Logs
+    view. A dedicated Reviews view would need a life-os endpoint; this needs nothing.
+    """
+    config = read_hub_config()
+    url = config.get("LIFEOS_HUB_URL", "").rstrip("/")
+    token = config.get("LIFEOS_INGEST_TOKEN", "")
+    if not url or not token:
+        return None
+
+    payload = {
+        "project": "mac-mini",
+        "events": [
+            {
+                "event": "weekly_scan",
+                "level": "warn" if findings else "info",
+                "ts": int(time.time() * 1000),
+                "fields": {
+                    "findings": len(findings),
+                    # Plain text and a vault-relative path: the log is read from
+                    # another machine, where an absolute path means nothing.
+                    "items": [f.replace("**", "") for f in findings],
+                    "report": str(Path(report).relative_to(VAULT)),
+                    "period": f"{(now - timedelta(days=7)).isoformat()} to {now.isoformat()}",
+                },
+            }
+        ],
+    }
+    request = urllib.request.Request(
+        f"{url}/v1/logs",
+        data=json.dumps(payload).encode(),
+        headers={"content-type": "application/json", "authorization": f"Bearer {token}"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=HUB_TIMEOUT) as response:
+            return f"lumen: logged weekly_scan ({response.status})"
+    except (urllib.error.URLError, OSError, ValueError) as error:
+        # Never fail the scan because the hub is unreachable — the vault copy is the
+        # record, and next week's run is the retry.
+        return f"lumen: post failed ({error})"
+
+
 def publish(text: str, now: date, push: bool) -> str:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     target = OUT_DIR / f"{now.isoformat()}_weekly-scan.md"
@@ -289,6 +356,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true", help="print, write nothing")
     parser.add_argument("--no-push", action="store_true", help="commit but do not push")
+    parser.add_argument("--no-post", action="store_true", help="skip the Lumen hub post")
     args = parser.parse_args()
 
     now = date.today()
@@ -311,6 +379,10 @@ def main() -> int:
 
     path = publish(text, now, push=not args.no_push)
     print(f"wrote {path}", file=sys.stderr)
+    if not args.no_post:
+        status = post_to_hub(findings, path, now)
+        if status:
+            print(status, file=sys.stderr)
     # stdout is what the scheduler delivers: findings only, silent when clean.
     if findings:
         print(f"Weekly scan — {len(findings)} thing(s) need attention:")
