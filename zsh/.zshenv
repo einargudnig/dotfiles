@@ -1,5 +1,7 @@
 # rust / cargo (only where installed)
 [ -s "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+# Mac mini uses brew's keg-only rustup instead of ~/.cargo
+[ -d /opt/homebrew/opt/rustup/bin ] && export PATH="/opt/homebrew/opt/rustup/bin:$PATH"
 
 # uv
 export PATH="$HOME/.local/bin:$PATH"
