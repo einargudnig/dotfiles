@@ -88,12 +88,16 @@ description = "command bar"
 
 [ui]
 
-# >>> herdr-radar tab-bar block
+# herdr-radar tab bar, deliberately outside radar's managed markers: its daemon
+# rewrites a managed block to this machine's absolute $HOME, which breaks the
+# Mac mini (different username) via the shared dotfiles symlink.
+# Side effect: radar's apply/configure now refuses ("tab_bar_right is already
+# set by hand"). To take a radar upgrade, remove these lines, run configure,
+# then restore $HOME here.
 tab_bar_right_separator = " · "
 tab_bar_right = [
   { type = 'command', command = 'cat "$HOME/.local/state/herdr/plugins/hhdebb.herdr-radar/tabbar${HERDR_SESSION:+-$HERDR_SESSION}.txt"', interval_seconds = 6, timeout_seconds = 2 },
 ]
-# <<< herdr-radar tab-bar block
 
 # tmux: set -g pane-active-border-style 'fg=magenta'
 accent = "magenta"
