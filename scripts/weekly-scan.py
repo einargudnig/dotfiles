@@ -274,6 +274,13 @@ def ticker_age() -> str:
         return "no heartbeat file"
 
 
+def _vault_relative(path: str) -> str:
+    try:
+        return str(Path(path).relative_to(VAULT))
+    except ValueError:
+        return path
+
+
 def read_hub_config() -> dict[str, str]:
     """LIFEOS_HUB_URL / LIFEOS_INGEST_TOKEN, or {} when not configured."""
     if not HUB_ENV.exists():
@@ -288,7 +295,9 @@ def read_hub_config() -> dict[str, str]:
     return config
 
 
-def post_to_hub(findings: list[str], report: str, now: date) -> str | None:
+def post_to_hub(
+    findings: list[str], report: str, now: date, event: str = "weekly_scan"
+) -> str | None:
     """Push the scan into Lumen's log hub. Returns a status line, or None if unconfigured.
 
     Lumen's only generic write surface today is POST /v1/logs, so a scan lands as one
@@ -305,7 +314,7 @@ def post_to_hub(findings: list[str], report: str, now: date) -> str | None:
         "project": "mac-mini",
         "events": [
             {
-                "event": "weekly_scan",
+                "event": event,
                 "level": "warn" if findings else "info",
                 "ts": int(time.time() * 1000),
                 "fields": {
@@ -313,7 +322,7 @@ def post_to_hub(findings: list[str], report: str, now: date) -> str | None:
                     # Plain text and a vault-relative path: the log is read from
                     # another machine, where an absolute path means nothing.
                     "items": [f.replace("**", "") for f in findings],
-                    "report": str(Path(report).relative_to(VAULT)),
+                    "report": _vault_relative(report),
                     "period": f"{(now - timedelta(days=7)).isoformat()} to {now.isoformat()}",
                 },
             }
@@ -327,7 +336,7 @@ def post_to_hub(findings: list[str], report: str, now: date) -> str | None:
     )
     try:
         with urllib.request.urlopen(request, timeout=HUB_TIMEOUT) as response:
-            return f"lumen: logged weekly_scan ({response.status})"
+            return f"lumen: logged {event} ({response.status})"
     except (urllib.error.URLError, OSError, ValueError) as error:
         # Never fail the scan because the hub is unreachable — the vault copy is the
         # record, and next week's run is the retry.
@@ -357,9 +366,23 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true", help="print, write nothing")
     parser.add_argument("--no-push", action="store_true", help="commit but do not push")
     parser.add_argument("--no-post", action="store_true", help="skip the Lumen hub post")
+    parser.add_argument(
+        "--test-hub",
+        action="store_true",
+        help="post one throwaway event to the Lumen hub and report the result",
+    )
     args = parser.parse_args()
 
     now = date.today()
+
+    if args.test_hub:
+        status = post_to_hub([], "test", now, event="weekly_scan_test")
+        if status is None:
+            print(f"no hub configured — fill {HUB_ENV} first", file=sys.stderr)
+            return 2
+        print(status, file=sys.stderr)
+        return 0 if "logged" in status else 1
+
     seen: set[Path] = set()
     repos: list[Repo] = []
     for root in ROOTS:
