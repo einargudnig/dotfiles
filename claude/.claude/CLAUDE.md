@@ -31,6 +31,14 @@
 - Picking up prior work → /continue-work.
 - **For anything about what I know, decided, or wrote — consult the `concierge` agent before answering.** It searches my Obsidian vault. Never say "I don't know" about my own work without checking.
 
+## MCP servers
+- Global stdio servers start once per session, so only servers used near-daily stay global. Others go in the project's `.mcp.json` or local scope.
+- Servers used across many projects run once as a shared HTTP service (launchd), not per session. No `npx -y`/`@latest` for long-lived servers: pin and install.
+
+## Browser
+- Default: `playwright` (headless). Use `playwright-headed` only when I explicitly ask to see the browser or need visual cues.
+- Both are shared launchd services (`com.einargudjonsson.playwright-mcp[-headed]`); each session gets an isolated context, so no logins persist.
+
 ## Shell
 - `fd` not find, `rg` not grep, `ast-grep`/`sg` for AST edits, `tree` for structure.
 - `fd` skips symlinks by default — add `-L` when a dir may contain symlinked entries.
