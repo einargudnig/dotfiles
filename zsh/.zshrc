@@ -66,6 +66,11 @@ alias gpl='~/dotfiles/scripts/git-pull.sh'
 # lowercase: `Lazygit` only resolves because APFS is case-insensitive
 alias lg='lazygit'
 
+# --- Aliases: herdr sessions (spaces in ~/.config/herdr/spaces.conf) ---------
+alias hm='herdr-up maul'
+alias hp='herdr-up personal'
+alias hw='herdr-up work'
+
 # --- Aliases: hunk (diff review) ---------------------------------------------
 # Mirrors the `git hd` / `git hs` aliases in ~/.gitconfig. Prefer these: the git
 # ones go through the pager, so they can't show untracked files.

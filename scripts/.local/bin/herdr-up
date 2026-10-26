@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Ensure a herdr session exists with the spaces from spaces.conf, then attach.
+# Usage: herdr-up <session> [--no-attach]
+set -euo pipefail
+
+session="${1:?usage: herdr-up <session> [--no-attach]}"
+conf="${HERDR_SPACES_CONF:-$HOME/.config/herdr/spaces.conf}"
+trim() { local s="$1"; s="${s#"${s%%[![:space:]]*}"}"; printf '%s' "${s%"${s##*[![:space:]]}"}"; }
+
+if ! herdr session list | awk -v s="$session" '$1 == s && $2 == "running" { found = 1 } END { exit !found }'; then
+  nohup herdr --session "$session" server >/dev/null 2>&1 &
+  for _ in {1..50}; do herdr --session "$session" workspace list >/dev/null 2>&1 && break; sleep 0.1; done
+fi
+
+existing="$(herdr --session "$session" workspace list | jq -r '.result.workspaces[].label')"
+created=0
+
+while IFS='|' read -r s label cwd cmd; do
+  s="$(trim "$s")"
+  [[ -z "$s" || "$s" == \#* || "$s" != "$session" ]] && continue
+  label="$(trim "$label")"; cwd="$(trim "$cwd")"; cmd="$(trim "${cmd:-}")"
+  grep -qxF "$label" <<<"$existing" && continue
+
+  ws="$(herdr --session "$session" workspace create --cwd "${cwd/#\~/$HOME}" --label "$label" --no-focus |
+    jq -r '.result.workspace.workspace_id // .result.workspace_id')"
+  [[ -n "$cmd" ]] && herdr --session "$session" pane run "$ws:p1" "$cmd" >/dev/null
+  created=$((created + 1))
+done < "$conf"
+
+# Drop the auto-created "~" space a fresh session starts with.
+if (( created > 0 )); then
+  herdr --session "$session" workspace list |
+    jq -r '.result.workspaces[] | select(.label == "~") | .workspace_id' |
+    while read -r id; do herdr --session "$session" workspace close "$id" >/dev/null; done
+fi
+
+[[ "${2:-}" == "--no-attach" ]] && exit 0
+exec herdr session attach "$session"
