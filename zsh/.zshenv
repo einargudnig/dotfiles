@@ -1,3 +1,10 @@
+# Homebrew for non-login shells (herdr-core terminals over ssh never read
+# .zprofile). Static instead of `brew shellenv`: zshenv runs for every zsh.
+if [[ -z $HOMEBREW_PREFIX && -x /opt/homebrew/bin/brew ]]; then
+  export HOMEBREW_PREFIX=/opt/homebrew HOMEBREW_CELLAR=/opt/homebrew/Cellar HOMEBREW_REPOSITORY=/opt/homebrew
+  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+fi
+
 # rust / cargo (only where installed)
 [ -s "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 # Mac mini uses brew's keg-only rustup instead of ~/.cargo
