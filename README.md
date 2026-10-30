@@ -71,7 +71,8 @@ unmanaged already lives at the target.
 **Per-file** (each file linked individually — a new file needs `make restow`):
 
 ```
-~/.config/yazi   ~/.config/herdr     ~/.config/hunk      ~/.config/aerospace
+~/.config/yazi   ~/.config/herdr     ~/.config/herdr-app ~/.config/hunk
+~/.config/aerospace
 ~/.config/spotify-player             ~/.claude/hooks     ~/.local/bin
 ```
 
@@ -108,6 +109,7 @@ go in that package's `.stow-local-ignore`, one anchored regex per line:
 | `ghostty` | `~/.config/ghostty` | Terminal |
 | `ghui` | `~/.config/ghui` | GitHub PR TUI |
 | `herdr` | `~/.config/herdr` | Terminal multiplexer for coding agents |
+| `herdr-app` | `~/.config/herdr-app` | Herdr desktop app: keys, settings, Catppuccin theme |
 | `hunk` | `~/.config/hunk` | Terminal diff viewer |
 | `karabiner` † | `~/.config/karabiner` | Keyboard remapping |
 | `lazygit` † | `~/Library/Application Support/lazygit` | Git TUI |
