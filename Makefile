@@ -20,7 +20,11 @@ else
 PACKAGES := $(PACKAGES_COMMON)
 endif
 
-.PHONY: help bootstrap install restow delete check dump brew defaults list server
+# Folders an app writes its own files into. Created first so stow links file by
+# file into them instead of folding the folder into one link to this repo.
+REAL_DIRS := $(TARGET)/.config/herdr-app/themes
+
+.PHONY: help bootstrap install restow delete check dump brew defaults list server real-dirs
 
 help:
 	@echo 'Fresh machine:'
@@ -44,12 +48,12 @@ bootstrap:
 	./bootstrap.sh
 
 ## link every package into $HOME
-install:
+install: real-dirs
 	$(STOW) -v -d $(DIR) -t $(TARGET) $(PACKAGES)
 
 ## re-link, pruning links whose source moved (run after renames, or after an
 ## installer replace-writes a config and severs its symlink)
-restow:
+restow: real-dirs
 	$(STOW) -Rv -d $(DIR) -t $(TARGET) $(PACKAGES)
 
 ## remove every link this repo owns, leaving $HOME clean
@@ -76,10 +80,13 @@ defaults:
 	@bash bootstrap/macos-defaults.sh
 
 ## headless Mac mini: CLI-only Brewfile, shared configs, always-on settings
-server:
+server: real-dirs
 	brew bundle install --file=bootstrap/Brewfile.server
 	$(STOW) -v -d $(DIR) -t $(TARGET) $(PACKAGES_SERVER)
 	@bash bootstrap/server-setup.sh
+
+real-dirs:
+	@mkdir -p $(REAL_DIRS)
 
 list:
 	@echo '$(UNAME): $(PACKAGES)'

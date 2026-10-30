@@ -76,6 +76,10 @@ unmanaged already lives at the target.
 ~/.config/spotify-player             ~/.claude/hooks     ~/.local/bin
 ```
 
+A folder the app writes its own files into must stay per-file, even on a fresh
+machine where it doesn't exist yet. Add it to `REAL_DIRS` in the Makefile;
+`install`, `restow` and `server` create those folders before stowing.
+
 ## Adding a package
 
 Mirror the path the tool wants, relative to `$HOME`:
