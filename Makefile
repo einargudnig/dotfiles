@@ -4,12 +4,12 @@ TARGET := $(HOME)
 UNAME  := $(shell uname -s)
 
 # Packages whose target paths exist on any Unix.
-PACKAGES_COMMON := claude gh-dash ghostty ghui herdr herdr-app hunk linters nvim pi scripts \
+PACKAGES_COMMON := claude gh-dash ghostty ghui herdr hunk linters nvim pi scripts \
                    spotify-player tmux wezterm yazi zsh
 
-# macOS-only: aerospace and karabiner are mac apps; cursor and lazygit install
+# macOS-only: aerospace, herdr-app and karabiner are desktop mac apps; cursor and lazygit install
 # under ~/Library/Application Support, which has no Linux equivalent.
-PACKAGES_MACOS  := aerospace cursor emeraldian karabiner lazygit
+PACKAGES_MACOS  := aerospace cursor emeraldian herdr-app karabiner lazygit
 
 # Headless Mac mini: shared configs + lazygit (its config lives under ~/Library)
 PACKAGES_SERVER := $(PACKAGES_COMMON) lazygit
@@ -80,7 +80,7 @@ defaults:
 	@bash bootstrap/macos-defaults.sh
 
 ## headless Mac mini: CLI-only Brewfile, shared configs, always-on settings
-server: real-dirs
+server:
 	brew bundle install --file=bootstrap/Brewfile.server
 	$(STOW) -v -d $(DIR) -t $(TARGET) $(PACKAGES_SERVER)
 	@bash bootstrap/server-setup.sh

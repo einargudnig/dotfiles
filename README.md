@@ -113,7 +113,7 @@ go in that package's `.stow-local-ignore`, one anchored regex per line:
 | `ghostty` | `~/.config/ghostty` | Terminal |
 | `ghui` | `~/.config/ghui` | GitHub PR TUI |
 | `herdr` | `~/.config/herdr` | Terminal multiplexer for coding agents |
-| `herdr-app` | `~/.config/herdr-app` | Herdr desktop app: keys, settings, Catppuccin theme |
+| `herdr-app` † | `~/.config/herdr-app` | Herdr desktop app: keys, settings, Catppuccin theme |
 | `hunk` | `~/.config/hunk` | Terminal diff viewer |
 | `karabiner` † | `~/.config/karabiner` | Keyboard remapping |
 | `lazygit` † | `~/Library/Application Support/lazygit` | Git TUI |
